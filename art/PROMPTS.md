@@ -48,7 +48,7 @@ Same [外型]. 4 growth stages in a row, all calm and kind, never [情緒]: baby
 | 不服氣 defiant | orange spiky sun-like monster | grumpy side-eye → arms crossed → stomping, puffed cheeks → arms crossed tightly with steam | arms relaxed, accepting smile, thumbs up | small gold medal badge → holding up a gold medal | ✅ 完成 |
 | 做不到 stuck | purple tangled-yarn monster | small frown → dizzy swirl eyes → holding head → slumped, wants to give up | yarn neat, arms raised "I can do it" | small flag badge → flag with footprint steps | ✅ 完成 |
 | 擔心 scared | green fuzzy monster | a little nervous → worried biting nails → shaking, covering face → very scared hiding | relaxed shoulders, soft smile, one hand on chest breathing | small shield badge → small shield | ✅ 完成 |
-| 委屈 wronged | pink round fluffy monster | lips pressed, teary eyes → holding back tears → tears falling → hugging knees crying | soft smile, holding a heart speech bubble | speech-bubble badge → heart speech bubble | 待做 |
+| 委屈 wronged | pink round fluffy monster | lips pressed, teary eyes → holding back tears → tears falling → hugging knees crying | soft smile, holding a heart speech bubble | speech-bubble badge → heart speech bubble | ✅ 完成 |
 
 ## 家園（v12 起）
 家園已經有：冷靜角落（Lv.4 解鎖）、晚上睡覺模式、自由拖拉布置。目前是簡單圖形，等下面的圖畫好再換。
