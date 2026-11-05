@@ -50,10 +50,32 @@ Same [外型]. 4 growth stages in a row, all calm and kind, never [情緒]: baby
 | 擔心 scared | green fuzzy monster | a little nervous → worried biting nails → shaking, covering face → very scared hiding | relaxed shoulders, soft smile, one hand on chest breathing | small shield badge → small shield | ✅ 完成 |
 | 委屈 wronged | pink round fluffy monster | lips pressed, teary eyes → holding back tears → tears falling → hugging knees crying | soft smile, holding a heart speech bubble | speech-bubble badge → heart speech bubble | 待做 |
 
-## 之後要做
-- 家園背景（無家具、16:9）
-- 家具物品表：小房子、蘋果樹、花圃、池塘、菜園、帳篷、路燈、鞦韆、紅蘿蔔、番茄、玉米、小魚
-- 主角群已完成（`art/source/01-主角群-3D.jpg`），等全部完成後換上
+## 家園（v12 起）
+家園已經有：冷靜角落（Lv.4 解鎖）、晚上睡覺模式、自由拖拉布置。目前是簡單圖形，等下面的圖畫好再換。
+同一個 Gemini 對話裡畫，開頭都可以加：`Same 3D clay style as the characters.`
+
+### 1. 白天背景（不放家具）
+```
+Wide cozy garden landscape for a children's game, soft green grassy hills with a gentle flat open area in the front half for placing items, a soft blue sky with a soft sun and fluffy clouds, a few tiny distant trees on the far hills. No characters, no buildings, no furniture, no path. 3D clay style, warm soft lighting, pastel colors. Landscape 16:9, no text.
+```
+### 2. 晚上背景（同一個構圖）
+```
+The exact same garden landscape at night: deep calm blue sky, a soft crescent moon, gentle stars, hills in cool moonlight, peaceful and sleepy mood. Same composition. No characters, no buildings, no text.
+```
+### 3. 家具物品表
+```
+Game item sheet in the same 3D clay style, each item separate and evenly spaced in rows, all front view and the same lighting: a small cozy cottage, a round tree with red apples, a flower bed, a small round pond, a wooden vegetable garden plot (empty soil), a small tent, a street lamp, a wooden swing, a small slide. Plain light cream background, no text.
+```
+### 4. 冷靜角落（6 個）
+```
+Game item sheet in the same 3D clay style, 6 small cozy garden spots, separate and evenly spaced: a short stepping path with a tiny traffic light, a small round gazebo with an umbrella roof, a small three-step winner podium, a curvy path of stepping stones shaped like footprints, a small treehouse with a shield sign, a cute mailbox with a heart speech bubble. Plain light cream background, no text.
+```
+### 5. 菜和魚
+```
+Game item sheet in the same 3D clay style, separate and evenly spaced: row 1 a seedling growing in 3 stages (sprout, small plant, big leafy plant); row 2 a carrot, a tomato, an ear of corn; row 3 three small cute fish in orange, pink and yellow. Plain light cream background, no text.
+```
+### 6. 主角
+主角群已完成（`art/source/01-主角群-3D.jpg`），家園換新圖時一起換上。
 
 ## 去哪裡找更多提示詞
 - 直接請 Claude 或 Gemini 依這份風格寫新的提示詞最穩
