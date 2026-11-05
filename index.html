@@ -686,8 +686,23 @@ const EMO={
   defiant:{cname:'橘色',name:'不服氣怪獸',color:'#F5A524',feel:'好不服氣',body:'心裡悶悶、不甘心',acts:['light','squeeze','breathe','bubbles'],face:'defiant'},
   stuck:{cname:'紫色',name:'做不到怪獸',color:'#9B7BE0',feel:'好挫折，覺得做不到',body:'想放棄、想丟掉',acts:['breathe','squeeze','bubbles'],face:'stuck'},
   scared:{cname:'綠色',name:'擔心怪獸',color:'#3FB6A8',feel:'好擔心',body:'肚子怪怪、心跳很快',acts:['breathe','senses','butterfly'],face:'scared'},
-  wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses'],face:'wronged'}
+  wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses'],face:'wronged'},
+  reluctant:{cname:'蜂蜜色',name:'捨不得怪獸',color:'#E9B53C',feel:'好捨不得，還想玩、不想分開',body:'想黏著不放手、想哭、腳不想動',acts:['light','breathe','butterfly'],face:'sad'},
+  jealous:{cname:'黃綠色',name:'嫉妒怪獸',color:'#9CC93B',feel:'好嫉妒，別人有我沒有',body:'心裡酸酸的、想搶過來',acts:['breathe','squeeze','senses'],face:'defiant'},
+  shy:{cname:'桃色',name:'害羞怪獸',color:'#F59A72',feel:'好害羞，不敢說',body:'臉熱熱、想躲到大人後面',acts:['breathe','butterfly','senses'],face:'scared'},
+  hyper:{cname:'天藍色',name:'興奮過頭怪獸',color:'#2EB8E0',feel:'好興奮，停不下來',body:'身體一直動、聲音越來越大',acts:['light','breathe','squeeze'],face:'angry'},
+  embarrassed:{cname:'梅紅色',name:'尷尬怪獸',color:'#C766B8',feel:'好尷尬、好丟臉',body:'臉紅紅、想消失',acts:['breathe','butterfly','squeeze'],face:'wronged'},
+  guilty:{cname:'灰藍色',name:'內疚怪獸',color:'#7C93B5',feel:'好內疚，覺得自己做錯了',body:'心裡沉沉的、不敢看別人',acts:['breathe','butterfly','senses'],face:'sad'},
+  lonely:{cname:'靛藍色',name:'孤單怪獸',color:'#4F63B0',feel:'好孤單，好像沒人陪',body:'心裡空空的、提不起勁',acts:['butterfly','breathe','senses'],face:'sad'},
+  stress:{cname:'咖啡色',name:'壓力怪獸',color:'#A97B50',feel:'壓力好大，事情好多',body:'肩膀緊緊、頭脹脹、睡不好',acts:['breathe','squeeze','senses'],face:'stuck'}
 };
+/* 依年齡顯示的怪獸（已經一起冷靜過的怪獸一定會顯示） */
+const AGE_EMO={young:['angry','sad','scared','wronged','reluctant'],
+  mid:['angry','sad','defiant','stuck','scared','wronged','reluctant','jealous','shy','hyper'],
+  old:Object.keys(EMO)};
+function visibleEmo(){const base=AGE_EMO[S.age||'mid']||AGE_EMO.mid;return Object.keys(EMO).filter(k=>base.includes(k)||(store.xp&&store.xp[k]>0))}
+/* 有 3D 圖的怪獸；其他先用簡單圖形頂著 */
+const HASART=new Set(['angry','sad','defiant','stuck','scared','wronged']);
 const LV=[
   {n:1,t:'小小的',h:'#6CCB70'},{n:2,t:'有一點',h:'#A8D86B'},{n:3,t:'中中的',h:'#F7D046'},{n:4,t:'很大',h:'#F5A524'},{n:5,t:'超級大',h:'#F26B5B'}
 ];
@@ -753,6 +768,40 @@ const PARENT={
     after:'如果是大人誤會了，願意說對不起，就是給孩子最好的示範。'}
 };
 
+Object.assign(PARENT,{
+  reluctant:{first:'先承認「好捨不得」，再給可以預期的結束：倒數、最後一次、約好下次。分離時說再見要短而溫暖，不要偷偷溜走。',
+    say:{young:'「你好捨不得，還想再玩。我們再玩最後一次，然後跟玩具說再見。」','mid':'「你還想玩，我懂。再五分鐘，計時器響了我們就收。你想先收哪一個？」',old:'「停下來真的很難。我們先約好下次什麼時候可以再玩，你覺得呢？」'},
+    avoid:'「再不走我就自己走了」「哭什麼，又不是不回來」（威脅、偷偷離開）',
+    after:'平常就用固定的說再見小儀式（抱一下、擊掌、說「下次見」），提前 5 分鐘提醒，孩子會越來越能接受轉換。'},
+  jealous:{first:'嫉妒代表孩子很想要、很在乎。先接住感覺，不急著說「不可以嫉妒」。',
+    say:{young:'「你也好想要那個，對不對？想要是可以的。」',mid:'「看到別人有，你心裡酸酸的。我們來想想你自己有什麼好的地方。」',old:'「羨慕別人很正常。你最想要的是什麼？有沒有可以自己努力的部分？」'},
+    avoid:'「你看人家多好」「你怎麼這麼小氣」（比較、貼標籤）',
+    after:'跟孩子一起列出「我的好」，也練習說「恭喜你」。'},
+  shy:{first:'害羞是氣質，不是缺點。先給時間暖身，不要在別人面前催孩子。',
+    say:{young:'「你有點害羞，沒關係。我們先揮揮手就好。」',mid:'「你想先在旁邊看一下，還是我陪你一起去說？」',old:'「緊張的時候可以先準備一句話，例如『嗨，我叫…』，我們練習一次。」'},
+    avoid:'「快叫人啊」「你怎麼這麼膽小」（當眾催促、貼標籤）',
+    after:'事後稱讚小小的勇敢：「你剛剛有揮手，好棒。」'},
+  hyper:{first:'興奮過頭不是故意的，是身體油門踩太大。大人先放慢、放低聲音，幫孩子「踩煞車」。',
+    say:{young:'「你好開心，身體跑好快！我們像蝸牛一樣慢慢走三步。」',mid:'「你現在像開到最快的車，我們一起踩煞車：紅燈停、深呼吸。」',old:'「你的能量很高，先去喝口水、做 10 下深呼吸，再回來繼續。」'},
+    avoid:'「冷靜一點！」大聲吼、在很多人面前責罵',
+    after:'平常練習「快、慢、停」的遊戲；在容易太嗨的活動前，先約好「降速信號」。'},
+  embarrassed:{first:'先保護孩子的面子，私下說，不要在別人面前提。',
+    say:{young:'「剛剛有點糗，沒關係，每個人都會這樣。」',mid:'「你覺得好丟臉，對不對？我小時候也發生過。」',old:'「尷尬的感覺很快就會過去，大家其實沒有記那麼久。想聊聊嗎？」'},
+    avoid:'當眾笑孩子、轉述給別人聽、「這有什麼好丟臉的」',
+    after:'分享大人自己出糗的故事，讓孩子知道出糗是正常的。'},
+  guilty:{first:'內疚代表孩子知道在乎別人。重點放在「怎麼修復」，不要一直責備。',
+    say:{young:'「你覺得自己做錯了，心裡不舒服。我們一起去說對不起。」',mid:'「做錯事會難過，代表你很善良。你想怎麼補救？」',old:'「每個人都會犯錯。重要的是接下來怎麼做，你覺得可以怎麼修復？」'},
+    avoid:'「你看你做的好事」「你就是壞孩子」（翻舊帳、否定孩子本人）',
+    after:'可以用工具裡的「修復任務」，完成後一起確認，讓孩子學會負責而不是一直自責。'},
+  lonely:{first:'先陪著，讓孩子知道你在。孤單常常說不出來，可以用「我注意到…」開頭。',
+    say:{young:'「你一個人有點孤單嗎？要不要一起玩？」',mid:'「我注意到你今天比較安靜，是不是覺得沒人陪？」',old:'「被冷落的感覺很難受。你想找誰聊聊，或是要我陪你一下？」'},
+    avoid:'「你自己去找朋友啊」「這有什麼好難過的」',
+    after:'一起想一個可以主動邀請的人，或安排固定的親子特別時光。'},
+  stress:{first:'壓力大時，先幫孩子把事情「放下來」：寫下來、排順序，一次只看一件。',
+    say:{young:'「事情好多，好累喔。我們先做一件就好。」',mid:'「我們把要做的事寫下來，先挑最小的一件開始。」',old:'「你最近壓力很大。哪些是一定要做的？哪些可以先放下或找人幫忙？」'},
+    avoid:'「這有什麼好壓力的」「別人都做得到」',
+    after:'留意睡眠、休息和玩的時間；壓力長期很大時，可以和老師或輔導老師聊聊。'}
+});
 const CO_STEPS=[
   ['先顧安全','移開危險物品，必要時帶到安靜角落。孩子要打人時，溫和而堅定地擋住：「我不會讓你打人。」'],
   ['話越少越好','只說短句。不講道理、不問為什麼、不威脅、不談條件。'],
@@ -786,7 +835,10 @@ function stageOf(lv){let i=0;STAGES.forEach((t,j)=>{if(lv>=t.from)i=j});return i
 const SIZES=[{n:'小小的',s:.74},{n:'有一點',s:.86},{n:'中中的',s:.96},{n:'很大',s:1.06}];
 const moodOf=n=>[1,1,2,3,4,4][n]||3;
 const BADGE={angry:['🚦','紅綠燈徽章','生氣時會先停一下'],sad:['☂️','小雨傘','難過時會照顧自己'],defiant:['🏅','進步獎牌','跟昨天的自己比'],
-  stuck:['🚩','一步一步旗','把難事切成小步驟'],scared:['🛡️','勇氣盾牌','先試一小步'],wronged:['💬','說話泡泡','說出自己的想法']};
+  stuck:['🚩','一步一步旗','把難事切成小步驟'],scared:['🛡️','勇氣盾牌','先試一小步'],wronged:['💬','說話泡泡','說出自己的想法'],
+  reluctant:['⏳','再見沙漏','好好說再見，下次再來'],jealous:['⭐','我的好星星','我也有我的好'],shy:['👋','招手手套','先打個招呼'],
+  hyper:['🐌','蝸牛煞車','慢慢降速'],embarrassed:['😊','沒關係貼紙','每個人都會出糗'],guilty:['🩹','修復 OK 繃','說對不起，再去修復'],
+  lonely:['🏮','小燈籠','主動找一個人'],stress:['📋','一件事清單','一次只做一件事']};
 /* 已換成 3D 新圖、有 4 階段成長圖的怪獸（徽章已畫在圖裡，不再疊 emoji） */
 const GROWN=new Set(['angry','sad','defiant','stuck','scared','wronged']);
 /* 比較寬的圖（手拿旗子、張開手臂）：寬高比，讓身體高度跟其他階段一致 */
@@ -853,6 +905,16 @@ function chime(){tone(660,.6);setTimeout(()=>tone(880,.8),250);setTimeout(()=>to
 function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-TW';u.rate=.85;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
 
 /* ---------- monster svg ---------- */
+/* 新怪獸還沒有 3D 圖前的暫代圖：圓圓的身體＋表情（情緒時皺眉，平常微笑） */
+function placeholderMon(c,x,y,w,mood){const cx=x+w/2,cy=y+w*.58,r=w*.36;
+  const mouth=mood?`<path d="M${cx-r*.28} ${cy+r*.42} Q${cx} ${cy+r*.18} ${cx+r*.28} ${cy+r*.42}" stroke="#3B2F2A" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/>`
+    :`<path d="M${cx-r*.28} ${cy+r*.25} Q${cx} ${cy+r*.5} ${cx+r*.28} ${cy+r*.25}" stroke="#3B2F2A" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/>`;
+  const brow=mood?`<path d="M${cx-r*.5} ${cy-r*.3} l${r*.3} ${r*.1} M${cx+r*.5} ${cy-r*.3} l${-r*.3} ${r*.1}" stroke="#3B2F2A" stroke-width="${r*.07}" stroke-linecap="round"/>`:'';
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${r}" ry="${r*1.05}" fill="${c}"/><ellipse cx="${cx-r*.25}" cy="${cy-r*.45}" rx="${r*.35}" ry="${r*.25}" fill="#fff" opacity=".25"/>
+    <ellipse cx="${cx-r*.45}" cy="${cy+r*.98}" rx="${r*.22}" ry="${r*.1}" fill="${c}"/><ellipse cx="${cx+r*.45}" cy="${cy+r*.98}" rx="${r*.22}" ry="${r*.1}" fill="${c}"/>
+    <circle cx="${cx-r*.33}" cy="${cy-r*.05}" r="${r*.16}" fill="#fff"/><circle cx="${cx+r*.33}" cy="${cy-r*.05}" r="${r*.16}" fill="#fff"/>
+    <circle cx="${cx-r*.33}" cy="${cy-r*.02}" r="${r*.09}" fill="#3B2F2A"/><circle cx="${cx+r*.33}" cy="${cy-r*.02}" r="${r*.09}" fill="#3B2F2A"/>
+    <circle cx="${cx-r*.6}" cy="${cy+r*.25}" r="${r*.12}" fill="#FF8FA8" opacity=".45"/><circle cx="${cx+r*.6}" cy="${cy+r*.25}" r="${r*.12}" fill="#FF8FA8" opacity=".45"/>${brow}${mouth}`}
 function monster(kind,size=110,cls='',opt={}){
   const e=EMO[kind];const c=e.color;
   const level=opt.level!==undefined?opt.level:lvOf(store.xp[kind]||0);
@@ -867,7 +929,7 @@ function monster(kind,size=110,cls='',opt={}){
   return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}${mood?' '+SIZES[mood-1].n:' '+STAGES[grow-1].n}">
     ${aura}
     <ellipse cx="60" cy="121" rx="${w*.36}" ry="5" fill="${c}" opacity=".18"/>
-    ${(()=>{const f=mood||!GROWN.has(kind)?`${kind}${st}`:`${kind}g${grow}`;const ar=ASPECT[f]||1;return `<image href="img/${f}.webp" x="${(60-w*ar/2).toFixed(1)}" y="${y}" width="${(w*ar).toFixed(1)}" height="${w}"/>`})()}
+    ${HASART.has(kind)?(()=>{const f=mood||!GROWN.has(kind)?`${kind}${st}`:`${kind}g${grow}`;const ar=ASPECT[f]||1;return `<image href="img/${f}.webp" x="${(60-w*ar/2).toFixed(1)}" y="${y}" width="${(w*ar).toFixed(1)}" height="${w}"/>`})():placeholderMon(c,x,y,w,mood)}
     <g transform="translate(0 ${dy.toFixed(1)})">${eq.neck&&ACC[eq.neck]?`<g transform="translate(0 ${(w*.5).toFixed(1)})">${ACC[eq.neck]}</g>`:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}</g>${badge}${sparks}
   </svg>`;
 }
@@ -951,7 +1013,7 @@ function renderAges(){
 function renderMonsters(){
   $('#monQ').textContent=S.sos?'你好一點了！剛剛是哪一隻怪獸來找你？':'現在，你心裡住著哪一隻怪獸？';
   $('#monHint').textContent=S.sos?'點一隻最像剛剛的感覺，我們再看看牠現在多大':'點一隻最像你的';
-  $('#monsters').innerHTML=Object.entries(EMO).map(([k,e])=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">
+  $('#monsters').innerHTML=visibleEmo().map(k=>[k,EMO[k]]).map(([k,e])=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">
     ${monster(k,84,'',{mood:2})}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span><span class="lvtag">Lv.${lvOf(store.xp[k]||0)} ${TITLES[lvOf(store.xp[k]||0)-1]}</span></button>`).join('');
   $$('[data-emo]').forEach(b=>b.onclick=()=>{S.emo=b.dataset.emo;tone(500,.12);speak('我是'+EMO[S.emo].name);
     if(S.sos){S.sos=false;S.lv0=4;S.lv=4;S.lv2=0;if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}S.sosDone=0;go(4)}else go(2)});
@@ -1242,10 +1304,13 @@ $('#winDex').onclick=()=>go(11);
 
 /* ---------- monster dex ---------- */
 function renderDex(){
-  $('#dex').innerHTML=Object.entries(EMO).map(([k,e])=>{const xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);
+  $('#dex').innerHTML=visibleEmo().map(k=>[k,EMO[k]]).map(([k,e])=>{const xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);
     return `<button class="pick" data-md="${k}">${monster(k,80)}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span>
       <span class="lvtag">Lv.${l} ${TITLES[l-1]}</span><div class="xpbar"><i style="width:${nx.pct}%"></i></div><span class="lvtag">點我認識牠 ›</span></button>`}).join('');
   $$('[data-md]').forEach(b=>b.onclick=()=>{S.mdK=b.dataset.md;go(22)});
+  const hid=Object.keys(EMO).length-visibleEmo().length;
+  $('#dex').insertAdjacentHTML('afterend',hid?`<p class="hint" id="dexMore">還有 ${hid} 隻怪獸，長大一點就會遇到牠們（大人可以在「換主角 / 年齡」調整年齡）</p>`:'');
+  const dm=$$('#dexMore');if(dm.length>1)dm.slice(0,-1).forEach(x=>x.remove());
 }
 
 /* ---------- hero ---------- */
@@ -1281,7 +1346,11 @@ function posOf(id){const p=store.pos[id];if(p&&typeof p==='object')return [p.x,p
 /* 冷靜角落：怪獸 Lv.4（冷靜高手）解鎖，點了直接練習那個方法 */
 const CORNERS={angry:{ico:'🚦',name:'紅綠燈小路',act:'light',x:30,y:150},sad:{ico:'☂️',name:'雨傘小涼亭',act:'butterfly',x:84,y:132},
   defiant:{ico:'🏅',name:'小頒獎台',act:'squeeze',x:196,y:128},stuck:{ico:'👣',name:'腳印小徑',act:'breathe',x:150,y:226},
-  scared:{ico:'🛡️',name:'安心樹屋',act:'senses',x:312,y:122},wronged:{ico:'💬',name:'說話小信箱',act:'butterfly',x:236,y:226}};
+  scared:{ico:'🛡️',name:'安心樹屋',act:'senses',x:312,y:122},wronged:{ico:'💬',name:'說話小信箱',act:'butterfly',x:236,y:226},
+  reluctant:{ico:'⏳',name:'說再見小站',act:'light',x:62,y:214},jealous:{ico:'⭐',name:'我的好星星牆',act:'breathe',x:272,y:140},
+  shy:{ico:'🐢',name:'小烏龜殼屋',act:'butterfly',x:122,y:126},hyper:{ico:'🐌',name:'蝸牛慢慢道',act:'light',x:338,y:204},
+  embarrassed:{ico:'🎭',name:'沒關係小舞台',act:'squeeze',x:20,y:196},guilty:{ico:'🩹',name:'修復小站',act:'breathe',x:300,y:236},
+  lonely:{ico:'🏮',name:'小燈籠亭',act:'butterfly',x:180,y:236},stress:{ico:'🎒',name:'放下背包椅',act:'squeeze',x:106,y:236}};
 const CORNER_LV=4;
 function cornersOpen(){return Object.keys(CORNERS).filter(k=>lvOf(store.xp[k]||0)>=CORNER_LV)}
 function cornerSvg(k){const c=CORNERS[k],col=EMO[k].color;
@@ -1339,7 +1408,7 @@ function scene(){
   cornersOpen().forEach(k=>{v+=wrapIt('c_'+k,`<g data-corner="${k}" class="corner">${cornerSvg(k)}</g>`)});
   // 情緒怪獸入住：一起冷靜過（有經驗）就搬進來
   const fr=Object.keys(EMO).filter(k=>(store.xp[k]||0)>0);
-  const pos=[[96,150],[216,152],[70,186],[244,190],[124,196],[182,200]];
+  const pos=[[96,150],[216,152],[70,186],[244,190],[124,196],[182,200],[40,160],[290,170],[150,214],[260,214],[20,214],[310,150],[200,176],[100,222]];
   fr.forEach((k,i)=>{const [px,py]=HOME_POS[k]||pos[i];v+=`<g data-mon="${k}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`});
   if(store.hero){const [hx,hy]=HOME_POS.hero||[146,96];v+=`<g data-actor="h" class="actor" style="pointer-events:none;transform:translate(${hx}px,${hy}px)"><g class="flip"><g class="act ${night?'sleepy':'bob'}">${hero(store.hero.type,64)}</g></g></g>`;}
   if(night)v+=`<rect width="360" height="250" fill="#1A1F45" opacity=".28" pointer-events="none"/>`;
@@ -1654,7 +1723,7 @@ function freezeMusic(el){
 /* emotion face card helper */
 function faceCard(el,onDraw){
   el.innerHTML=`<div class="stage" id="fcMon" style="min-height:110px"></div><div class="sentence" id="fcQ" style="display:none"></div><div class="row"><button class="btn small" id="fcDraw">抽一張怪獸卡</button></div>`;
-  $('#fcDraw').onclick=e=>{e.stopPropagation();const ks=Object.keys(EMO);const k=ks[Math.floor(Math.random()*ks.length)];
+  $('#fcDraw').onclick=e=>{e.stopPropagation();const ks=visibleEmo();const k=ks[Math.floor(Math.random()*ks.length)];
     $('#fcMon').innerHTML=monster(k,100,'wobble',{mood:2});$('#fcQ').style.display='';$('#fcQ').innerHTML=`抽到<u>${EMO[k].name}</u>！<br>你什麼時候會覺得<u>${EMO[k].feel.replace(/^好/,'')}</u>？<br><small>說完換大人說一次</small>`;
     tone(660,.15);speak(`抽到${EMO[k].name}。你什麼時候會覺得${EMO[k].feel.replace(/^好/,'')}？`);onDraw&&onDraw()};
 }
@@ -1706,7 +1775,7 @@ function renderRoutine(){
 
 /* ---------- memory game ---------- */
 function renderMemory(fresh){
-  if(fresh||!S.mem){const n=S.age==='young'?3:S.age==='old'?6:4;const ks=Object.keys(EMO).sort(()=>Math.random()-.5).slice(0,n);
+  if(fresh||!S.mem){const n=S.age==='young'?3:S.age==='old'?6:4;const ks=visibleEmo().sort(()=>Math.random()-.5).slice(0,n);
     const cards=[...ks,...ks].sort(()=>Math.random()-.5);
     S.mem={cards,up:[],ok:new Set(),turn:'kid',score:{kid:0,hero:0},lock:false,moves:0,seen:{},mode:(S.mem&&S.mem.mode)||'vs',over:false}}
   const M=S.mem;const cols=M.cards.length<=6?3:4;
@@ -1798,6 +1867,16 @@ const INTRO={
   scared:['遇到新的事、不知道會發生什麼、怕犯錯或怕被罵的時候。','肚子怪怪的、心跳很快、手冰冰的、想躲起來。','牠想保護你，提醒你要小心一點。','慢慢呼吸、用五感找找身邊的東西、跟大人說你在擔心什麼，然後先試一小步。'],
   wronged:['被誤會、被冤枉、覺得沒有人聽你說的時候。','想哭又說不出來、胸口悶悶的、覺得好不公平。','牠想讓別人聽見你的想法。','先蝴蝶抱抱自己，找一個信任的人說出你的版本，或把事情畫下來。']
 };
+Object.assign(INTRO,{
+  reluctant:['正在玩喜歡的東西要停下來、要離開好玩的地方，或要跟爸爸媽媽分開的時候。','想黏著不放手、腳不想動、想哭，或一直說「再一下下」。','牠想說「這個時光對我很重要」。捨不得代表你很喜歡。','先聽倒數提醒，玩最後一次，跟玩具或大人好好說再見，再約好下次。'],
+  jealous:['看到別人有你想要的東西、別人被稱讚、或大人好像比較疼別人的時候。','心裡酸酸的、想把東西搶過來、說「我才不稀罕」。','牠想說「我也好想要」。想要不是壞事。','深呼吸，想想「我也有我的好」，也可以試著說「恭喜你」。'],
+  shy:['見到不認識的人、要上台、要在很多人面前說話的時候。','臉熱熱的、聲音變小、想躲到大人後面。','牠想說「我需要一點時間熟悉」。害羞不是錯。','先在旁邊看一下，深呼吸，然後先揮揮手或說一個字就好。'],
+  hyper:['玩得太開心、很多人一起鬧、等很久終於可以玩的時候。','身體停不下來、聲音越來越大、聽不到別人說話。','牠想說「我好開心」，只是油門踩太大了。','像紅綠燈一樣先停下來，像蝸牛一樣慢慢呼吸，喝口水再回來。'],
+  embarrassed:['在別人面前出糗、說錯話、被笑的時候。','臉紅紅、好想消失、不想再去那個地方。','牠想說「我很在意別人怎麼看我」。','記得每個人都會出糗，深呼吸，笑一笑說「沒關係」，或找信任的人說說。'],
+  guilty:['做錯事、弄壞東西、讓別人難過的時候。','心裡沉沉的、不敢看別人、想躲起來。','牠想說「我在乎別人」。知道自己做錯，代表你很善良。','先冷靜，說對不起，再想一個修復的方法去做。'],
+  lonely:['沒有人跟你玩、被排擠、或想念不在身邊的人的時候。','心裡空空的、提不起勁、不想說話。','牠想說「我需要有人陪」。','抱抱自己，找一個信任的人說說，或主動邀請一個人一起玩。'],
+  stress:['功課太多、考試快到了、很多事情同時要做的時候。','肩膀緊緊、頭脹脹的、睡不好、容易發脾氣。','牠想說「我需要休息一下」。','把事情寫下來，一次只做一件，做完一件就休息一下，也可以請人幫忙。']
+});
 function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);const [when,body,why,how]=INTRO[k];
   $('#mdMon').innerHTML=monster(k,140,'wobble');
   $('#mdName').innerHTML=`<span class="cname" style="background:${e.color};font-size:.9rem;vertical-align:middle">${e.cname}</span> ${e.name}`;
@@ -1809,7 +1888,7 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
   const age=S.age||'mid';
   $('#mdBody').innerHTML=`<h4>🌱 成長進化</h4><div class="evorow">${STAGES.map((t,i)=>`<div class="evocell ${i+1>cur?'lock':''} ${i+1===cur?'now':''}">${monster(k,66,'',{grow:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small><small>${i+1>cur?'🔒 Lv.'+t.from:i+1===cur?'現在':'✓'}</small></div>`).join('')}</div>
     <p class="hint" style="text-align:left">${lvOf(store.xp[k]||0)>=CORNER_LV?`🏡 已解鎖家園冷靜角落：${CORNERS[k].ico} ${CORNERS[k].name}。`:`Lv.${CORNER_LV} 會在家園解鎖冷靜角落：${CORNERS[k].ico} ${CORNERS[k].name}。`}每次陪牠冷靜，牠就會長大、變得更成熟。長大後會學會「${BADGE[k][0]} ${BADGE[k][1]}」：${BADGE[k][2]}。</p>
-    <h4>🌡️ 牠變大的時候</h4><div class="evorow">${SIZES.map((t,i)=>`<div class="evocell mood">${monster(k,58,'',{mood:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small></div>`).join('')}<div class="evocell calm"><svg class="mon" width="58" height="58" viewBox="-8 -22 136 150"><image href="img/${k}0.webp" x="-4" y="-8" width="128" height="128"/></svg><small>冷靜下來</small></div></div>
+    <h4>🌡️ 牠變大的時候</h4><div class="evorow">${SIZES.map((t,i)=>`<div class="evocell mood">${monster(k,58,'',{mood:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small></div>`).join('')}<div class="evocell calm">${HASART.has(k)?`<svg class="mon" width="58" height="58" viewBox="-8 -22 136 150"><image href="img/${k}0.webp" x="-4" y="-8" width="128" height="128"/></svg>`:monster(k,58,'',{grow:1,level:1,eq:{head:null,neck:null}})}<small>冷靜下來</small></div></div>
     <p class="hint" style="text-align:left">情緒越大，牠看起來越兇，這是在告訴你「我很不舒服」。冷靜下來，牠就會變回溫柔的樣子。</p>
     <h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
     <h4>🫀 牠來的時候，身體會怎樣？</h4><p>${body}</p>
