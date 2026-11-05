@@ -47,7 +47,7 @@ Same [外型]. 4 growth stages in a row, all calm and kind, never [情緒]: baby
 | 難過 sad | blue water-drop monster | pouting → teary → crying → crying a lot with a puddle | hugging a small heart | small umbrella badge → small umbrella | ✅ 完成 |
 | 不服氣 defiant | orange spiky sun-like monster | grumpy side-eye → arms crossed → stomping, puffed cheeks → arms crossed tightly with steam | arms relaxed, accepting smile, thumbs up | small gold medal badge → holding up a gold medal | ✅ 完成 |
 | 做不到 stuck | purple tangled-yarn monster | small frown → dizzy swirl eyes → holding head → slumped, wants to give up | yarn neat, arms raised "I can do it" | small flag badge → flag with footprint steps | ✅ 完成 |
-| 擔心 scared | green fuzzy monster | a little nervous → worried biting nails → shaking, covering face → very scared hiding | relaxed shoulders, soft smile, one hand on chest breathing | small shield badge → small shield | 待做 |
+| 擔心 scared | green fuzzy monster | a little nervous → worried biting nails → shaking, covering face → very scared hiding | relaxed shoulders, soft smile, one hand on chest breathing | small shield badge → small shield | ✅ 完成 |
 | 委屈 wronged | pink round fluffy monster | lips pressed, teary eyes → holding back tears → tears falling → hugging knees crying | soft smile, holding a heart speech bubble | speech-bubble badge → heart speech bubble | 待做 |
 
 ## 之後要做
