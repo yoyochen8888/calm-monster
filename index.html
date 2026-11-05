@@ -129,6 +129,32 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .adult-btn{display:block;width:100%;margin-top:8px}
 .wobble{animation:wob 2.4s ease-in-out infinite}
 /* game */
+.tlight{width:96px;margin:10px auto;background:#3B2F2A;border-radius:26px;padding:12px;display:flex;flex-direction:column;gap:10px;align-items:center}
+.tlight i{width:62px;height:62px;border-radius:50%;opacity:.22;transition:.3s}
+.tlight i.on{opacity:1;box-shadow:0 0 22px currentColor}
+#lr{background:#F26B5B;color:#F26B5B}#ly{background:#F7D046;color:#F7D046}#lg{background:#6CCB70;color:#6CCB70}
+.wk{width:100%;border-collapse:collapse;font-size:.9rem;font-family:"Noto Sans TC",sans-serif}
+.wk th{font-weight:500;color:var(--soft);padding:4px 0}
+.wk td{text-align:center;padding:3px 1px}
+.wk td.tn{text-align:left;padding-right:4px;line-height:1.3}
+.wk td.tn small{color:var(--soft);display:block;font-size:.75rem}
+.cell{width:34px;height:34px;border-radius:10px;border:2px solid var(--line);background:#fff;font-size:1rem;cursor:default;font-family:inherit;padding:0}
+.cell.done{background:var(--accent);border-color:var(--accent);color:#fff}
+.cell.today{border-color:#F5A524;cursor:pointer}
+.cell.future{opacity:.35}
+.wk th.today{color:#C98A00;font-weight:700}
+.logitem{border:2px solid var(--line);border-radius:16px;padding:10px 12px;margin-top:10px;font-family:"Noto Sans TC",sans-serif;line-height:1.6;font-size:.93rem}
+.logitem .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.logitem textarea{width:100%;margin-top:6px;border:2px solid var(--line);border-radius:10px;padding:6px 8px;font:inherit;font-size:.9rem;resize:vertical;min-height:38px}
+.sumbox{background:#F4FAF9;border-radius:16px;padding:12px;font-family:"Noto Sans TC",sans-serif;line-height:1.7}
+.bars{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+.bars div{display:flex;align-items:center;gap:6px;font-size:.88rem}
+.bars b{height:14px;border-radius:7px;display:inline-block;min-width:4px}
+.cpn{display:flex;gap:6px;align-items:center;margin:6px 0}
+.cpn input{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:10px;min-width:0}
+.cpn input.nm{flex:1}.cpn input.pr{width:70px}
+.case{background:#FFF8EE;border-radius:12px;padding:10px 12px;margin:6px 0}
+.agetbl{width:100%;border-collapse:collapse;font-size:.9rem}.agetbl td{border-bottom:1px dashed var(--line);padding:7px 4px;vertical-align:top;line-height:1.6}.agetbl td:first-child{white-space:nowrap;font-weight:700;color:var(--accent)}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:#fff;border-top:2px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
 .tabbar button{flex:1;background:none;border:0;font:inherit;font-size:1.4rem;cursor:pointer;color:var(--soft);padding:4px 0;border-radius:14px}
 .tabbar button span{display:block;font-size:.8rem;margin-top:1px}
@@ -297,11 +323,14 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
     <div class="xpbar" style="margin:8px 0 0"><i id="heroXp"></i></div>
     <div class="scene" id="scene"></div>
     <div id="repairBox"></div>
+    <div id="voucherBox"></div>
     <div class="grid g2" style="margin-top:14px">
       <button class="pick" id="hStart" style="border-color:#F7B8AE;background:#FFF1EE"><b>😤 怪獸來了</b><span>去冷靜站</span></button>
       <button class="pick" id="hWater"><b>💧 照顧家園</b><span id="hWaterSub"></span></button>
       <button class="pick" id="hPractice"><b>🧘 平時練習</b><span id="hPracSub"></span></button>
       <button class="pick" id="hParent"><b>🌟 大人給星星</b><span>平時表現好</span></button>
+      <button class="pick" id="hWeek"><b>📅 一週練習表</b><span id="hWeekSub">每天的小任務</span></button>
+      <button class="pick" id="hLog"><b>📒 情緒紀錄</b><span>回顧和分享</span></button>
     </div>
     <p class="q" style="font-size:1.15rem;margin-top:20px">今天心情怎麼樣？</p>
     <div class="moods" id="moods"></div>
@@ -327,6 +356,38 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
     <input id="heroNameIn" class="namein" maxlength="8" placeholder="例如：小勇">
     <div class="row"><button class="btn" id="heroOk" disabled>就是牠了！</button></div>
     <div class="row"><button class="btn ghost small" id="toAge">更改年齡</button></div>
+  </section>
+
+  <!-- 14 log -->
+  <section class="step card" data-step="14">
+    <p class="q">情緒紀錄</p>
+    <p class="hint">每次用完冷靜站會自動記下來，方便回顧，也可以複製給老師或治療師參考</p>
+    <div class="chips" id="logTabs" style="margin-bottom:12px"></div>
+    <div class="sumbox" id="logSum"></div>
+    <div id="logList"></div>
+    <div class="row">
+      <button class="btn" id="logCopy">📋 複製這段紀錄</button>
+      <button class="btn ghost small" id="logClear">刪除全部紀錄</button>
+    </div>
+    <textarea id="logText" style="display:none;width:100%;min-height:160px;margin-top:10px;border-radius:12px;border:2px solid var(--line);padding:10px;font:inherit;font-size:.85rem"></textarea>
+    <p class="note">紀錄只存在這台裝置的瀏覽器裡，不會上傳。分享時請只傳給信任的人。</p>
+  </section>
+
+  <!-- 15 week practice -->
+  <section class="step card" data-step="15">
+    <p class="q">一週練習表</p>
+    <p class="hint" id="wkHint">心情好的時候多練習，生氣時才用得出來。今天的格子點一下就打勾，每格 +2 ⭐</p>
+    <div style="overflow-x:auto"><table class="wk" id="wkTable"></table></div>
+    <div class="sumbox" id="wkSum" style="margin-top:12px"></div>
+    <div class="soft" id="rolePlay" style="text-align:left"></div>
+  </section>
+
+  <!-- 16 coupon settings -->
+  <section class="step card" data-step="16">
+    <p class="q">設定兌換券</p>
+    <p class="hint">由大人決定可以換什麼、要幾顆星星。建議用「活動和特權」，不要用零食或玩具。</p>
+    <div id="cpnList"></div>
+    <div class="row"><button class="btn ghost small" id="cpnAdd">＋ 新增一項</button><button class="btn" id="cpnSave">儲存</button></div>
   </section>
 
   <!-- 13 parent gives stars -->
@@ -411,6 +472,33 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
     <li>不要用「不准拿星星」或「沒收家園」來懲罰，以免孩子把冷靜站跟處罰連在一起。</li>
   </ul>
   <button class="chip" id="resetAll" style="margin-top:6px">重設星星與等級</button>
+  <h3>紀錄與兌換券</h3>
+  <div class="row" style="justify-content:flex-start;margin-top:4px">
+    <button class="chip" id="dOpenLog">📒 情緒紀錄</button>
+    <button class="chip" id="dOpenWeek">📅 一週練習表</button>
+    <button class="chip" id="dOpenCpn">🎟 設定兌換券</button>
+  </div>
+  <p>星星除了買裝扮，也可以換大人設定的<b>兌換券</b>，例如多聽一本故事、一起玩桌遊。建議用活動和特權取代零食或玩具；兌換後要守信用，盡快兌現。</p>
+  <h3>先打好 3 個基礎</h3>
+  <ul>
+    <li><b>作息固定</b>：起床、吃飯、遊戲、睡覺盡量每天一樣。要轉換時先預告：「再玩 5 分鐘就要收玩具。」</li>
+    <li><b>環境單純</b>：情緒快升高時關電視、減少噪音、收掉多的玩具；一次只給 2～3 個選擇。</li>
+    <li><b>大人先穩</b>：孩子尖叫時，大人跟著大聲通常會更糟。先深呼吸、蹲下、用平穩的短句。</li>
+  </ul>
+  <h3>依年齡的實際做法</h3>
+  <table class="agetbl">
+    <tr><td>0–2 歲</td><td>先檢查餓不餓、累不累、尿布、是不是太吵；用擁抱、輕搖、安靜的地方安撫；只說很短的話：「你累了。」（這個年齡由大人陪伴，不需要操作工具）</td></tr>
+    <tr><td>2–3 歲</td><td>給兩個選擇：「自己走，還是牽手走？」；用遊戲轉移：「比賽誰先到門口！」；事後指著怪獸圖說「這是生氣」「這是難過」。可由大人拿著工具，孩子點怪獸。</td></tr>
+    <tr><td>3–4 歲</td><td>練習「停一停、深呼吸、喝口水」；玩紅綠燈遊戲；用玩偶角色扮演「玩具被拿走時怎麼說」。</td></tr>
+    <tr><td>4–6 歲</td><td>用情緒溫度計、呼吸、計時器和一週練習表；規則和後果事先說清楚；做到時立刻具體稱讚。</td></tr>
+    <tr><td>6–8 歲</td><td>練習說「我還沒做到」、把難的事切成小步驟、用說的表達感覺；可以自己操作工具，大人在旁邊陪。</td></tr>
+    <tr><td>9–12 歲</td><td>一起找原因、想 Plan B；讓孩子自己選冷靜方法，也尊重需要獨處；用情緒紀錄一起回顧。</td></tr>
+  </table>
+  <h3>常見情境怎麼做</h3>
+  <div class="tabs" id="caseTabs"></div>
+  <div class="case" id="caseBody"></div>
+  <h3>每天 15 分鐘特別時光</h3>
+  <p>每天留 15 分鐘，一對一、不看手機，讓孩子決定玩什麼。過程中多描述（「你把積木疊得好高」）、多聽，少指導、少批評。這能讓孩子不用激烈行為來爭取注意。一週練習表裡有這一項。</p>
   <h3>通用原則</h3>
   <ul>
     <li><b>命名情緒</b>：幫孩子把感覺說出來（「你好生氣」），說得出來的情緒比較好管理。</li>
@@ -419,6 +507,7 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
     <li><b>稱讚過程</b>：努力、換方法、願意再試，比「你好聰明」更能培養挫折容忍力。</li>
     <li><b>事後回顧</b>：平靜後才討論「下次可以怎麼做」，一次一個方法就好。</li>
   </ul>
+  <p class="note">如果孩子有 ADHD 或疑似 ADHD：對學齡前孩子，以家長為主的行為管理訓練是目前建議的第一線做法，可以詢問兒童心智科或早療單位是否有親職課程。</p>
   <p class="note">這是日常情緒陪伴的小工具，不能取代專業評估。若孩子的情緒爆發頻繁、強度很大、持續很久，或有傷害自己或他人的情形，請諮詢兒童心智科醫師、心理師或學校輔導老師。</p>
 </aside>
 
@@ -430,9 +519,9 @@ const AGES=[
   {id:'old',ico:'🌳',name:'小學中高年級',sub:'9–12 歲'}
 ];
 const EMO={
-  angry:{cname:'紅色',name:'生氣怪獸',color:'#F26B5B',feel:'好生氣',body:'臉熱熱、拳頭握緊緊',acts:['bubbles','breathe','squeeze'],face:'angry'},
+  angry:{cname:'紅色',name:'生氣怪獸',color:'#F26B5B',feel:'好生氣',body:'臉熱熱、拳頭握緊緊',acts:['bubbles','light','breathe','squeeze'],face:'angry'},
   sad:{cname:'藍色',name:'難過怪獸',color:'#5B8DEF',feel:'好難過',body:'眼睛酸酸、想哭',acts:['breathe','butterfly','senses'],face:'sad'},
-  defiant:{cname:'橘色',name:'不服氣怪獸',color:'#F5A524',feel:'好不服氣',body:'心裡悶悶、不甘心',acts:['squeeze','breathe','bubbles'],face:'defiant'},
+  defiant:{cname:'橘色',name:'不服氣怪獸',color:'#F5A524',feel:'好不服氣',body:'心裡悶悶、不甘心',acts:['light','squeeze','breathe','bubbles'],face:'defiant'},
   stuck:{cname:'紫色',name:'做不到怪獸',color:'#9B7BE0',feel:'好挫折，覺得做不到',body:'想放棄、想丟掉',acts:['breathe','squeeze','bubbles'],face:'stuck'},
   scared:{cname:'綠色',name:'擔心怪獸',color:'#3FB6A8',feel:'好擔心',body:'肚子怪怪、心跳很快',acts:['breathe','senses','butterfly'],face:'scared'},
   wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses'],face:'wronged'}
@@ -440,7 +529,7 @@ const EMO={
 const LV=[
   {n:1,t:'小小的'},{n:2,t:'有一點'},{n:3,t:'中中的'},{n:4,t:'很大'},{n:5,t:'超級大'}
 ];
-const ACT_NAME={breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱'};
+const ACT_NAME={light:'紅綠燈',breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱'};
 const CAUSES=['我做不到 / 太難了','我輸了','跟我想的不一樣','我覺得不公平','我被說 / 被罵','不能再玩了','東西壞掉了','被別人誤會','我也不知道'];
 const WANTS=['抱抱','自己靜一下','再試一次','有人幫我','休息一下','說給別人聽'];
 const PLANS={
@@ -524,7 +613,7 @@ const S={step:0,age:null,emo:null,lv:0,lv2:0,act:null,cause:null,want:null,plan:
 let store={};
 try{store=JSON.parse(localStorage.getItem('calmMonster')||'{}')}catch(e){store={}}
 function save(){try{localStorage.setItem('calmMonster',JSON.stringify(store))}catch(e){}refreshHdr()}
-store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.repairs=store.repairs||[];store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;
+store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.repairs=store.repairs||[];store.log=store.log||[];store.moodLog=store.moodLog||[];store.pracLog=store.pracLog||[];store.vouchers=store.vouchers||[];store.week=store.week||{};store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;
 const LEVELS=[0,30,80,150,250,400];
 const TITLES=['初次見面','認識你了','好朋友','好夥伴','默契搭檔','情緒小達人'];
 function lvOf(xp){let l=0;LEVELS.forEach((t,i)=>{if(xp>=t)l=i});return l+1}
@@ -534,8 +623,8 @@ const PLV=[0,50,150,300,500,800,1200];
 const PTITLES=['新手冒險家','情緒探險家','冷靜小勇士','情緒守護者','家園小主人','情緒魔法師','情緒大師'];
 function lvIn(a,x){let l=0;a.forEach((t,i)=>{if(x>=t)l=i});return l+1}
 function nextIn(a,x){const l=lvIn(a,x);if(l>=a.length)return {pct:100,need:0};return {pct:Math.round((x-a[l-1])/(a[l]-a[l-1])*100),need:a[l]-x}}
-const SHOP_CATS=[['home','家園'],['hero','主角'],['monster','怪獸'],['bg','背景']];
-const SHOP_HINT={home:'買了會放進家園，植物要每天照顧才會長大',hero:'幫主角換裝扮',monster:'所有怪獸會一起穿上',bg:'整個畫面的背景'};
+const SHOP_CATS=[['reward','兌換券'],['home','家園'],['hero','主角'],['monster','怪獸'],['bg','背景']];
+const SHOP_HINT={reward:'換真的活動和特權！買了之後請大人兌現',home:'買了會放進家園，植物要每天照顧才會長大',hero:'幫主角換裝扮',monster:'所有怪獸會一起穿上',bg:'整個畫面的背景'};
 const GOODS=['生氣時用說的，沒有動手','自己想到深呼吸','輸了也能說恭喜','做不到時請人幫忙','願意再試一次','主動道歉或修復','說出自己難過的感覺','等待、輪流很有耐心'];
 const REPAIRS={young:['說對不起','一起收拾','畫一張道歉卡','抱抱對方'],mid:['說對不起','一起收拾乾淨','幫忙修好','做一件事來彌補'],old:['好好道歉並說明','收拾或修好','用做家事或零用錢補償','跟對方討論怎麼彌補']};
 const MOODS=[['😊','開心',1],['😌','平靜',1],['😢','難過',0],['😠','生氣',0],['😟','擔心',0]];
@@ -658,6 +747,9 @@ function go(n,noPush){
   if(n===11)renderShop();
   if(n===12)renderHeroes();
   if(n===13)renderGoods();
+  if(n===14)renderLog();
+  if(n===15)renderWeek();
+  if(n===16)renderCpn();
 }
 
 /* ---------- adult co-regulation mode ---------- */
@@ -737,19 +829,20 @@ function stopAct(){timers.forEach(clearTimeout);timers=[];if(raf)cancelAnimation
 let actSpeech='';
 function renderAct(){
   const e=EMO[S.emo];
-  const list=S.practice?['breathe','bubbles','squeeze','senses','butterfly']:e.acts.slice();
+  const list=S.practice?['breathe','light','bubbles','squeeze','senses','butterfly']:e.acts.slice();
   if(S.lv>=4 && list[0]!=='breathe' && S.emo!=='angry'){list.splice(list.indexOf('breathe'),1);list.unshift('breathe')}
   if(!S.act)S.act=list[0];
   $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${ACT_NAME[a]}</button>`).join('');
   $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct()});
   $('#actTitle').textContent=S.practice?'平時練習：心情好的時候先練起來':S.lv>=4?'先讓身體冷靜下來':'冷靜時間';
-  ({breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly})[S.act]();
+  ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly})[S.act]();
 }
 $('#speakAct').onclick=()=>speak(actSpeech);
 $('#actDone').onclick=()=>{
   if(S.practice){
-    if(store.pracDay!==today()){store.pracDay=today();gain('平時練習',5)}else toast('今天已經練習過了，你好認真！');
+    if(store.pracDay!==today()){store.pracDay=today();store.pracLog.push(today());store.pracLog=store.pracLog.slice(-60);gain('平時練習',5)}else toast('今天已經練習過了，你好認真！');
     S.practice=false;go(10);return}
+  S.actsDone=S.actsDone||[];if(!S.actsDone.includes(S.act))S.actsDone.push(S.act);
   if(S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}
   S.lv2=0;go(4)};
 
@@ -938,7 +1031,7 @@ function gain(label,n,opt={}){
   tone(880,.12,'triangle',.1);if(up)setTimeout(()=>{tone(784,.2);setTimeout(()=>tone(1046,.5),180)},350);
   return n;
 }
-function resetFlow(){Object.assign(S,{emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,dmg:null,repair:null,monUp:null,capToasted:false});
+function resetFlow(){Object.assign(S,{emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,dmg:null,repair:null,actsDone:[],monUp:null,capToasted:false});
   const d=today();if(!store.day||store.day.d!==d)store.day={d,n:0};S.capped=store.day.n>=5;store.day.n++;save()}
 function startFlow(){if(!S.age){go(0);return}resetFlow();S.hist=[10];go(1,true)}
 function holdBtn(label,ms,cb){const b=document.createElement('button');b.className='hold';b.innerHTML=`<i></i><span>${label}</span>`;
@@ -961,6 +1054,8 @@ $('#finish').onclick=()=>{
       tough='最近怪獸常常很大，你還是一次又一次來面對，真的很不簡單！可以跟大人說說最近發生了什麼事，讓大人一起幫你。';}
   } else store.tough=0;
   if(S.repair){store.repairs.push({id:Date.now(),text:S.repair,emo:S.emo});}
+  store.log.unshift({t:Date.now(),emo:S.emo,lv0,lv2,cause:S.cause||'',want:S.want||'',acts:(S.actsDone||[]).map(a=>ACT_NAME[a]),co:!!S.usedCo,plan:S.plan||'',repair:S.repair||'',note:''});
+  store.log=store.log.slice(0,300);
   store.badges=(store.badges||0)+1;save();
   const xp=store.xp[S.emo]||0,lv=lvOf(xp),nx=nextOf(xp);
   go(7);
@@ -1049,6 +1144,12 @@ function renderHome(){
   const plants=SHOP.filter(x=>x.plant&&store.owned.includes(x.id));
   $('#hWaterSub').textContent=!plants.length?'先去商店買植物':store.waterDay===today()?'今天澆過水了':'澆水 +2 ⭐';
   $('#hPracSub').textContent=store.pracDay===today()?'今天練過了，再練也可以':'心情好時先練 +5 ⭐';
+  const vb=$('#voucherBox');vb.innerHTML='';
+  store.vouchers.forEach(v=>{const d=document.createElement('div');d.className='task';d.style.background='#EAF6F3';
+    d.innerHTML=`<span>🎟 兌換券：<b>${v.name}</b></span>`;
+    d.appendChild(holdBtn('大人按住確認已兌現',2000,()=>{store.vouchers=store.vouchers.filter(x=>x.id!==v.id);save();chime();toast(`兌現了：${v.name}！`);renderHome()}));
+    vb.appendChild(d)});
+  const wk=weekInfo();$('#hWeekSub').textContent=`本週完成 ${wk.doneCells} 格`;
   const rb=$('#repairBox');rb.innerHTML='';
   store.repairs.forEach(r=>{const d=document.createElement('div');d.className='task';
     d.innerHTML=`<span>🔧 修復任務：<b>${r.text}</b></span>`;
@@ -1057,7 +1158,7 @@ function renderHome(){
   const md=store.moodDay===today()?store.mood:null;
   $('#moods').innerHTML=MOODS.map(([f,t])=>`<button class="${md===t?'sel':''}" data-mood="${t}">${f}<span>${t}</span></button>`).join('');
   $$('[data-mood]').forEach(b=>b.onclick=()=>{const m=MOODS.find(x=>x[1]===b.dataset.mood);
-    if(store.moodDay!==today()){store.moodDay=today();store.mood=m[1];save();gain('心情打卡',3)}else{store.mood=m[1];save()}
+    if(store.moodDay!==today()){store.moodDay=today();store.mood=m[1];store.moodLog.push({d:today(),m:m[1]});store.moodLog=store.moodLog.slice(-90);save();gain('心情打卡',3)}else{store.mood=m[1];save()}
     renderHome();
     $('#moodMsg').innerHTML=m[2]?'太好了！把好心情存起來。心情好的時候，也可以先「平時練習」喔。':`謝謝你說出來。要不要去冷靜站，讓${m[1]}的怪獸變小？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`;
     const g=$('#moodGo');if(g)g.onclick=startFlow;});
@@ -1070,6 +1171,8 @@ $('#hWater').onclick=()=>{const plants=SHOP.filter(x=>x.plant&&store.owned.inclu
   store.waterDay=today();plants.forEach(p=>store.grow[p.id]=Math.min(3,(store.grow[p.id]||1)+1));save();
   gain('照顧家園',2);renderHome();};
 $('#hParent').onclick=()=>go(13);
+$('#hWeek').onclick=()=>go(15);
+$('#hLog').onclick=()=>go(14);
 $('#hEdit').onclick=()=>go(12);
 
 /* ---------- parent gives stars ---------- */
@@ -1093,6 +1196,15 @@ function renderShop(){
   $('#shopTabs').innerHTML=SHOP_CATS.map(([k,t])=>`<button class="chip ${S.shopCat===k?'sel':''}" data-cat="${k}">${t}</button>`).join('');
   $$('[data-cat]').forEach(b=>b.onclick=()=>{S.shopCat=b.dataset.cat;renderShop()});
   $('#shopHint').textContent=SHOP_HINT[S.shopCat];
+  if(S.shopCat==='reward'){
+    const cp=coupons();
+    $('#shop').innerHTML=cp.map((c,i)=>`<div class="pick shopitem" style="cursor:default"><div class="shopicon">🎟</div><b style="font-size:1rem">${c.name}</b>
+      <button class="btn small" data-cpn="${i}" ${store.stars<c.cost?'disabled':''}>${c.cost} ⭐ 換</button></div>`).join('')+
+      `<div class="pick" style="cursor:default;display:flex;align-items:center;justify-content:center"><span>兌換券由大人在「大人看這裡」設定</span></div>`;
+    $$('[data-cpn]').forEach(b=>b.onclick=()=>{const c=cp[+b.dataset.cpn];if(store.stars<c.cost)return;
+      store.stars-=c.cost;store.vouchers.push({id:Date.now(),name:c.name});save();chime();toast(`換到「${c.name}」！拿給大人看，請大人兌現`,true);renderShop()});
+    return;
+  }
   const ht=store.hero?store.hero.type:'fox';
   $('#shop').innerHTML=SHOP.filter(it=>it.cat===S.shopCat).map(it=>{
     const own=store.owned.includes(it.id),on=it.slot&&store.equip[it.slot]===it.id;
@@ -1115,6 +1227,124 @@ $$('[data-tab]').forEach(b=>b.onclick=()=>{const t=+b.dataset.tab;if(t===1){star
 $('#navBack').onclick=()=>{const p=S.hist.pop();go(p!==undefined?p:10,true)};
 $('#navHome').onclick=()=>go(10);
 
+/* ---------- traffic light activity ---------- */
+function actLight(){
+  actSpeech='紅綠燈遊戲。紅燈，停！手腳停下來。黃燈，慢慢深呼吸。綠燈，想一個好方法再做。';
+  $('#actHint').textContent='紅燈：停一停　黃燈：深呼吸　綠燈：想好方法再做';
+  const A=$('#actArea');
+  A.innerHTML=`<div class="tlight"><i id="lr"></i><i id="ly"></i><i id="lg"></i></div>
+    <div class="breath-word" id="bw">準備好了嗎？</div><div id="lgOpts"></div>
+    <div class="row"><button class="btn" id="bStart">開始</button></div>`;
+  $('#bStart').onclick=()=>{$('#bStart').style.display='none';
+    const on=id=>['lr','ly','lg'].forEach(x=>$('#'+x).classList.toggle('on',x===id));
+    on('lr');let c=4;$('#bw').textContent=`紅燈：停！手腳停下來 ${c}`;tone(330,.3);speak('紅燈，停！');
+    const tk=()=>{c--;if(c>0){$('#bw').textContent=`紅燈：停！手腳停下來 ${c}`;later(tk,1000)}else yellow()};later(tk,1000);
+    const yellow=()=>{on('ly');tone(440,.3);speak('黃燈，深呼吸');let i=0;
+      const br=()=>{if(i>=4){green();return}$('#bw').textContent=i%2===0?'黃燈：鼻子吸氣～':'黃燈：嘴巴吐氣～～';i++;later(br,i%2?3500:4500)};br()};
+    const green=()=>{on('lg');tone(523,.3);speak('綠燈，想一個好方法');$('#bw').textContent='綠燈：選一個好方法';
+      $('#lgOpts').innerHTML=`<div class="chips">${['用說的','請大人幫忙','先離開一下','再試一次','換個方法'].map(x=>`<button class="chip">${x}</button>`).join('')}</div>`;
+      $$('#lgOpts .chip').forEach(b=>b.onclick=()=>{$$('#lgOpts .chip').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');chime();$('#bw').textContent=`好方法：${b.textContent}！`})};
+  };
+}
+
+/* ---------- log ---------- */
+function fmtT(t){const d=new Date(t);return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`}
+function monday(d=new Date()){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
+function dkey(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function logRange(){const r=S.logRange||'week';
+  if(r==='week')return store.log.filter(l=>l.t>=monday().getTime());
+  if(r==='lastweek'){const m=monday().getTime();return store.log.filter(l=>l.t>=m-7*864e5&&l.t<m)}
+  if(r==='month')return store.log.filter(l=>l.t>=Date.now()-30*864e5);
+  return store.log}
+function summarize(L){
+  if(!L.length)return null;
+  const byE={};L.forEach(l=>byE[l.emo]=(byE[l.emo]||0)+1);
+  const avg=(L.reduce((a,l)=>a+(l.lv0-l.lv2),0)/L.length).toFixed(1);
+  const cc={};L.forEach(l=>{if(l.cause)cc[l.cause]=(cc[l.cause]||0)+1});
+  const topC=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
+  const ae={};L.forEach(l=>l.acts.forEach(a=>{ae[a]=ae[a]||[0,0];ae[a][0]+=l.lv0-l.lv2;ae[a][1]++}));
+  const best=Object.entries(ae).filter(x=>x[1][1]>=1).sort((a,b)=>b[1][0]/b[1][1]-a[1][0]/a[1][1])[0];
+  return {byE,avg,topC,best,co:L.filter(l=>l.co).length,rep:L.filter(l=>l.repair).length}}
+function renderLog(){
+  S.logRange=S.logRange||'week';
+  $('#logTabs').innerHTML=[['week','本週'],['lastweek','上週'],['month','近 30 天'],['all','全部']].map(([k,t])=>`<button class="chip ${S.logRange===k?'sel':''}" data-lr="${k}">${t}</button>`).join('');
+  $$('[data-lr]').forEach(b=>b.onclick=()=>{S.logRange=b.dataset.lr;$('#logText').style.display='none';renderLog()});
+  const L=logRange(),sm=summarize(L);
+  if(!sm){$('#logSum').innerHTML='這段時間還沒有紀錄。用完冷靜站後會自動記錄。';$('#logList').innerHTML='';return}
+  const mx=Math.max(...Object.values(sm.byE));
+  $('#logSum').innerHTML=`<b>共 ${L.length} 次</b>　平均怪獸變小 <b>${sm.avg}</b> 級
+    <div class="bars">${Object.entries(sm.byE).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div><span style="width:84px">${EMO[k].name}</span><b style="width:${n/mx*150}px;background:${EMO[k].color}"></b>${n}</div>`).join('')}</div>
+    ${sm.topC?`<div>最常見的原因：<b>${sm.topC[0]}</b>（${sm.topC[1]} 次）</div>`:''}
+    ${sm.best?`<div>效果最好的方法：<b>${sm.best[0]}</b>（平均變小 ${(sm.best[1][0]/sm.best[1][1]).toFixed(1)} 級）</div>`:''}
+    ${sm.co?`<div>請大人陪伴：${sm.co} 次</div>`:''}${sm.rep?`<div>修復任務：${sm.rep} 次</div>`:''}`;
+  $('#logList').innerHTML=L.map(l=>{const e=EMO[l.emo];return `<div class="logitem">
+    <div class="top"><b><span class="cname" style="background:${e.color};margin:0 6px 0 0">${e.cname}</span>${e.name}</b><span style="color:var(--soft)">${fmtT(l.t)}</span></div>
+    <div>大小：${l.lv0} → ${l.lv2}${l.co?'（大人陪伴）':''}</div>
+    ${l.cause?`<div>原因：${l.cause}${l.want?`；想要：${l.want}`:''}</div>`:''}
+    ${l.acts.length?`<div>用了：${l.acts.join('、')}</div>`:''}
+    ${l.plan?`<div>下次：${l.plan}</div>`:''}${l.repair?`<div>修復：${l.repair}</div>`:''}
+    <textarea data-note="${l.t}" placeholder="大人備註（例如：在哪裡發生、怎麼結束的）">${l.note||''}</textarea></div>`}).join('');
+  $$('[data-note]').forEach(t=>t.onchange=()=>{const l=store.log.find(x=>x.t===+t.dataset.note);if(l){l.note=t.value;save()}});
+}
+function logAsText(){const L=logRange(),sm=summarize(L);if(!sm)return '';
+  const name={week:'本週',lastweek:'上週',month:'近 30 天',all:'全部'}[S.logRange];
+  let t=`情緒紀錄（${name}，共 ${L.length} 次，平均變小 ${sm.avg} 級）\n`;
+  t+=Object.entries(sm.byE).map(([k,n])=>`${EMO[k].cname}${EMO[k].name} ${n} 次`).join('、')+'\n';
+  if(sm.topC)t+=`最常見原因：${sm.topC[0]}\n`;if(sm.best)t+=`效果最好的方法：${sm.best[0]}\n`;
+  t+='\n'+L.slice().reverse().map(l=>`${fmtT(l.t)}｜${EMO[l.emo].name} ${l.lv0}→${l.lv2}${l.co?'（大人陪伴）':''}`+(l.cause?`｜原因：${l.cause}`:'')+(l.acts.length?`｜用了：${l.acts.join('、')}`:'')+(l.plan?`｜下次：${l.plan}`:'')+(l.repair?`｜修復：${l.repair}`:'')+(l.note?`｜備註：${l.note}`:'')).join('\n');
+  return t}
+$('#logCopy').onclick=async()=>{const t=logAsText();if(!t){toast('這段時間還沒有紀錄');return}
+  try{await navigator.clipboard.writeText(t);toast('已複製，可以貼到 LINE 或 email')}
+  catch(e){const ta=$('#logText');ta.style.display='';ta.value=t;ta.select();toast('請長按下方文字選取後複製')}};
+let logArm=false;
+$('#logClear').onclick=()=>{if(!logArm){logArm=true;$('#logClear').textContent='再按一次確認刪除（無法復原）';return}
+  store.log=[];save();logArm=false;$('#logClear').textContent='刪除全部紀錄';renderLog()};
+
+/* ---------- week practice ---------- */
+const WTASKS={
+  young:[['mood','情緒臉譜打卡','家園選心情',1],['prac','吹泡泡呼吸','平時練習',1],['light','紅綠燈遊戲','停、吸、想'],['role','玩偶角色扮演','演一個情境'],['time','大人陪玩 15 分鐘','孩子決定玩什麼']],
+  mid:[['mood','心情打卡','家園選心情',1],['prac','平時練習','任一個冷靜活動',1],['light','紅綠燈遊戲','停、吸、想'],['role','角色扮演練習','演一個情境'],['time','特別時光 15 分鐘','孩子決定玩什麼']],
+  old:[['mood','心情打卡','家園選心情',1],['prac','平時練習','任一個冷靜活動',1],['write','寫或畫一句心情','用說的也可以'],['role','想一想 Plan B','練習一個情境'],['time','家人特別時光','15 分鐘不看手機']]
+};
+const ROLES=[['玩具被搶走','「這是我在玩的，請還給我。」或請大人幫忙'],['玩遊戲輸了','「好可惜！恭喜你，下次我再試試。」'],['想加入卻被拒絕','「好吧，那我先玩別的，等一下再問。」'],['排隊等很久','「換我了嗎？」然後數到 10'],['作品被說要修改','「我先改一小塊就好。」'],['積木被弄倒','「我很生氣，請不要碰我的積木。」'],['要收玩具了','「可以再一下下嗎？計時器響我就收。」']];
+function weekInfo(){const m=monday(),key=dkey(m);if(store.week.key!==key)store.week={key,ticks:{},claimed:false};
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return dkey(d)});
+  const tasks=WTASKS[S.age||'mid'];
+  const isDone=(t,d)=>t[3]?(t[0]==='mood'?store.moodLog.some(x=>x.d===d):store.pracLog.includes(d)):!!(store.week.ticks[t[0]]&&store.week.ticks[t[0]][d]);
+  let doneCells=0,goodDays=0;
+  days.forEach(d=>{const n=tasks.filter(t=>isDone(t,d)).length;doneCells+=n;if(n>=3)goodDays++});
+  return {days,tasks,isDone,doneCells,goodDays}}
+function renderWeek(){
+  const w=weekInfo(),td=today();const wd=['一','二','三','四','五','六','日'];
+  $('#wkTable').innerHTML=`<tr><th></th>${w.days.map((d,i)=>`<th class="${d===td?'today':''}">${wd[i]}</th>`).join('')}</tr>`+
+    w.tasks.map(t=>`<tr><td class="tn">${t[1]}<small>${t[3]?'自動打勾':t[2]}</small></td>${w.days.map(d=>{const done=w.isDone(t,d),fut=d>td&&d!==td&&new Date(d.replace(/-/g,'/'))>new Date();
+      return `<td><button class="cell ${done?'done':''} ${d===td&&!t[3]?'today':''} ${fut?'future':''}" ${d===td&&!t[3]?`data-tick="${t[0]}"`:''}>${done?'✓':''}</button></td>`}).join('')}</tr>`).join('');
+  $$('[data-tick]').forEach(b=>b.onclick=()=>{const id=b.dataset.tick;store.week.ticks[id]=store.week.ticks[id]||{};
+    if(store.week.ticks[id][td]){toast('今天這格已經完成囉');return}
+    store.week.ticks[id][td]=true;save();gain('完成練習任務',2);renderWeek()});
+  const goal=5;
+  $('#wkSum').innerHTML=`本週完成 <b>${w.doneCells}</b> 格，有 <b>${w.goodDays}</b> 天完成 3 格以上。<br>目標：${goal} 天都完成 3 格以上，可以領 <b>+30 ⭐</b> 一週達成獎勵！`+
+    (w.goodDays>=goal&&!store.week.claimed?`<div class="row"><button class="btn" id="wkClaim">領取 +30 ⭐</button></div>`:store.week.claimed?'<div>✅ 本週獎勵已領取</div>':'');
+  const c=$('#wkClaim');if(c)c.onclick=()=>{store.week.claimed=true;save();gain('一週練習達成',30);renderWeek()};
+  S.roleI=S.roleI||0;const r=ROLES[S.roleI%ROLES.length];
+  $('#rolePlay').innerHTML=`<b>🎭 角色扮演題目</b>：${r[0]}<br>可以這樣說：${r[1]}<br><small>大人先演一次，再換孩子演；也可以用玩偶。</small><div class="row" style="margin-top:8px"><button class="btn small ghost" id="roleNext">換一題</button></div>`;
+  $('#roleNext').onclick=()=>{S.roleI++;renderWeek()};
+}
+
+/* ---------- coupons ---------- */
+const DEF_CPN=[{name:'多聽一本故事',cost:40},{name:'選今天晚餐的一道菜',cost:50},{name:'和爸媽玩桌遊 15 分鐘',cost:60},{name:'選一部家庭電影',cost:80},{name:'週末去公園玩',cost:100},{name:'當一天家庭小隊長',cost:120}];
+function coupons(){return store.coupons&&store.coupons.length?store.coupons:DEF_CPN}
+let cpnDraft=null;
+function renderCpn(){cpnDraft=cpnDraft||coupons().map(c=>({...c}));
+  $('#cpnList').innerHTML=cpnDraft.map((c,i)=>`<div class="cpn"><input class="nm" data-cn="${i}" value="${c.name.replace(/"/g,'&quot;')}" maxlength="20"><input class="pr" type="number" min="1" data-cp="${i}" value="${c.cost}"><span>⭐</span><button class="chip" data-cd="${i}">刪除</button></div>`).join('')
+    +`<p class="note">例子：多講一個故事、晚 10 分鐘睡覺、選週末活動、跟爸爸單獨約會、邀朋友來家裡玩。</p>`;
+  $$('[data-cn]').forEach(x=>x.oninput=()=>cpnDraft[+x.dataset.cn].name=x.value);
+  $$('[data-cp]').forEach(x=>x.oninput=()=>cpnDraft[+x.dataset.cp].cost=Math.max(1,parseInt(x.value)||1));
+  $$('[data-cd]').forEach(x=>x.onclick=()=>{cpnDraft.splice(+x.dataset.cd,1);renderCpn()});
+}
+$('#cpnAdd').onclick=()=>{cpnDraft.push({name:'新的兌換券',cost:50});renderCpn()};
+$('#cpnSave').onclick=()=>{store.coupons=cpnDraft.filter(c=>c.name.trim()).map(c=>({name:c.name.trim(),cost:c.cost}));save();cpnDraft=null;toast('兌換券已儲存');go(11);S.shopCat='reward';renderShop()};
+
 /* SOS quick path */
 $('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!(S.step>=1&&S.step<=8)){resetFlow();S.hist=[10]}if(!S.emo)S.emo='angry';S.lv=S.lv||4;S.lv0=S.lv0||S.lv;S.act='breathe';speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
 
@@ -1133,10 +1363,21 @@ function renderParent(){
 }
 let resetArm=false;
 $('#resetAll').onclick=()=>{if(!resetArm){resetArm=true;$('#resetAll').textContent='再按一次確認重設（無法復原）';return}
-  Object.assign(store,{stars:0,xp:{},pxp:0,owned:[],equip:{},grow:{},repairs:[],tough:0,day:null,pday:null,badges:0});save();resetArm=false;$('#resetAll').textContent='已重設';};
+  Object.assign(store,{stars:0,xp:{},pxp:0,owned:[],equip:{},grow:{},repairs:[],vouchers:[],week:{},tough:0,day:null,pday:null,badges:0});save();resetArm=false;$('#resetAll').textContent='已重設';};
 function renderToughNote(){const t=store.toughAt&&Date.now()-store.toughAt<14*864e5;
   $('#toughNote').innerHTML=t?`<div class="warn">最近兩週內，孩子有連續 3 次練習時怪獸都沒有變小。不用擔心「工具沒效」，這通常代表孩子最近壓力比較大。可以找個平靜的時間，聊聊最近在學校或家裡發生的事；如果持續一段時間，可以諮詢學校輔導老師。</div>`:'';}
-const openP=()=>{if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
+const CASES=[
+  ['收玩具就崩潰','<b>情境</b>：玩到一半說要收玩具，孩子大哭、把積木丟一地。<br><b>做法</b>：先預告「再玩 5 分鐘，計時器響就收」；把任務切小「你收紅色，我收藍色」；做到時具體稱讚「你自己把紅色積木收好了」；還是崩潰就先陪他冷靜，事後教他可以說「再一下下」。'],
+  ['排隊等不到就推人','<b>情境</b>：溜滑梯等太久，推了前面的小朋友。<br><b>做法</b>：立刻擋下並帶到旁邊：「我不能讓你推人，我們先冷靜。」冷靜後演練「可以問『換我了嗎？』」；回去前先數到 10 再排隊；做到等待時馬上稱讚。'],
+  ['被糾正就大哭','<b>情境</b>：建議「這裡可以再塗滿一點」，孩子撕掉紙說「我不會畫」。<br><b>做法</b>：先接住情緒：「聽到要修改，覺得很挫折？」改成先肯定再給一個小建議；把任務切成一小格；完成後說「你沒有撕紙，還完成了，進步好多」。'],
+  ['睡前太興奮、發脾氣','<b>情境</b>：睡前跑跳不肯刷牙，一被要求就哭。<br><b>做法</b>：固定睡前順序（洗澡→刷牙→兩本繪本→關燈）；做成圖卡讓孩子自己貼貼紙；睡前半小時少螢幕和激烈遊戲；給二選一「自己刷還是我幫你刷？」'],
+  ['手足衝突就動手','<b>情境</b>：弟弟弄壞積木，哥哥立刻推弟弟。<br><b>做法</b>：先分開確保安全，不急著判誰對；幫大孩子說出感受「弟弟弄壞你的積木，你很生氣」；教替代句「我很生氣，請不要碰我的積木」；冷靜後練習修復（遞一塊積木、說對不起），重點是練習替代行為，不只是處罰。']
+];
+let caseI=0;
+function renderCases(){$('#caseTabs').innerHTML=CASES.map((c,i)=>`<button class="chip ${i===caseI?'sel':''}" data-case="${i}">${c[0]}</button>`).join('');
+  $$('[data-case]').forEach(b=>b.onclick=()=>{caseI=+b.dataset.case;renderCases()});$('#caseBody').innerHTML=CASES[caseI][1]}
+$('#dOpenLog').onclick=()=>{closeP();go(14)};$('#dOpenWeek').onclick=()=>{closeP();go(15)};$('#dOpenCpn').onclick=()=>{closeP();cpnDraft=null;go(16)};
+const openP=()=>{renderCases();if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
 const closeP=()=>{$('#drawer').classList.remove('on');$('#dbg').style.display='none'};
 $('#openParent').onclick=openP;$('#closeParent').onclick=closeP;$('#dbg').onclick=closeP;
 
