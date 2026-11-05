@@ -116,7 +116,14 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .evocell small{display:block;font-size:.72rem;line-height:1.3}
 .evocell.now{background:#FFF3C4;box-shadow:0 0 0 2px #FFD166}
 .evocell.lock .mon{filter:brightness(0) opacity(.18)}
-.evocell.calm{background:#E8F7EE}
+.evocell.mood{background:#FFF0EC}
+.shrinkIn{animation:shrinkIn .9s cubic-bezier(.3,1.4,.5,1)}.growIn{animation:shrinkIn .5s ease-out}
+@keyframes shrinkIn{from{transform:scale(var(--from))}to{transform:scale(1)}}
+.morph{position:relative;width:150px;height:150px;margin:0 auto}.morph>div{position:absolute;inset:0}
+.m-a{animation:mA 1.8s ease-in forwards}.m-b{opacity:0;animation:mB 1.8s ease-out forwards}
+@keyframes mA{0%,30%{transform:scale(1);opacity:1}100%{transform:scale(.4);opacity:0}}
+@keyframes mB{0%,45%{opacity:0;transform:scale(.6)}80%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.m-a,.m-b,.shrinkIn,.growIn{animation:none}.m-a{display:none}.m-b{opacity:1}}
 /* co-regulation mode */
 .ball.slow{transition:none;animation:co 10s ease-in-out infinite;background:radial-gradient(circle at 35% 30%,#fff8,transparent 40%),#8FC9C0}
 @keyframes co{0%,100%{transform:scale(1)}40%{transform:scale(1.8)}}
@@ -736,9 +743,14 @@ store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.rep
 const LEVELS=[0,30,80,150,250,400];
 const TITLES=['初次見面','認識你了','好朋友','好夥伴','默契搭檔','情緒小達人'];
 function lvOf(xp){let l=0;LEVELS.forEach((t,i)=>{if(xp>=t)l=i});return l+1}
-/* 進化階段：Lv.1 寶寶、Lv.2–3 年幼、Lv.4–5 青年、Lv.6 壯年 */
-const STAGES=[{n:'寶寶版',from:1,s:.74},{n:'年幼版',from:2,s:.86},{n:'青年版',from:4,s:.96},{n:'壯年版',from:6,s:1.06}];
+/* 成長階段（等級）：越來越成熟、溫和，不會變兇。Lv.1 小不點、Lv.2–3 小幫手、Lv.4–5 冷靜高手、Lv.6 情緒守護者 */
+const STAGES=[{n:'小不點',from:1,s:.72},{n:'小幫手',from:2,s:.84},{n:'冷靜高手',from:4,s:.95},{n:'情緒守護者',from:6,s:1.06}];
 function stageOf(lv){let i=0;STAGES.forEach((t,j)=>{if(lv>=t.from)i=j});return i+1}
+/* 情緒大小（只在「多大」時用）：1 小小的 → 4 很大，越大越兇，冷靜後變回平復後 */
+const SIZES=[{n:'小小的',s:.74},{n:'有一點',s:.86},{n:'中中的',s:.96},{n:'很大',s:1.06}];
+const moodOf=n=>[1,1,2,3,4,4][n]||3;
+const BADGE={angry:['🚦','紅綠燈徽章','生氣時會先停一下'],sad:['☂️','小雨傘','難過時會照顧自己'],defiant:['🏅','進步獎牌','跟昨天的自己比'],
+  stuck:['🚩','一步一步旗','把難事切成小步驟'],scared:['🛡️','勇氣盾牌','先試一小步'],wronged:['💬','說話泡泡','說出自己的想法']};
 const IMG=(k,st)=>`img/${k}${st}.webp`;
 function nextOf(xp){const l=lvOf(xp);if(l>=LEVELS.length)return {pct:100,need:0};const a=LEVELS[l-1],b=LEVELS[l];return {pct:Math.round((xp-a)/(b-a)*100),need:b-xp}}
 const HEROES={fox:{name:'小狐狸',c:'#F39A4B'},bear:{name:'小熊',c:'#B07A52'},rabbit:{name:'小兔子',c:'#E9DDF2'},cat:{name:'小貓',c:'#9AA3B5'}};
@@ -807,14 +819,15 @@ function monster(kind,size=110,cls='',opt={}){
   const spark=(x,y,r)=>`<path d="M${x} ${y-r} L${x+r*.3} ${y-r*.3} L${x+r} ${y} L${x+r*.3} ${y+r*.3} L${x} ${y+r} L${x-r*.3} ${y+r*.3} L${x-r} ${y} L${x-r*.3} ${y-r*.3} Z" fill="#FFD166"/>`;
   const aura=level>=5?`<ellipse cx="60" cy="62" rx="62" ry="60" fill="none" stroke="#FFD166" stroke-width="4" stroke-dasharray="2 8" stroke-linecap="round"/>`:'';
   const sparks=level>=3?spark(2,34,7)+spark(118,46,6)+(level>=4?spark(110,110,5)+spark(6,100,5):''):'';
-  const st=opt.calm?0:(opt.stage||stageOf(level));
-  const sc=st?STAGES[st-1].s:1;const w=136*sc,x=60-w/2,y=124-w;
+  const mood=opt.mood||0;const grow=mood?0:(opt.grow||stageOf(level));
+  const st=mood;const sc=mood?SIZES[mood-1].s:STAGES[grow-1].s;const w=136*sc,x=60-w/2,y=124-w;
   const dy=y+w*.17-10;
-  return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}${st?' '+STAGES[st-1].n:' 平復後'}">
+  const bd=BADGE[kind];const badge=grow>=2&&bd?`<g transform="translate(${(60+w*.3).toFixed(1)} ${(124-w*.3).toFixed(1)}) scale(${grow>=4?1.25:grow>=3?1.1:1})"><circle r="13" fill="#fff" stroke="${c}" stroke-width="3"/><text y="5.5" text-anchor="middle" font-size="15">${bd[0]}</text></g>`:'';
+  return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}${mood?' '+SIZES[mood-1].n:' '+STAGES[grow-1].n}">
     ${aura}
     <ellipse cx="60" cy="121" rx="${w*.36}" ry="5" fill="${c}" opacity=".18"/>
     <image href="${IMG(kind,st)}" x="${x}" y="${y}" width="${w}" height="${w}"/>
-    <g transform="translate(0 ${dy.toFixed(1)})">${eq.neck&&ACC[eq.neck]?`<g transform="translate(0 ${(w*.5).toFixed(1)})">${ACC[eq.neck]}</g>`:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}</g>${sparks}
+    <g transform="translate(0 ${dy.toFixed(1)})">${eq.neck&&ACC[eq.neck]?`<g transform="translate(0 ${(w*.5).toFixed(1)})">${ACC[eq.neck]}</g>`:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}</g>${badge}${sparks}
   </svg>`;
 }
 
@@ -901,9 +914,10 @@ function renderMonsters(){
 function thermo(el,stage,key,onPick){
   const c=EMO[S.emo].color;
   el.innerHTML=LV.map(l=>`<button class="lv ${S[key]===l.n?'sel':''}" style="--mc:${c}" data-lv="${l.n}">
-    ${monster(S.emo,18+l.n*8,'',{stage:[1,1,2,3,4,4][l.n]})}<small>${l.t}</small><i class="heat" style="background:${l.h}"></i></button>`).join('')
+    ${monster(S.emo,18+l.n*8,'',{mood:moodOf(l.n)})}<small>${l.t}</small><i class="heat" style="background:${l.h}"></i></button>`).join('')
     +`<div style="flex-basis:100%;height:0"></div>`;
-  const draw=()=>{const n=S[key]||3;stage.innerHTML=monster(S.emo,60+n*28,'wobble',{stage:[1,1,2,3,4,4][n]})};
+  let prev=S[key]||3;const draw=()=>{const n=S[key]||3;
+    stage.innerHTML=`<div class="${n<prev?'shrinkIn':n>prev?'growIn':''}" style="--from:${((60+prev*28)/(60+n*28)).toFixed(2)}">${monster(S.emo,60+n*28,'wobble',{mood:moodOf(n)})}</div>`;prev=n};
   draw();
   el.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{S[key]=+b.dataset.lv;tone(300+S[key]*90,.15);
     el.querySelectorAll('.lv').forEach(x=>x.classList.toggle('sel',x===b));draw();onPick&&onPick()});
@@ -1165,10 +1179,10 @@ $('#finish').onclick=()=>{
   const xp=store.xp[S.emo]||0,lv=lvOf(xp),nx=nextOf(xp);
   go(7);
   $('#winQ').textContent=`你陪${e.name}冷靜下來了！`;
-  $('#winMon').innerHTML=monster(S.emo,150,'wobble',{calm:1});
+  $('#winMon').innerHTML=`<div class="morph"><div class="m-a">${monster(S.emo,150,'',{mood:moodOf(S.lv0||3)})}</div><div class="m-b">${monster(S.emo,150,'wobble')}</div></div>`;
   $('#winLv').textContent=`${e.name} Lv.${lv} ${TITLES[lv-1]}`+(nx.need?`（再 ${nx.need} 經驗升級）`:'（最高等級！）');
   setTimeout(()=>$('#winXp').style.width=nx.pct+'%',100);
-  $('#levelUp').innerHTML=S.monUp?`<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 進化成「${STAGES[stageOf(S.monUp.to)-1].n}」了！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{stage:stageOf(S.monUp.from),level:S.monUp.from})}<b>➜</b>${monster(S.emo,90,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
+  $('#levelUp').innerHTML=S.monUp?`<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 長大成「${STAGES[stageOf(S.monUp.to)-1].n}」，學會了${BADGE[S.emo][1]}：${BADGE[S.emo][2]}！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{level:S.monUp.from})}<b>➜</b>${monster(S.emo,96,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
   const total=S.earned.reduce((a,b)=>a+b[1],0);
   $('#rewardList').innerHTML=S.capped?`<li>今天已經練習 5 次以上了，星星明天再來拿。你還是很棒！</li>`
     :S.earned.map(([t,n])=>`<li><span>${t}</span><b>+${n} ⭐</b></li>`).join('')+`<li class="total"><span>這次一共拿到</span><b>${total} ⭐</b></li>`;
@@ -1659,9 +1673,10 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
   const best=Object.entries(ae).sort((a,b)=>b[1][0]/b[1][1]-a[1][0]/a[1][1])[0];
   const cc={};L.forEach(x=>{if(x.cause)cc[x.cause]=(cc[x.cause]||0)+1});const topC=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
   const age=S.age||'mid';
-  $('#mdBody').innerHTML=`<h4>🌱 成長進化</h4><div class="evorow">${STAGES.map((t,i)=>`<div class="evocell ${i+1>cur?'lock':''} ${i+1===cur?'now':''}">${monster(k,64,'',{stage:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small><small>${i+1>cur?'🔒 Lv.'+t.from:i+1===cur?'現在':'✓'}</small></div>`).join('')}
-      <div class="evocell calm">${monster(k,64,'',{calm:1,level:1,eq:{head:null,neck:null}})}<small>平復後</small><small>冷靜下來</small></div></div>
-    <p class="hint" style="text-align:left">每次陪牠冷靜，牠就會長大一點。不管長多大，冷靜下來都會變回溫柔的樣子。</p>
+  $('#mdBody').innerHTML=`<h4>🌱 成長進化</h4><div class="evorow">${STAGES.map((t,i)=>`<div class="evocell ${i+1>cur?'lock':''} ${i+1===cur?'now':''}">${monster(k,66,'',{grow:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small><small>${i+1>cur?'🔒 Lv.'+t.from:i+1===cur?'現在':'✓'}</small></div>`).join('')}</div>
+    <p class="hint" style="text-align:left">每次陪牠冷靜，牠就會長大、變得更成熟。長大後會學會「${BADGE[k][0]} ${BADGE[k][1]}」：${BADGE[k][2]}。</p>
+    <h4>🌡️ 牠變大的時候</h4><div class="evorow">${SIZES.map((t,i)=>`<div class="evocell mood">${monster(k,58,'',{mood:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small></div>`).join('')}</div>
+    <p class="hint" style="text-align:left">情緒越大，牠看起來越兇，這是在告訴你「我很不舒服」。冷靜下來，牠就會變回溫柔的樣子。</p>
     <h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
     <h4>🫀 牠來的時候，身體會怎樣？</h4><p>${body}</p>
     <h4>💬 牠想告訴你什麼？</h4><p>${why}</p>
