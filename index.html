@@ -219,6 +219,7 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .chore{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px dashed #DCEBD2}.chore:first-of-type{border-top:0}
 .chore .ci{font-size:1.5rem;width:34px;text-align:center}.chore .ct{flex:1;display:flex;flex-direction:column}.chore .ct small{color:#7A8A70;font-size:.82rem}
 .chore.done{opacity:.6}.choredone{background:#FFF7D6;border-radius:12px;padding:8px;margin:8px 0 2px}
+.testtag{position:fixed;top:6px;left:50%;transform:translateX(-50%);background:#7B5CC9;color:#fff;font-size:.8rem;padding:4px 12px;border-radius:999px;z-index:95;pointer-events:none}
 .restov{position:fixed;inset:0;background:#2b2a3dcc;display:flex;align-items:center;justify-content:center;z-index:90;padding:20px}
 .restov .card{max-width:420px;text-align:center}
 .moods{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
@@ -593,6 +594,9 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
     <li>不要用「不准拿星星」或「沒收家園」來懲罰，以免孩子把冷靜站跟處罰連在一起。</li>
   </ul>
   <button class="chip" id="resetAll" style="margin-top:6px">重設星星與等級</button>
+  <h3>🧪 測試模式</h3>
+  <p style="font-size:.9rem">想先看看星星夠多、怪獸升級後會開啟什麼內容。進入時會先備份目前的紀錄，測完按「結束測試」就會還原，孩子的紀錄不會不見。</p>
+  <div id="testBox"></div>
   <h3>使用時間提醒</h3>
   <p style="font-size:.9rem">每天用到設定的時間，會溫和提醒孩子休息、去做真實世界的事。冷靜流程中不會打斷，「馬上冷靜」永遠可以用。</p>
   <div class="chips" id="limitChips" style="justify-content:flex-start"></div>
@@ -1779,6 +1783,31 @@ function showRest(){const m=Math.round(store.useSec/60);const d=document.createE
   $('#restSos').onclick=()=>{d.remove();$('#sos').click()};
   $('#restMore').appendChild(holdBtn('大人按住：再玩 10 分鐘',2000,()=>d.remove()));}
 
+/* ---------- 測試模式（大人用，先備份再還原） ---------- */
+const BK='calmMonster_backup';
+function inTest(){try{return !!localStorage.getItem(BK)}catch(e){return false}}
+function renderTest(){const box=$('#testBox');if(!box)return;box.innerHTML='';
+  if(!inTest()){box.appendChild(holdBtn('按住進入測試模式（會先備份）',1500,()=>{
+      try{localStorage.setItem(BK,JSON.stringify(store))}catch(e){toast('這個瀏覽器不能備份，先不要測試');return}
+      store.stars=9999;save();toast('🧪 測試模式：給你 9999 顆星星',true);renderTest();refreshTest()}));return}
+  box.innerHTML=`<p style="font-size:.9rem"><b>測試中</b>：星星 ${store.stars}</p>
+    <div class="chips" style="justify-content:flex-start">${[1,2,3,4,5,6].map(l=>`<button class="chip" data-tl="${l}">全部怪獸 Lv.${l}</button>`).join('')}</div>
+    <div class="chips" style="justify-content:flex-start">
+      <button class="chip" id="tStars">再加 1000 ⭐</button><button class="chip" id="tHero">主角 +300 經驗</button>
+      <button class="chip" id="tGrow">菜和花馬上長好</button><button class="chip" id="tDay">重置今天的工作（可再做一次）</button></div>
+    <div class="row" style="justify-content:flex-start"><button class="btn small" id="tEnd">結束測試，還原紀錄</button></div>`;
+  $$('[data-tl]').forEach(b=>b.onclick=()=>{const t=LEVELS[+b.dataset.tl-1];Object.keys(EMO).forEach(k=>store.xp[k]=Math.max(t,1));save();toast(`全部怪獸變成 Lv.${b.dataset.tl}「${STAGES[stageOf(+b.dataset.tl)-1].n}」`);renderTest()});
+  $('#tStars').onclick=()=>{store.stars+=1000;save();renderTest()};
+  $('#tHero').onclick=()=>{store.pxp=(store.pxp||0)+300;save();toast('主角經驗 +300')};
+  $('#tGrow').onclick=()=>{Object.keys(store.grow).forEach(k=>store.grow[k]=3);if(store.crop)store.crop.st=3;save();toast('都長好了，回家園看看')};
+  $('#tDay').onclick=()=>{['waterDay','fishDay','realDay','moodDay','pracDay'].forEach(k=>store[k]=null);store.gameDay={};store.day=null;save();toast('今天的工作可以再做一次')};
+  $('#tEnd').onclick=()=>{try{const b=JSON.parse(localStorage.getItem(BK));localStorage.removeItem(BK);Object.keys(store).forEach(k=>delete store[k]);Object.assign(store,b);
+      store.xp=store.xp||{};store.pos=store.pos||{};save()}catch(e){}
+    toast('已還原測試前的紀錄',true);renderTest();refreshTest();go(10)};
+}
+function refreshTest(){let t=$('#testTag');if(inTest()){if(!t){t=document.createElement('div');t.id='testTag';t.className='testtag';t.textContent='🧪 測試模式（大人區可結束）';document.body.appendChild(t)}}else if(t)t.remove()}
+refreshTest();
+
 /* SOS quick path */
 $('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!(S.step>=1&&S.step<=8)){resetFlow();S.hist=[10]}if(!S.emo){S.sos=true;S.emo='scared'}S.lv=S.lv||4;S.lv0=S.lv0||S.lv;S.act='breathe';speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
 
@@ -1819,7 +1848,7 @@ $('#commUrl').onchange=()=>{store.commUrl=$('#commUrl').value.trim();save();rend
 $('#pNotesCopy').onclick=async()=>{store.pnotes=$('#pNotes').value;save();
   let t='我們家的心得筆記\n'+(store.pnotes||'（還沒寫）')+'\n\n孩子的冷靜秘訣\n'+(Object.entries(store.tips).filter(([k,v])=>v&&v.trim()).map(([k,v])=>`${EMO[k].name}：${v}`).join('\n')||'（還沒寫）');
   try{await navigator.clipboard.writeText(t);toast('已複製')}catch(e){toast('無法自動複製，請長按文字框選取複製')}};
-const openP=()=>{renderLimit();renderCases();renderPNotes();if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
+const openP=()=>{renderLimit();renderTest();renderCases();renderPNotes();if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
 const closeP=()=>{$('#drawer').classList.remove('on');$('#dbg').style.display='none'};
 $('#openParent').onclick=openP;$('#closeParent').onclick=closeP;$('#dbg').onclick=closeP;
 
