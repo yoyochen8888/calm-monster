@@ -19,7 +19,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);
 body{min-height:100vh;padding:18px 14px 110px}
 .wrap{max-width:760px;margin:0 auto}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-h1{font-size:1.5rem;margin:0;letter-spacing:.05em}
+h1{font-size:1.5rem;white-space:nowrap;margin:0;letter-spacing:.05em}
 h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-family:"Noto Sans TC",sans-serif;font-weight:400;margin-top:2px}
 .btn{border:0;border-radius:999px;padding:12px 20px;font:inherit;font-size:1.05rem;cursor:pointer;
   background:var(--accent);color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.12);transition:transform .1s}
@@ -128,6 +128,25 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .warn.hot{background:#FDE3DF}
 .adult-btn{display:block;width:100%;margin-top:8px}
 .wobble{animation:wob 2.4s ease-in-out infinite}
+/* game */
+.hdr-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.starbtn{background:#FFF3C4;border-color:#FFD966}
+.cname{display:inline-block;padding:2px 9px;border-radius:999px;color:#fff;font-size:.78rem;margin-top:4px}
+.lvtag{display:block;font-size:.8rem;color:var(--soft);margin-top:3px}
+.xpbar{height:10px;border-radius:6px;background:#F1E8DA;overflow:hidden;margin:6px 8px 0}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,#FFD166,#F5A524);border-radius:6px;transition:width .8s}
+.starbar{text-align:center;font-size:1.3rem;background:#FFF3C4;border-radius:999px;padding:8px 16px;width:max-content;margin:0 auto 16px}
+.reward{list-style:none;padding:0;margin:10px auto;max-width:360px}
+.reward li{display:flex;justify-content:space-between;padding:7px 4px;border-bottom:1px dashed var(--line);font-size:1.02rem}
+.reward li b{color:#C98A00}
+.reward li.total{border:0;font-size:1.15rem}
+.levelup{text-align:center;background:linear-gradient(90deg,#FFF3C4,#FFE1EC);border-radius:16px;padding:12px;margin:12px 0;font-size:1.15rem;animation:spin .8s ease}
+.soft{background:#EEF4FF;border-radius:14px;padding:12px;text-align:center;line-height:1.7;margin:12px 0}
+.shopitem .btn{margin-top:8px}
+.swatch{width:84px;height:84px;border-radius:18px;margin:0 auto}
+body.bg-sky{background:linear-gradient(180deg,#D7EEFF 0%,#FFF8EE 70%)}
+body.bg-rainbow{background:linear-gradient(180deg,#FFE0E0 0%,#FFF1CC 25%,#E3F8DA 50%,#DDEFFF 75%,#F0E4FF 100%)}
+body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 34px,radial-gradient(#FFE89A 1px,transparent 1.5px) 17px 17px/34px 34px,linear-gradient(180deg,#CFC6F5,#EDE8FF)}
 @keyframes wob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 </style>
 </head>
@@ -135,7 +154,10 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 <div class="wrap">
   <header>
     <h1>情緒怪獸冷靜站<small>陪孩子把大大的情緒，慢慢變小</small></h1>
-    <button class="btn ghost small" id="openParent">大人看這裡</button>
+    <div class="hdr-btns">
+      <button class="btn ghost small starbtn" id="openDex">⭐ <span id="hdrStars">0</span></button>
+      <button class="btn ghost small" id="openParent">大人看這裡</button>
+    </div>
   </header>
 
   <div class="dots" id="dots"></div>
@@ -214,11 +236,30 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 
   <!-- 7 badge -->
   <section class="step card" data-step="7">
-    <p class="q">你做到了！</p>
-    <div class="badge" id="badge">勇氣<br>徽章</div>
-    <p class="hint" id="badgeText" style="margin-top:14px"></p>
+    <p class="q" id="winQ">你做到了！</p>
+    <div class="stage" id="winMon" style="min-height:150px"></div>
+    <p class="hint" id="winLv" style="margin:4px 0 0"></p>
+    <div class="xpbar" style="max-width:300px;margin:8px auto"><i id="winXp" style="width:0"></i></div>
+    <div id="levelUp"></div>
+    <ul class="reward" id="rewardList"></ul>
+    <div class="soft" id="toughMsg" style="display:none"></div>
     <div class="sentence" id="planShow"></div>
-    <div class="row"><button class="btn" id="restart">回到開始</button></div>
+    <div class="row">
+      <button class="btn ghost" id="winDex">⭐ 去商店看看</button>
+      <button class="btn" id="restart">回到開始</button>
+    </div>
+  </section>
+
+  <!-- 9 my monsters + shop -->
+  <section class="step card" data-step="9">
+    <p class="q">我的怪獸朋友</p>
+    <p class="hint">每次面對怪獸，牠就更了解你一點，等級也會變高</p>
+    <div class="starbar">⭐ <b id="starN">0</b> 顆星星</div>
+    <div class="grid g3" id="dex"></div>
+    <p class="q" style="margin-top:26px;font-size:1.3rem">星星商店</p>
+    <p class="hint">用星星幫怪獸打扮，所有怪獸會一起穿上</p>
+    <div class="grid g3" id="shop"></div>
+    <div class="row"><button class="btn" id="dexBack">回去</button></div>
   </section>
 
   <!-- 8 adult takes over -->
@@ -268,6 +309,17 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
     <button class="chip" data-min="5">5 分鐘</button>
     <button class="chip" id="tStop">停止</button>
   </div>
+  <h3>星星和等級怎麼算</h3>
+  <ul>
+    <li>星星獎勵的是<b>「面對和嘗試」</b>，不是「沒有情緒」。怪獸沒變小、請大人幫忙，也都拿得到星星，孩子不會因為「失敗」被扣分。</li>
+    <li>每次：勇敢面對 +10、怪獸每變小 1 級 +5、請大人陪伴 +10、說出感覺 +5、想好下次的方法 +5。</li>
+    <li>連續 3 次怪獸都沒變小、但孩子還是來面對：額外 +15「堅持不放棄」。</li>
+    <li>每天前 5 次可以拿星星，避免為了星星一直重複玩。</li>
+    <li>星星只能換怪獸的裝扮。如果想搭配真實獎勵，建議換「陪伴時間」（一起看書、玩遊戲），不要換零食或 3C 時間。</li>
+    <li>星星和等級只存在這台裝置的瀏覽器裡，清除瀏覽資料會歸零。</li>
+  </ul>
+  <div id="toughNote"></div>
+  <button class="chip" id="resetAll" style="margin-top:6px">重設星星與等級</button>
   <h3>通用原則</h3>
   <ul>
     <li><b>命名情緒</b>：幫孩子把感覺說出來（「你好生氣」），說得出來的情緒比較好管理。</li>
@@ -287,12 +339,12 @@ const AGES=[
   {id:'old',ico:'🌳',name:'小學中高年級',sub:'9–12 歲'}
 ];
 const EMO={
-  angry:{name:'生氣怪獸',color:'#F26B5B',feel:'好生氣',body:'臉熱熱、拳頭握緊緊',acts:['bubbles','breathe','squeeze'],face:'angry'},
-  sad:{name:'難過怪獸',color:'#5B8DEF',feel:'好難過',body:'眼睛酸酸、想哭',acts:['breathe','butterfly','senses'],face:'sad'},
-  defiant:{name:'不服氣怪獸',color:'#F5A524',feel:'好不服氣',body:'心裡悶悶、不甘心',acts:['squeeze','breathe','bubbles'],face:'defiant'},
-  stuck:{name:'做不到怪獸',color:'#9B7BE0',feel:'好挫折，覺得做不到',body:'想放棄、想丟掉',acts:['breathe','squeeze','bubbles'],face:'stuck'},
-  scared:{name:'擔心怪獸',color:'#3FB6A8',feel:'好擔心',body:'肚子怪怪、心跳很快',acts:['breathe','senses','butterfly'],face:'scared'},
-  wronged:{name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses'],face:'wronged'}
+  angry:{cname:'紅色',name:'生氣怪獸',color:'#F26B5B',feel:'好生氣',body:'臉熱熱、拳頭握緊緊',acts:['bubbles','breathe','squeeze'],face:'angry'},
+  sad:{cname:'藍色',name:'難過怪獸',color:'#5B8DEF',feel:'好難過',body:'眼睛酸酸、想哭',acts:['breathe','butterfly','senses'],face:'sad'},
+  defiant:{cname:'橘色',name:'不服氣怪獸',color:'#F5A524',feel:'好不服氣',body:'心裡悶悶、不甘心',acts:['squeeze','breathe','bubbles'],face:'defiant'},
+  stuck:{cname:'紫色',name:'做不到怪獸',color:'#9B7BE0',feel:'好挫折，覺得做不到',body:'想放棄、想丟掉',acts:['breathe','squeeze','bubbles'],face:'stuck'},
+  scared:{cname:'綠色',name:'擔心怪獸',color:'#3FB6A8',feel:'好擔心',body:'肚子怪怪、心跳很快',acts:['breathe','senses','butterfly'],face:'scared'},
+  wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses'],face:'wronged'}
 };
 const LV=[
   {n:1,t:'小小的'},{n:2,t:'有一點'},{n:3,t:'中中的'},{n:4,t:'很大'},{n:5,t:'超級大'}
@@ -380,7 +432,33 @@ const CO_WORDS=['我在這裡，你很安全','圓圈變大，吸～','圓圈變
 const S={step:0,age:null,emo:null,lv:0,lv2:0,act:null,cause:null,want:null,plan:null,tries:0};
 let store={};
 try{store=JSON.parse(localStorage.getItem('calmMonster')||'{}')}catch(e){store={}}
-function save(){try{localStorage.setItem('calmMonster',JSON.stringify(store))}catch(e){}}
+function save(){try{localStorage.setItem('calmMonster',JSON.stringify(store))}catch(e){}refreshHdr()}
+store.xp=store.xp||{};store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;
+const LEVELS=[0,30,80,150,250,400];
+const TITLES=['初次見面','認識你了','好朋友','好夥伴','默契搭檔','情緒小達人'];
+function lvOf(xp){let l=0;LEVELS.forEach((t,i)=>{if(xp>=t)l=i});return l+1}
+function nextOf(xp){const l=lvOf(xp);if(l>=LEVELS.length)return {pct:100,need:0};const a=LEVELS[l-1],b=LEVELS[l];return {pct:Math.round((xp-a)/(b-a)*100),need:b-xp}}
+const SHOP=[
+  {id:'party',slot:'head',name:'派對帽',cost:30},
+  {id:'flower',slot:'head',name:'小花',cost:30},
+  {id:'bow',slot:'head',name:'蝴蝶結',cost:40},
+  {id:'scarf',slot:'neck',name:'圍巾',cost:50},
+  {id:'bowtie',slot:'neck',name:'領結',cost:50},
+  {id:'sky',slot:'bg',name:'藍天背景',cost:60,sw:'linear-gradient(#D7EEFF,#FFF8EE)'},
+  {id:'rainbow',slot:'bg',name:'彩虹背景',cost:90,sw:'linear-gradient(#FFE0E0,#FFF1CC,#E3F8DA,#DDEFFF,#F0E4FF)'},
+  {id:'night',slot:'bg',name:'星空背景',cost:120,sw:'radial-gradient(#fff 1.5px,transparent 2px) 0 0/16px 16px,linear-gradient(#CFC6F5,#EDE8FF)'},
+  {id:'crown',slot:'head',name:'皇冠',cost:150}
+];
+const ACC={
+  party:`<path d="M46 16 L60 -16 L74 16 Z" fill="#FFD166" stroke="#fff" stroke-width="2"/><path d="M50 8 L70 8" stroke="#5B8DEF" stroke-width="3"/><circle cx="60" cy="-17" r="5" fill="#F26B5B"/>`,
+  flower:`<g transform="translate(30 16)"><circle cx="0" cy="-8" r="6" fill="#FFB3D1"/><circle cx="8" cy="0" r="6" fill="#FFB3D1"/><circle cx="0" cy="8" r="6" fill="#FFB3D1"/><circle cx="-8" cy="0" r="6" fill="#FFB3D1"/><circle r="5" fill="#FFD166"/></g>`,
+  bow:`<path d="M82 12 L68 2 L68 22 Z M82 12 L96 2 L96 22 Z" fill="#EC4F8F"/><circle cx="82" cy="12" r="4.5" fill="#C2185B"/>`,
+  crown:`<path d="M40 16 L42 -8 L52 6 L60 -14 L68 6 L78 -8 L80 16 Z" fill="#FFC531" stroke="#E0A800" stroke-width="2" stroke-linejoin="round"/><circle cx="60" cy="4" r="3.5" fill="#F26B5B"/><circle cx="47" cy="10" r="2.5" fill="#5B8DEF"/><circle cx="73" cy="10" r="2.5" fill="#5B8DEF"/>`,
+  scarf:`<path d="M24 90 Q60 106 96 90 L98 101 Q60 118 22 101 Z" fill="#2F8F83"/><path d="M76 102 L80 124 L91 121 L87 100 Z" fill="#26766C"/>`,
+  bowtie:`<path d="M60 101 L45 92 L45 110 Z M60 101 L75 92 L75 110 Z" fill="#3B2F2A"/><circle cx="60" cy="101" r="4" fill="#F26B5B"/>`
+};
+function refreshHdr(){const el=document.getElementById('hdrStars');if(el)el.textContent=store.stars||0;
+  document.body.classList.remove('bg-sky','bg-rainbow','bg-night');if(store.equip&&store.equip.bg)document.body.classList.add('bg-'+store.equip.bg)}
 if(store.age)S.age=store.age;
 
 const $=s=>document.querySelector(s);
@@ -397,8 +475,10 @@ function chime(){tone(660,.6);setTimeout(()=>tone(880,.8),250);setTimeout(()=>to
 function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-TW';u.rate=.85;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
 
 /* ---------- monster svg ---------- */
-function monster(kind,size=110,cls=''){
+function monster(kind,size=110,cls='',opt={}){
   const e=EMO[kind];const c=e.color;
+  const level=opt.level!==undefined?opt.level:lvOf(store.xp[kind]||0);
+  const eq=Object.assign({},store.equip||{},opt.eq||{});
   const faces={
     angry:`<path d="M34 40 L48 46 M86 40 L72 46" stroke="#3B2F2A" stroke-width="4" stroke-linecap="round"/>
            <circle cx="44" cy="54" r="5"/><circle cx="76" cy="54" r="5"/>
@@ -423,11 +503,18 @@ function monster(kind,size=110,cls=''){
          <path d="M50 80 q10 -8 20 0" stroke="#3B2F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
          <circle cx="36" cy="66" r="6" fill="#fff" opacity=".45"/><circle cx="84" cy="66" r="6" fill="#fff" opacity=".45"/>`
   };
-  return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="0 0 120 120" aria-label="${e.name}">
+  const spark=(x,y,r)=>`<path d="M${x} ${y-r} L${x+r*.3} ${y-r*.3} L${x+r} ${y} L${x+r*.3} ${y+r*.3} L${x} ${y+r} L${x-r*.3} ${y+r*.3} L${x-r} ${y} L${x-r*.3} ${y-r*.3} Z" fill="#FFD166"/>`;
+  const aura=level>=5?`<ellipse cx="60" cy="62" rx="62" ry="60" fill="none" stroke="#FFD166" stroke-width="4" stroke-dasharray="2 8" stroke-linecap="round"/>`:'';
+  const sparks=level>=3?spark(2,34,7)+spark(118,46,6)+(level>=4?spark(110,110,5)+spark(6,100,5):''):'';
+  const cheeks=level>=2?`<circle cx="32" cy="70" r="7" fill="#FF8FA8" opacity=".45"/><circle cx="88" cy="70" r="7" fill="#FF8FA8" opacity=".45"/>`:'';
+  return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}">
+    ${aura}
     <path d="M60 10 C92 10 108 34 106 66 C104 98 88 112 60 112 C32 112 14 98 14 66 C12 34 28 10 60 10Z" fill="${c}"/>
     <path d="M60 10 C92 10 108 34 106 66" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="6"/>
     <ellipse cx="60" cy="72" rx="30" ry="28" fill="#fff" opacity=".18"/>
+    ${cheeks}
     <g fill="#3B2F2A">${faces[e.face]}</g>
+    ${eq.neck&&ACC[eq.neck]?ACC[eq.neck]:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}${sparks}
   </svg>`;
 }
 
@@ -445,11 +532,13 @@ function go(n){
   if(n===5)renderTalk();
   if(n===6)renderPlans();
   if(n===8)renderCo();
+  if(n===9)renderDex();
 }
 
 /* ---------- adult co-regulation mode ---------- */
 let coInt=null,coStart=0;
 function renderCo(){
+  S.usedCo=true;if(!S.lv0)S.lv0=S.lv||5;
   if(!coStart)coStart=Date.now();
   const age=S.age||'mid';
   const ageName={young:'3–5 歲',mid:'6–8 歲',old:'9–12 歲'}[age];
@@ -484,7 +573,7 @@ function renderAges(){
 /* step 1 */
 function renderMonsters(){
   $('#monsters').innerHTML=Object.entries(EMO).map(([k,e])=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">
-    ${monster(k,84)}<b>${e.name}</b><span>${e.body}</span></button>`).join('');
+    ${monster(k,84)}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span><span class="lvtag">Lv.${lvOf(store.xp[k]||0)} ${TITLES[lvOf(store.xp[k]||0)-1]}</span></button>`).join('');
   $$('[data-emo]').forEach(b=>b.onclick=()=>{S.emo=b.dataset.emo;tone(500,.12);speak('我是'+EMO[S.emo].name);go(2)});
 }
 /* thermometer */
@@ -512,8 +601,8 @@ function renderSize(){
   thermo($('#thermo'),$('#sizeStage'),'lv',upd);
   upd();
 }
-$('#toCalm').onclick=()=>{S.tries=0;S.act=null;if(S.lv===5){coStart=0;go(8)}else go(3)};
-$('#selfTry').onclick=()=>{S.tries=0;S.act=null;go(3)};
+$('#toCalm').onclick=()=>{S.lv0=S.lv;S.tries=0;S.act=null;if(S.lv===5){coStart=0;go(8)}else go(3)};
+$('#selfTry').onclick=()=>{S.lv0=S.lv;S.tries=0;S.act=null;go(3)};
 
 /* ---------- activities ---------- */
 let timers=[];let raf=null;
@@ -699,17 +788,69 @@ function renderPlans(){
   $$('[data-plan]').forEach(b=>b.onclick=()=>{S.plan=b.dataset.plan;tone(620,.12);speak(b.textContent);renderPlans();$('#finish').disabled=false});
   $('#finish').disabled=!S.plan;
 }
-$('#finish').onclick=()=>{
+function award(){
+  const d=new Date();const today=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+  if(!store.day||store.day.d!==today)store.day={d:today,n:0};
+  const lv0=S.lv0||S.lv||3, lv2=S.lv2||lv0, shrink=lv0-lv2;
+  const items=[['勇敢面對怪獸',10]];
+  if(shrink>0)items.push([`怪獸變小了 ${shrink} 級`,shrink*5]);
+  if(S.usedCo)items.push(['請大人陪伴（求助也是勇氣）',10]);
+  if(S.cause)items.push(['把感覺說出來',5]);
+  if(S.plan)items.push(['想好下次的方法',5]);
+  let tough='';
+  if(shrink<=0){
+    store.tough=(store.tough||0)+1;
+    tough='今天的怪獸特別大，沒有變小也沒關係。你願意來面對它，就是很大的勇氣。';
+    if(store.tough>=3){items.push(['堅持不放棄',15]);store.tough=0;store.toughAt=Date.now();
+      tough='最近怪獸常常很大，你還是一次又一次來面對，真的很不簡單！可以跟大人說說最近發生了什麼事，讓大人一起幫你。';}
+  } else store.tough=0;
+  const capped=store.day.n>=5;store.day.n++;
+  let total=capped?0:items.reduce((a,b)=>a+b[1],0);
+  const xp0=store.xp[S.emo]||0, before=lvOf(xp0);
+  store.stars=(store.stars||0)+total;store.xp[S.emo]=xp0+total;
   store.badges=(store.badges||0)+1;save();
-  $('#badge').innerHTML=`<span>勇氣徽章</span><b style="font-size:1.6rem">×${store.badges}</b>`;
-  $('#badgeText').textContent=`你陪${EMO[S.emo].name}冷靜下來了。累積 ${store.badges} 枚勇氣徽章！`;
+  return {items,total,capped,before,after:lvOf(store.xp[S.emo]),tough};
+}
+$('#finish').onclick=()=>{
+  const r=award();const e=EMO[S.emo];const xp=store.xp[S.emo]||0;const nx=nextOf(xp);
+  go(7);
+  $('#winQ').textContent=`你陪${e.name}冷靜下來了！`;
+  $('#winMon').innerHTML=monster(S.emo,150,'wobble');
+  $('#winLv').textContent=`Lv.${r.after} ${TITLES[r.after-1]}`+(nx.need?`（再 ${nx.need} 顆星升級）`:'（最高等級！）');
+  setTimeout(()=>$('#winXp').style.width=nx.pct+'%',100);
+  $('#levelUp').innerHTML=r.after>r.before?`<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${r.after}「${TITLES[r.after-1]}」</b><br><small>${r.after>=5?'身上出現了金色光環':r.after>=3?'身邊開始閃閃發亮':'臉頰變得紅通通'}</small></div>`:'';
+  $('#rewardList').innerHTML=r.capped
+    ?`<li>今天已經練習 5 次以上了，星星明天再來拿。你還是很棒！</li>`
+    :r.items.map(([t,n])=>`<li><span>${t}</span><b>+${n} ⭐</b></li>`).join('')+`<li class="total"><span>這次拿到</span><b>${r.total} ⭐</b></li>`;
+  $('#toughMsg').style.display=r.tough?'':'none';$('#toughMsg').textContent=r.tough;
   $('#planShow').innerHTML=`下次怪獸來的時候，<br>我要試試：<u>${S.plan}</u>`;
-  chime();go(7);
+  chime();if(r.after>r.before)setTimeout(()=>{tone(784,.2);setTimeout(()=>tone(1046,.5),180)},900);
 };
-$('#restart').onclick=()=>{Object.assign(S,{emo:null,lv:0,lv2:0,act:null,cause:null,want:null,plan:null});go(S.age?1:0)};
+$('#restart').onclick=()=>{Object.assign(S,{emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false});go(S.age?1:0)};
+$('#winDex').onclick=()=>{S.prev=7;go(9)};
+
+/* ---------- my monsters + shop ---------- */
+function renderDex(){
+  $('#starN').textContent=store.stars||0;
+  $('#dex').innerHTML=Object.entries(EMO).map(([k,e])=>{const xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);
+    return `<div class="pick" style="cursor:default">${monster(k,80)}<b>${e.name}</b>
+      <span class="lvtag">Lv.${l} ${TITLES[l-1]}</span><div class="xpbar"><i style="width:${nx.pct}%"></i></div></div>`}).join('');
+  $('#shop').innerHTML=SHOP.map(it=>{
+    const own=store.owned.includes(it.id), on=store.equip[it.slot]===it.id;
+    const prev=it.slot==='bg'?`<div class="swatch" style="background:${it.sw}"></div>`:monster('angry',80,'',{eq:{head:null,neck:null,[it.slot]:it.id},level:1});
+    const btn=own?`<button class="btn small ${on?'':'ghost'}" data-eq="${it.id}">${on?'穿戴中':'穿上'}</button>`
+      :`<button class="btn small" data-buy="${it.id}" ${store.stars<it.cost?'disabled':''}>${it.cost} ⭐ 買</button>`;
+    return `<div class="pick shopitem" style="cursor:default">${prev}<b>${it.name}</b>${btn}</div>`}).join('');
+  $$('[data-buy]').forEach(b=>b.onclick=()=>{const it=SHOP.find(x=>x.id===b.dataset.buy);if(store.stars<it.cost)return;
+    store.stars-=it.cost;store.owned.push(it.id);store.equip[it.slot]=it.id;save();chime();renderDex()});
+  $$('[data-eq]').forEach(b=>b.onclick=()=>{const it=SHOP.find(x=>x.id===b.dataset.eq);
+    store.equip[it.slot]=store.equip[it.slot]===it.id?null:it.id;save();tone(620,.12);renderDex()});
+}
+$('#openDex').onclick=()=>{if(S.step!==9)S.prev=S.step;go(9)};
+$('#dexBack').onclick=()=>go(S.prev!==undefined&&S.prev!==9?S.prev:(S.age?1:0));
 
 /* SOS quick path */
-$('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!S.emo)S.emo='angry';S.lv=S.lv||4;S.act='breathe';speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
+$('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!S.emo)S.emo='angry';S.lv=S.lv||4;S.lv0=S.lv0||S.lv;S.act='breathe';speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
 
 /* ---------- parent drawer ---------- */
 let pEmo='angry';
@@ -724,7 +865,12 @@ function renderParent(){
     <h3>盡量避免</h3><div class="avoid">${p.avoid}</div>
     <h3>冷靜之後</h3><p>${p.after}</p>`;
 }
-const openP=()=>{if(S.emo)pEmo=S.emo;renderParent();$('#drawer').classList.add('on');$('#dbg').style.display='block'};
+let resetArm=false;
+$('#resetAll').onclick=()=>{if(!resetArm){resetArm=true;$('#resetAll').textContent='再按一次確認重設（無法復原）';return}
+  Object.assign(store,{stars:0,xp:{},owned:[],equip:{},tough:0,day:null,badges:0});save();resetArm=false;$('#resetAll').textContent='已重設';};
+function renderToughNote(){const t=store.toughAt&&Date.now()-store.toughAt<14*864e5;
+  $('#toughNote').innerHTML=t?`<div class="warn">最近兩週內，孩子有連續 3 次練習時怪獸都沒有變小。不用擔心「工具沒效」，這通常代表孩子最近壓力比較大。可以找個平靜的時間，聊聊最近在學校或家裡發生的事；如果持續一段時間，可以諮詢學校輔導老師。</div>`:'';}
+const openP=()=>{if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
 const closeP=()=>{$('#drawer').classList.remove('on');$('#dbg').style.display='none'};
 $('#openParent').onclick=openP;$('#closeParent').onclick=closeP;$('#dbg').onclick=closeP;
 
@@ -737,6 +883,7 @@ $('#tStop').onclick=()=>{clearInterval(tInt);$('#tShow').textContent='0:00'};
 
 /* init */
 renderAges();
+refreshHdr();
 go(0);
 </script>
 </body>
