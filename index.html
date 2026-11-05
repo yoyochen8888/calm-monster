@@ -110,6 +110,13 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .timer .t{font-size:1.8rem;font-family:"Huninn";min-width:90px}
 .note{font-size:.85rem;color:var(--soft);margin-top:18px;line-height:1.6}
 .mon{display:block;margin:0 auto}
+.evo{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px}.evo b{font-size:1.4rem;color:#F5A524}
+.evorow{display:flex;gap:4px;justify-content:space-between;overflow-x:auto;padding:4px 0}
+.evocell{flex:1;min-width:60px;text-align:center;border-radius:12px;padding:4px 2px;background:#fff8}
+.evocell small{display:block;font-size:.72rem;line-height:1.3}
+.evocell.now{background:#FFF3C4;box-shadow:0 0 0 2px #FFD166}
+.evocell.lock .mon{filter:brightness(0) opacity(.18)}
+.evocell.calm{background:#E8F7EE}
 /* co-regulation mode */
 .ball.slow{transition:none;animation:co 10s ease-in-out infinite;background:radial-gradient(circle at 35% 30%,#fff8,transparent 40%),#8FC9C0}
 @keyframes co{0%,100%{transform:scale(1)}40%{transform:scale(1.8)}}
@@ -729,6 +736,10 @@ store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.rep
 const LEVELS=[0,30,80,150,250,400];
 const TITLES=['初次見面','認識你了','好朋友','好夥伴','默契搭檔','情緒小達人'];
 function lvOf(xp){let l=0;LEVELS.forEach((t,i)=>{if(xp>=t)l=i});return l+1}
+/* 進化階段：Lv.1 寶寶、Lv.2–3 年幼、Lv.4–5 青年、Lv.6 壯年 */
+const STAGES=[{n:'寶寶版',from:1,s:.74},{n:'年幼版',from:2,s:.86},{n:'青年版',from:4,s:.96},{n:'壯年版',from:6,s:1.06}];
+function stageOf(lv){let i=0;STAGES.forEach((t,j)=>{if(lv>=t.from)i=j});return i+1}
+const IMG=(k,st)=>`img/${k}${st}.webp`;
 function nextOf(xp){const l=lvOf(xp);if(l>=LEVELS.length)return {pct:100,need:0};const a=LEVELS[l-1],b=LEVELS[l];return {pct:Math.round((xp-a)/(b-a)*100),need:b-xp}}
 const HEROES={fox:{name:'小狐狸',c:'#F39A4B'},bear:{name:'小熊',c:'#B07A52'},rabbit:{name:'小兔子',c:'#E9DDF2'},cat:{name:'小貓',c:'#9AA3B5'}};
 const PLV=[0,50,150,300,500,800,1200];
@@ -793,42 +804,17 @@ function monster(kind,size=110,cls='',opt={}){
   const e=EMO[kind];const c=e.color;
   const level=opt.level!==undefined?opt.level:lvOf(store.xp[kind]||0);
   const eq=Object.assign({},store.equip||{},opt.eq||{});
-  const faces={
-    angry:`<path d="M34 40 L48 46 M86 40 L72 46" stroke="#3B2F2A" stroke-width="4" stroke-linecap="round"/>
-           <circle cx="44" cy="54" r="5"/><circle cx="76" cy="54" r="5"/>
-           <path d="M44 80 Q60 70 76 80" stroke="#3B2F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-           <path d="M28 22 L36 34 M92 22 L84 34" stroke="${c}" stroke-width="8" stroke-linecap="round"/>`,
-    sad:`<path d="M36 46 L48 42 M84 46 L72 42" stroke="#3B2F2A" stroke-width="3.5" stroke-linecap="round"/>
-         <circle cx="44" cy="54" r="5"/><circle cx="76" cy="54" r="5"/>
-         <path d="M46 82 Q60 72 74 82" stroke="#3B2F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-         <path d="M78 62 q3 8 0 11 q-3 -3 0 -11z" fill="#9FD3FF"/>`,
-    defiant:`<path d="M34 44 L50 44 M70 44 L86 44" stroke="#3B2F2A" stroke-width="4" stroke-linecap="round"/>
-         <circle cx="44" cy="55" r="4.5"/><circle cx="76" cy="55" r="4.5"/>
-         <path d="M48 78 L72 76" stroke="#3B2F2A" stroke-width="4" stroke-linecap="round"/>
-         <ellipse cx="88" cy="70" rx="7" ry="5" fill="#fff" opacity=".6"/>`,
-    stuck:`<path d="M38 50 l10 6 l-10 6 M82 50 l-10 6 l10 6" stroke="#3B2F2A" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-         <path d="M46 80 q7 -6 14 0 q7 6 14 0" stroke="#3B2F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-         <path d="M90 30 q6 4 2 10 q-5 4 -2 8" stroke="#3B2F2A" stroke-width="3" fill="none" stroke-linecap="round"/>`,
-    scared:`<circle cx="44" cy="54" r="8" fill="#fff"/><circle cx="76" cy="54" r="8" fill="#fff"/>
-         <circle cx="44" cy="55" r="4"/><circle cx="76" cy="55" r="4"/>
-         <ellipse cx="60" cy="80" rx="7" ry="8" fill="#3B2F2A"/>
-         <path d="M36 40 L48 44 M84 40 L72 44" stroke="#3B2F2A" stroke-width="3" stroke-linecap="round"/>`,
-    wronged:`<path d="M37 54 q7 -6 14 0 M69 54 q7 -6 14 0" stroke="#3B2F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-         <path d="M50 80 q10 -8 20 0" stroke="#3B2F2A" stroke-width="4" fill="none" stroke-linecap="round"/>
-         <circle cx="36" cy="66" r="6" fill="#fff" opacity=".45"/><circle cx="84" cy="66" r="6" fill="#fff" opacity=".45"/>`
-  };
   const spark=(x,y,r)=>`<path d="M${x} ${y-r} L${x+r*.3} ${y-r*.3} L${x+r} ${y} L${x+r*.3} ${y+r*.3} L${x} ${y+r} L${x-r*.3} ${y+r*.3} L${x-r} ${y} L${x-r*.3} ${y-r*.3} Z" fill="#FFD166"/>`;
   const aura=level>=5?`<ellipse cx="60" cy="62" rx="62" ry="60" fill="none" stroke="#FFD166" stroke-width="4" stroke-dasharray="2 8" stroke-linecap="round"/>`:'';
   const sparks=level>=3?spark(2,34,7)+spark(118,46,6)+(level>=4?spark(110,110,5)+spark(6,100,5):''):'';
-  const cheeks=level>=2?`<circle cx="32" cy="70" r="7" fill="#FF8FA8" opacity=".45"/><circle cx="88" cy="70" r="7" fill="#FF8FA8" opacity=".45"/>`:'';
-  return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}">
+  const st=opt.calm?0:(opt.stage||stageOf(level));
+  const sc=st?STAGES[st-1].s:1;const w=136*sc,x=60-w/2,y=124-w;
+  const dy=y+w*.17-10;
+  return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}${st?' '+STAGES[st-1].n:' 平復後'}">
     ${aura}
-    <path d="M60 10 C92 10 108 34 106 66 C104 98 88 112 60 112 C32 112 14 98 14 66 C12 34 28 10 60 10Z" fill="${c}"/>
-    <path d="M60 10 C92 10 108 34 106 66" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="6"/>
-    <ellipse cx="60" cy="72" rx="30" ry="28" fill="#fff" opacity=".18"/>
-    ${cheeks}
-    <g fill="#3B2F2A">${faces[e.face]}</g>
-    ${eq.neck&&ACC[eq.neck]?ACC[eq.neck]:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}${sparks}
+    <ellipse cx="60" cy="121" rx="${w*.36}" ry="5" fill="${c}" opacity=".18"/>
+    <image href="${IMG(kind,st)}" x="${x}" y="${y}" width="${w}" height="${w}"/>
+    <g transform="translate(0 ${dy.toFixed(1)})">${eq.neck&&ACC[eq.neck]?`<g transform="translate(0 ${(w*.5).toFixed(1)})">${ACC[eq.neck]}</g>`:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}</g>${sparks}
   </svg>`;
 }
 
@@ -915,9 +901,9 @@ function renderMonsters(){
 function thermo(el,stage,key,onPick){
   const c=EMO[S.emo].color;
   el.innerHTML=LV.map(l=>`<button class="lv ${S[key]===l.n?'sel':''}" style="--mc:${c}" data-lv="${l.n}">
-    ${monster(S.emo,18+l.n*8)}<small>${l.t}</small><i class="heat" style="background:${l.h}"></i></button>`).join('')
+    ${monster(S.emo,18+l.n*8,'',{stage:[1,1,2,3,4,4][l.n]})}<small>${l.t}</small><i class="heat" style="background:${l.h}"></i></button>`).join('')
     +`<div style="flex-basis:100%;height:0"></div>`;
-  const draw=()=>{const n=S[key]||3;stage.innerHTML=monster(S.emo,60+n*28,'wobble')};
+  const draw=()=>{const n=S[key]||3;stage.innerHTML=monster(S.emo,60+n*28,'wobble',{stage:[1,1,2,3,4,4][n]})};
   draw();
   el.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{S[key]=+b.dataset.lv;tone(300+S[key]*90,.15);
     el.querySelectorAll('.lv').forEach(x=>x.classList.toggle('sel',x===b));draw();onPick&&onPick()});
@@ -1179,10 +1165,10 @@ $('#finish').onclick=()=>{
   const xp=store.xp[S.emo]||0,lv=lvOf(xp),nx=nextOf(xp);
   go(7);
   $('#winQ').textContent=`你陪${e.name}冷靜下來了！`;
-  $('#winMon').innerHTML=monster(S.emo,150,'wobble');
+  $('#winMon').innerHTML=monster(S.emo,150,'wobble',{calm:1});
   $('#winLv').textContent=`${e.name} Lv.${lv} ${TITLES[lv-1]}`+(nx.need?`（再 ${nx.need} 經驗升級）`:'（最高等級！）');
   setTimeout(()=>$('#winXp').style.width=nx.pct+'%',100);
-  $('#levelUp').innerHTML=S.monUp?`<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'臉頰變得紅通通'}</small></div>`:'';
+  $('#levelUp').innerHTML=S.monUp?`<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 進化成「${STAGES[stageOf(S.monUp.to)-1].n}」了！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{stage:stageOf(S.monUp.from),level:S.monUp.from})}<b>➜</b>${monster(S.emo,90,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
   const total=S.earned.reduce((a,b)=>a+b[1],0);
   $('#rewardList').innerHTML=S.capped?`<li>今天已經練習 5 次以上了，星星明天再來拿。你還是很棒！</li>`
     :S.earned.map(([t,n])=>`<li><span>${t}</span><b>+${n} ⭐</b></li>`).join('')+`<li class="total"><span>這次一共拿到</span><b>${total} ⭐</b></li>`;
@@ -1667,12 +1653,16 @@ const INTRO={
 function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);const [when,body,why,how]=INTRO[k];
   $('#mdMon').innerHTML=monster(k,140,'wobble');
   $('#mdName').innerHTML=`<span class="cname" style="background:${e.color};font-size:.9rem;vertical-align:middle">${e.cname}</span> ${e.name}`;
-  $('#mdLv').textContent=`Lv.${l} ${TITLES[l-1]}`+(nx.need?`・再 ${nx.need} 經驗升級`:'');
+  $('#mdLv').textContent=`Lv.${l} ${TITLES[l-1]}・${STAGES[stageOf(l)-1].n}`+(nx.need?`・再 ${nx.need} 經驗升級`:'');
+  const cur=stageOf(l);
   const L=store.log.filter(x=>x.emo===k);const ae={};L.forEach(x=>x.acts.forEach(a=>{ae[a]=ae[a]||[0,0];ae[a][0]+=x.lv0-x.lv2;ae[a][1]++}));
   const best=Object.entries(ae).sort((a,b)=>b[1][0]/b[1][1]-a[1][0]/a[1][1])[0];
   const cc={};L.forEach(x=>{if(x.cause)cc[x.cause]=(cc[x.cause]||0)+1});const topC=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
   const age=S.age||'mid';
-  $('#mdBody').innerHTML=`<h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
+  $('#mdBody').innerHTML=`<h4>🌱 成長進化</h4><div class="evorow">${STAGES.map((t,i)=>`<div class="evocell ${i+1>cur?'lock':''} ${i+1===cur?'now':''}">${monster(k,64,'',{stage:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small><small>${i+1>cur?'🔒 Lv.'+t.from:i+1===cur?'現在':'✓'}</small></div>`).join('')}
+      <div class="evocell calm">${monster(k,64,'',{calm:1,level:1,eq:{head:null,neck:null}})}<small>平復後</small><small>冷靜下來</small></div></div>
+    <p class="hint" style="text-align:left">每次陪牠冷靜，牠就會長大一點。不管長多大，冷靜下來都會變回溫柔的樣子。</p>
+    <h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
     <h4>🫀 牠來的時候，身體會怎樣？</h4><p>${body}</p>
     <h4>💬 牠想告訴你什麼？</h4><p>${why}</p>
     <h4>🛠️ 怎麼跟牠相處？</h4><p>${how}</p>
