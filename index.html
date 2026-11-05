@@ -50,7 +50,7 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .dots i.on{background:var(--accent);width:24px;border-radius:6px}
 .speak{background:none;border:2px solid var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--soft)}
 /* thermometer */
-.thermo{display:flex;gap:8px;justify-content:center;align-items:flex-end;margin:10px 0}
+.thermo{display:flex;gap:8px;justify-content:center;align-items:flex-end;margin:10px 0;flex-wrap:wrap}
 .lv{flex:1;max-width:110px;border:3px solid var(--line);background:#fff;border-radius:18px;padding:10px 4px;cursor:pointer;text-align:center;font:inherit;color:inherit}
 .lv.sel{border-color:var(--mc,var(--accent));background:color-mix(in srgb,var(--mc,#2F8F83) 12%,#fff)}
 .lv small{display:block;font-size:.8rem;margin-top:4px;color:var(--soft)}
@@ -129,6 +129,36 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .adult-btn{display:block;width:100%;margin-top:8px}
 .wobble{animation:wob 2.4s ease-in-out infinite}
 /* game */
+.memgrid{display:grid;gap:8px;max-width:420px;margin:10px auto}
+.mcard{aspect-ratio:1;border-radius:16px;border:3px solid #F1D9A6;background:repeating-linear-gradient(45deg,#FFE9B8 0 8px,#FFF3D6 8px 16px);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;font-size:1.6rem;color:#D9A441;transition:transform .2s}
+.mcard.up{background:#fff;border-color:var(--line);transform:rotateY(0)}
+.mcard.ok{background:#EAF6F3;border-color:var(--accent);opacity:.75}
+.mcard svg{width:80%;height:80%}
+.scores{display:flex;justify-content:center;gap:14px;align-items:center;font-size:1.05rem}
+.scores .who{display:flex;align-items:center;gap:4px;padding:4px 12px;border-radius:999px;border:2px solid var(--line)}
+.scores .who.turn{border-color:#F5A524;background:#FFF3C4}
+.cmd{font-size:2.2rem;text-align:center;padding:12px;border-radius:20px;margin:6px 0;transition:.2s}
+.track{position:relative;height:64px;background:linear-gradient(90deg,#E8F5E0,#D6EED0);border-radius:16px;margin:10px 0;overflow:hidden}
+.track i{position:absolute;left:0;top:0;bottom:0;background:#BFE3A6;transition:width .2s}
+.track span{position:absolute;bottom:2px;transition:left .2s}
+.track b{position:absolute;right:6px;top:18px;font-size:1.4rem}
+.bigtap{display:block;width:180px;height:180px;margin:12px auto;border-radius:50%;border:0;font:inherit;font-size:1.3rem;background:#F5A524;color:#fff;box-shadow:0 6px 0 #C98A00;touch-action:manipulation;user-select:none;-webkit-user-select:none;cursor:pointer}
+.bigtap:active{transform:translateY(4px);box-shadow:0 2px 0 #C98A00}
+.shake{animation:shk .35s}
+@keyframes shk{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.gcard{text-align:left}
+.gcard b{font-size:1.05rem}
+.gdetail b{display:inline;font-size:inherit;margin:0}
+.gdetail{background:#FFF8EE;border-radius:14px;padding:10px 12px;margin-top:8px;font-family:"Noto Sans TC",sans-serif;line-height:1.7;font-size:.93rem;text-align:left}
+.secttl{font-size:1.15rem;margin:22px 0 4px}
+.rstage{display:flex;gap:6px;justify-content:center;margin:6px 0 12px;flex-wrap:wrap}
+.rstage span{padding:5px 11px;border-radius:999px;background:#F1E8DA;color:var(--soft);font-size:.85rem}
+.rstage span.on{background:var(--accent);color:#fff}
+.rstage span.done{background:#CDEBE5;color:var(--accent)}
+.rtimer{text-align:center;font-size:1.6rem;font-family:"Huninn"}
+.intro{font-family:"Noto Sans TC",sans-serif;line-height:1.75;text-align:left}
+.intro h4{margin:14px 0 4px;color:var(--accent);font-size:1rem}
+.lv .heat{display:block;height:6px;border-radius:3px;margin:5px 6px 0}
 .tlight{width:96px;margin:10px auto;background:#3B2F2A;border-radius:26px;padding:12px;display:flex;flex-direction:column;gap:10px;align-items:center}
 .tlight i{width:62px;height:62px;border-radius:50%;opacity:.22;transition:.3s}
 .tlight i.on{opacity:1;box-shadow:0 0 22px currentColor}
@@ -233,6 +263,7 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
   <!-- 2 size -->
   <section class="step card" data-step="2">
     <p class="q" id="sizeQ">怪獸有多大？</p>
+    <p class="hint" style="margin:-4px 0 4px;font-size:.85rem">🟢 平靜　🟡 有點煩　🔴 快爆炸</p>
     <p class="hint" id="sizeHint">點點看，你的怪獸現在有多大</p>
     <div class="stage" id="sizeStage"></div>
     <div class="thermo" id="thermo"></div>
@@ -309,8 +340,8 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
 
   <!-- 9 my monsters + shop -->
   <section class="step card" data-step="9">
-    <p class="q">我的怪獸朋友</p>
-    <p class="hint">每次面對怪獸，牠就更了解你一點，等級也會變高</p>
+    <p class="q">怪獸圖鑑</p>
+    <p class="hint">點一隻怪獸，認識牠、學會跟牠相處。每次面對牠，牠就跟你更熟一點</p>
     <div class="grid g3" id="dex"></div>
   </section>
 
@@ -325,9 +356,9 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
     <div id="repairBox"></div>
     <div id="voucherBox"></div>
     <div class="grid g2" style="margin-top:14px">
-      <button class="pick" id="hStart" style="border-color:#F7B8AE;background:#FFF1EE"><b>😤 怪獸來了</b><span>去冷靜站</span></button>
+      <button class="pick" id="hStart" style="border-color:#F7B8AE;background:#FFF1EE"><b>💛 冷靜站</b><span>一步一步讓怪獸變小</span></button>
       <button class="pick" id="hWater"><b>💧 照顧家園</b><span id="hWaterSub"></span></button>
-      <button class="pick" id="hPractice"><b>🧘 平時練習</b><span id="hPracSub"></span></button>
+      <button class="pick" id="hGames"><b>🎮 遊戲時間</b><span id="hGamesSub"></span></button>
       <button class="pick" id="hParent"><b>🌟 大人給星星</b><span>平時表現好</span></button>
       <button class="pick" id="hWeek"><b>📅 一週練習表</b><span id="hWeekSub">每天的小任務</span></button>
       <button class="pick" id="hLog"><b>📒 情緒紀錄</b><span>回顧和分享</span></button>
@@ -390,6 +421,70 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
     <div class="row"><button class="btn ghost small" id="cpnAdd">＋ 新增一項</button><button class="btn" id="cpnSave">儲存</button></div>
   </section>
 
+  <!-- 17 games hub -->
+  <section class="step card" data-step="17">
+    <p class="q">遊戲時間</p>
+    <p class="hint">心情好的時候多玩，練專注、練煞車、練冷靜</p>
+    <button class="pick" id="gRoutine" style="width:100%;border-color:#9CCFC6;background:#F4FAF9"><b>🕙 每天 10 分鐘遊戲時間</b><span id="gRoutineSub">熱身 → 專注 → 情緒 → 收尾，一步一步帶你玩</span></button>
+    <p class="q secttl">自己玩的小遊戲</p>
+    <div class="grid g2">
+      <button class="pick" id="gMem"><b>🃏 記憶翻牌</b><span>練專注、輪流</span></button>
+      <button class="pick" id="gTR"><b>🐰 烏龜兔子石頭</b><span>練身體煞車</span></button>
+      <button class="pick" id="gColor"><b>🫧 顏色泡泡</b><span>只戳指定顏色</span></button>
+      <button class="pick" id="gCalm"><b>🧘 冷靜練習</b><span id="gCalmSub">呼吸、紅綠燈…</span></button>
+    </div>
+    <p class="q secttl">親子遊戲庫（大人帶著玩）</p>
+    <p class="hint" id="gTime"></p>
+    <div id="gLib"></div>
+  </section>
+
+  <!-- 18 10-minute routine -->
+  <section class="step card" data-step="18">
+    <p class="q">每天 10 分鐘遊戲時間</p>
+    <div class="rstage" id="rStages"></div>
+    <div class="rtimer" id="rTimer"></div>
+    <div id="rBody"></div>
+  </section>
+
+  <!-- 19 memory -->
+  <section class="step card" data-step="19">
+    <p class="q">記憶翻牌</p>
+    <p class="hint">翻兩張，一樣的就收走。記住每隻怪獸躲在哪裡！</p>
+    <div class="chips" id="memMode" style="margin-bottom:10px"></div>
+    <div class="scores" id="memScore"></div>
+    <div class="memgrid" id="memGrid"></div>
+    <div class="soft" id="memMsg" style="display:none"></div>
+    <div class="row"><button class="btn ghost small" id="memNew">重新開始</button></div>
+  </section>
+
+  <!-- 20 turtle rabbit stone -->
+  <section class="step card" data-step="20">
+    <p class="q">烏龜、兔子、石頭</p>
+    <p class="hint">🐰 兔子：快快點　🐢 烏龜：慢慢點　🪨 石頭：停住不能點！</p>
+    <div class="cmd" id="trCmd">準備好了嗎？</div>
+    <div class="track"><i id="trBar"></i><span id="trRun"></span><b>🏁</b></div>
+    <button class="bigtap" id="trTap">開始</button>
+    <p class="hint" id="trInfo"></p>
+  </section>
+
+  <!-- 21 color bubbles -->
+  <section class="step card" data-step="21">
+    <p class="q">顏色泡泡</p>
+    <p class="hint" id="cbHint"></p>
+    <div class="cmd" id="cbCmd"></div>
+    <div class="pond" id="cbPond"></div>
+    <div class="count" id="cbCount" style="margin-top:10px"></div>
+    <div class="row"><button class="btn" id="cbStart">開始</button></div>
+  </section>
+
+  <!-- 22 monster detail -->
+  <section class="step card" data-step="22">
+    <div class="stage" id="mdMon" style="min-height:150px"></div>
+    <p class="q" id="mdName"></p>
+    <p class="hint" id="mdLv"></p>
+    <div class="intro" id="mdBody"></div>
+  </section>
+
   <!-- 13 parent gives stars -->
   <section class="step card" data-step="13">
     <p class="q">大人給星星</p>
@@ -422,13 +517,14 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
   </section>
 </div>
 
-<button class="sos" id="sos">怪獸來了！</button>
+<button class="sos" id="sos">🆘 馬上冷靜</button>
 <div class="toasts" id="toasts"></div>
 <nav class="tabbar" id="tabbar">
   <button data-tab="10">🏠<span>家園</span></button>
   <button data-tab="1">💛<span>冷靜站</span></button>
+  <button data-tab="17">🎮<span>遊戲</span></button>
   <button data-tab="11">🛒<span>商店</span></button>
-  <button data-tab="9">👾<span>怪獸</span></button>
+  <button data-tab="9">📖<span>圖鑑</span></button>
 </nav>
 
 <div class="drawer-bg" id="dbg"></div>
@@ -497,6 +593,21 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
   <h3>常見情境怎麼做</h3>
   <div class="tabs" id="caseTabs"></div>
   <div class="case" id="caseBody"></div>
+  <h3>親子遊戲小提醒</h3>
+  <ul>
+    <li><b>一次只玩一種</b>：收起其他玩具，關掉電視和背景音樂。</li>
+    <li><b>時間從短開始</b>：3 歲約 3–5 分鐘、4 歲約 5–8 分鐘、5–6 歲約 8–15 分鐘，成功了再慢慢加長。</li>
+    <li><b>稱讚過程</b>：「你剛剛聽到紅燈就停住了」比「你好棒」更清楚，孩子知道要重複什麼。</li>
+    <li><b>難度怎麼調</b>：太簡單就加快、加規則；太難就減少選項、放慢、縮短；分心就先玩動態遊戲再玩靜態的；挫折就改成合作，不比輸贏。</li>
+  </ul>
+  <h3>我們家的心得筆記</h3>
+  <p>記下對孩子有效的方法、有用的話、要避免的情況。只存在這台裝置，可以複製分享給家人或老師。</p>
+  <textarea id="pNotes" style="width:100%;min-height:110px;border:2px solid var(--line);border-radius:12px;padding:10px;font:inherit;font-size:.93rem" placeholder="例如：生氣時先給他抱枕比講話有用；輸了會哭，先玩合作遊戲比較好……"></textarea>
+  <div class="row" style="justify-content:flex-start;margin-top:6px"><button class="chip" id="pNotesCopy">📋 複製心得和孩子的冷靜秘訣</button></div>
+  <h3>家長交流（選填）</h3>
+  <p>這個工具不會把資料傳到網路上，所以無法直接看到其他家長的分享。如果你有 LINE 社群、Padlet 或表單，可以把網址貼在這裡，下面就會出現連結。</p>
+  <input id="commUrl" class="namein" style="width:100%;text-align:left;font-size:.95rem" placeholder="https://...">
+  <div id="commLink" style="margin-top:8px"></div>
   <h3>每天 15 分鐘特別時光</h3>
   <p>每天留 15 分鐘，一對一、不看手機，讓孩子決定玩什麼。過程中多描述（「你把積木疊得好高」）、多聽，少指導、少批評。這能讓孩子不用激烈行為來爭取注意。一週練習表裡有這一項。</p>
   <h3>通用原則</h3>
@@ -507,6 +618,7 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
     <li><b>稱讚過程</b>：努力、換方法、願意再試，比「你好聰明」更能培養挫折容忍力。</li>
     <li><b>事後回顧</b>：平靜後才討論「下次可以怎麼做」，一次一個方法就好。</li>
   </ul>
+  <p class="note">如果孩子在多數遊戲中很難持續 1–2 分鐘、常常攻擊、很難被安撫，或已經影響幼兒園適應與人際互動，建議安排兒童發展評估或早期療育評估。遊戲是日常練習，不能取代專業評估。</p>
   <p class="note">如果孩子有 ADHD 或疑似 ADHD：對學齡前孩子，以家長為主的行為管理訓練是目前建議的第一線做法，可以詢問兒童心智科或早療單位是否有親職課程。</p>
   <p class="note">這是日常情緒陪伴的小工具，不能取代專業評估。若孩子的情緒爆發頻繁、強度很大、持續很久，或有傷害自己或他人的情形，請諮詢兒童心智科醫師、心理師或學校輔導老師。</p>
 </aside>
@@ -527,7 +639,7 @@ const EMO={
   wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses'],face:'wronged'}
 };
 const LV=[
-  {n:1,t:'小小的'},{n:2,t:'有一點'},{n:3,t:'中中的'},{n:4,t:'很大'},{n:5,t:'超級大'}
+  {n:1,t:'小小的',h:'#6CCB70'},{n:2,t:'有一點',h:'#A8D86B'},{n:3,t:'中中的',h:'#F7D046'},{n:4,t:'很大',h:'#F5A524'},{n:5,t:'超級大',h:'#F26B5B'}
 ];
 const ACT_NAME={light:'紅綠燈',breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱'};
 const CAUSES=['我做不到 / 太難了','我輸了','跟我想的不一樣','我覺得不公平','我被說 / 被罵','不能再玩了','東西壞掉了','被別人誤會','我也不知道'];
@@ -613,7 +725,7 @@ const S={step:0,age:null,emo:null,lv:0,lv2:0,act:null,cause:null,want:null,plan:
 let store={};
 try{store=JSON.parse(localStorage.getItem('calmMonster')||'{}')}catch(e){store={}}
 function save(){try{localStorage.setItem('calmMonster',JSON.stringify(store))}catch(e){}refreshHdr()}
-store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.repairs=store.repairs||[];store.log=store.log||[];store.moodLog=store.moodLog||[];store.pracLog=store.pracLog||[];store.vouchers=store.vouchers||[];store.week=store.week||{};store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;
+store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.repairs=store.repairs||[];store.log=store.log||[];store.moodLog=store.moodLog||[];store.pracLog=store.pracLog||[];store.vouchers=store.vouchers||[];store.week=store.week||{};store.playLog=store.playLog||[];store.gameDay=store.gameDay||{};store.wins=store.wins||[];store.tips=store.tips||{};store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;
 const LEVELS=[0,30,80,150,250,400];
 const TITLES=['初次見面','認識你了','好朋友','好夥伴','默契搭檔','情緒小達人'];
 function lvOf(xp){let l=0;LEVELS.forEach((t,i)=>{if(xp>=t)l=i});return l+1}
@@ -730,7 +842,7 @@ function go(n,noPush){
   $('#dots').style.display=(n>=1&&n<=7)?'':'none';
   $('#navrow').style.display=(n===0||n===7||n===10)?'none':'';
   $('#navBack').style.visibility=S.hist.length?'visible':'hidden';
-  const tab=(n>=1&&n<=8)?1:n;
+  const tab=(n>=1&&n<=8)?1:(n>=18&&n<=21)?17:n===22?9:n;
   $$('[data-tab]').forEach(b=>b.classList.toggle('on',+b.dataset.tab===tab));
   $$('.step').forEach(s=>s.classList.toggle('on',+s.dataset.step===n));
   $('#dots').innerHTML=Array.from({length:8},(_,i)=>`<i class="${i===n?'on':''}"></i>`).join('');
@@ -750,6 +862,12 @@ function go(n,noPush){
   if(n===14)renderLog();
   if(n===15)renderWeek();
   if(n===16)renderCpn();
+  if(n===17)renderGames();
+  if(n===18)renderRoutine();
+  if(n===19)renderMemory(true);
+  if(n===20)renderTR();
+  if(n===21)renderCB();
+  if(n===22)renderMD();
 }
 
 /* ---------- adult co-regulation mode ---------- */
@@ -797,7 +915,8 @@ function renderMonsters(){
 function thermo(el,stage,key,onPick){
   const c=EMO[S.emo].color;
   el.innerHTML=LV.map(l=>`<button class="lv ${S[key]===l.n?'sel':''}" style="--mc:${c}" data-lv="${l.n}">
-    ${monster(S.emo,18+l.n*8)}<small>${l.t}</small></button>`).join('');
+    ${monster(S.emo,18+l.n*8)}<small>${l.t}</small><i class="heat" style="background:${l.h}"></i></button>`).join('')
+    +`<div style="flex-basis:100%;height:0"></div>`;
   const draw=()=>{const n=S[key]||3;stage.innerHTML=monster(S.emo,60+n*28,'wobble')};
   draw();
   el.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{S[key]=+b.dataset.lv;tone(300+S[key]*90,.15);
@@ -841,7 +960,7 @@ $('#speakAct').onclick=()=>speak(actSpeech);
 $('#actDone').onclick=()=>{
   if(S.practice){
     if(store.pracDay!==today()){store.pracDay=today();store.pracLog.push(today());store.pracLog=store.pracLog.slice(-60);gain('平時練習',5)}else toast('今天已經練習過了，你好認真！');
-    S.practice=false;go(10);return}
+    S.practice=false;const bk=S.hist.pop();go(bk!==undefined?bk:17,true);return}
   S.actsDone=S.actsDone||[];if(!S.actsDone.includes(S.act))S.actsDone.push(S.act);
   if(S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}
   S.lv2=0;go(4)};
@@ -857,8 +976,8 @@ function actBreathe(){
     $('#bStart').onclick=()=>{$('#bStart').style.display='none';boxRun(0)};
   } else {
     const young=S.age==='young';
-    actSpeech=young?'我們來聞花、吹蠟燭。用鼻子聞聞花香，吸——。再用嘴巴吹蠟燭，呼——。':'我們來吹氣球。用鼻子慢慢吸氣，肚子像氣球一樣變大。再用嘴巴慢慢吐氣，氣球變小。';
-    $('#actHint').textContent=young?'聞聞花香（吸）、吹吹蠟燭（吐），做 5 次':'吹氣球呼吸：吸氣時氣球變大，吐氣時變小，做 5 次';
+    actSpeech=young?'我們來聞花、吹泡泡。用鼻子聞聞花香，吸——。再用嘴巴慢慢吹泡泡，呼——。':'我們來吹氣球。用鼻子慢慢吸氣，肚子像氣球一樣變大。再用嘴巴慢慢吐氣，氣球變小。';
+    $('#actHint').textContent=young?'聞聞花香（吸 3 秒）、慢慢吹泡泡（吐 5 秒），做 5 次':'吹氣球呼吸：吸氣時氣球變大，吐氣時變小，做 5 次';
     A.innerHTML=`<div class="breath-box"><div class="ball" id="ball" style="--mc:${c}">${young?'🌸':''}</div></div>
       <div class="breath-word" id="bw">準備好了嗎？</div><div class="count" id="bc"></div>
       <div class="row"><button class="btn" id="bStart">開始</button></div>`;
@@ -867,14 +986,14 @@ function actBreathe(){
 }
 function ballRun(i,young){
   const ball=$('#ball'),bw=$('#bw'),bc=$('#bc');if(!ball)return;
-  const total=5,inT=young?3000:4000,outT=young?3500:5000;
+  const total=5,inT=3000+(young?0:1000),outT=5000;
   if(i>=total){bw.textContent='好棒！你做完了 5 次';bc.textContent='';chime();ball.style.transform='scale(1)';return}
   bc.textContent=`第 ${i+1} / ${total} 次`;
   ball.style.transitionDuration=inT+'ms';ball.style.transform='scale(2.1)';
   bw.textContent=young?'聞聞花香～吸～':'鼻子吸氣～氣球變大';
   if(young)ball.textContent='🌸';tone(392,.3,'sine',.08);
   later(()=>{ball.style.transitionDuration=outT+'ms';ball.style.transform='scale(1)';
-    bw.textContent=young?'吹蠟燭～呼～～':'嘴巴吐氣～慢慢變小';if(young)ball.textContent='🕯️';tone(294,.3,'sine',.08);
+    bw.textContent=young?'吹泡泡～慢慢呼～～':'嘴巴吐氣～慢慢變小';if(young)ball.textContent='🫧';tone(294,.3,'sine',.08);
     later(()=>ballRun(i+1,young),outT+400)},inT);
 }
 function boxRun(i){
@@ -1077,8 +1196,9 @@ $('#winDex').onclick=()=>go(11);
 /* ---------- monster dex ---------- */
 function renderDex(){
   $('#dex').innerHTML=Object.entries(EMO).map(([k,e])=>{const xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);
-    return `<div class="pick" style="cursor:default">${monster(k,80)}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span>
-      <span class="lvtag">Lv.${l} ${TITLES[l-1]}</span><div class="xpbar"><i style="width:${nx.pct}%"></i></div></div>`}).join('');
+    return `<button class="pick" data-md="${k}">${monster(k,80)}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span>
+      <span class="lvtag">Lv.${l} ${TITLES[l-1]}</span><div class="xpbar"><i style="width:${nx.pct}%"></i></div><span class="lvtag">點我認識牠 ›</span></button>`}).join('');
+  $$('[data-md]').forEach(b=>b.onclick=()=>{S.mdK=b.dataset.md;go(22)});
 }
 
 /* ---------- hero ---------- */
@@ -1143,7 +1263,7 @@ function renderHome(){
   $('#scene').innerHTML=scene();
   const plants=SHOP.filter(x=>x.plant&&store.owned.includes(x.id));
   $('#hWaterSub').textContent=!plants.length?'先去商店買植物':store.waterDay===today()?'今天澆過水了':'澆水 +2 ⭐';
-  $('#hPracSub').textContent=store.pracDay===today()?'今天練過了，再練也可以':'心情好時先練 +5 ⭐';
+  $('#hGamesSub').textContent=store.gameDay.routine===today()?'今天玩過了，再玩也可以':'小遊戲和親子遊戲';
   const vb=$('#voucherBox');vb.innerHTML='';
   store.vouchers.forEach(v=>{const d=document.createElement('div');d.className='task';d.style.background='#EAF6F3';
     d.innerHTML=`<span>🎟 兌換券：<b>${v.name}</b></span>`;
@@ -1164,7 +1284,8 @@ function renderHome(){
     const g=$('#moodGo');if(g)g.onclick=startFlow;});
 }
 $('#hStart').onclick=startFlow;
-$('#hPractice').onclick=()=>{resetFlow();store.day.n--;save();S.practice=true;S.emo='scared';S.act='breathe';S.hist=[10];go(3,true)};
+function startPractice(emo,act){resetFlow();store.day.n--;save();S.practice=true;S.emo=emo||'scared';S.act=act||'breathe';go(3)}
+$('#hGames').onclick=()=>go(17);
 $('#hWater').onclick=()=>{const plants=SHOP.filter(x=>x.plant&&store.owned.includes(x.id));
   if(!plants.length){S.shopCat='home';go(11);return}
   if(store.waterDay===today()){toast('今天已經澆過水了，明天再來！');return}
@@ -1270,13 +1391,13 @@ function renderLog(){
   $('#logTabs').innerHTML=[['week','本週'],['lastweek','上週'],['month','近 30 天'],['all','全部']].map(([k,t])=>`<button class="chip ${S.logRange===k?'sel':''}" data-lr="${k}">${t}</button>`).join('');
   $$('[data-lr]').forEach(b=>b.onclick=()=>{S.logRange=b.dataset.lr;$('#logText').style.display='none';renderLog()});
   const L=logRange(),sm=summarize(L);
-  if(!sm){$('#logSum').innerHTML='這段時間還沒有紀錄。用完冷靜站後會自動記錄。';$('#logList').innerHTML='';return}
+  if(!sm){$('#logSum').innerHTML='這段時間還沒有冷靜站紀錄。用完冷靜站後會自動記錄。'+winsHtml();$('#logList').innerHTML='';return}
   const mx=Math.max(...Object.values(sm.byE));
   $('#logSum').innerHTML=`<b>共 ${L.length} 次</b>　平均怪獸變小 <b>${sm.avg}</b> 級
     <div class="bars">${Object.entries(sm.byE).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div><span style="width:84px">${EMO[k].name}</span><b style="width:${n/mx*150}px;background:${EMO[k].color}"></b>${n}</div>`).join('')}</div>
     ${sm.topC?`<div>最常見的原因：<b>${sm.topC[0]}</b>（${sm.topC[1]} 次）</div>`:''}
     ${sm.best?`<div>效果最好的方法：<b>${sm.best[0]}</b>（平均變小 ${(sm.best[1][0]/sm.best[1][1]).toFixed(1)} 級）</div>`:''}
-    ${sm.co?`<div>請大人陪伴：${sm.co} 次</div>`:''}${sm.rep?`<div>修復任務：${sm.rep} 次</div>`:''}`;
+    ${sm.co?`<div>請大人陪伴：${sm.co} 次</div>`:''}${sm.rep?`<div>修復任務：${sm.rep} 次</div>`:''}`+winsHtml();
   $('#logList').innerHTML=L.map(l=>{const e=EMO[l.emo];return `<div class="logitem">
     <div class="top"><b><span class="cname" style="background:${e.color};margin:0 6px 0 0">${e.cname}</span>${e.name}</b><span style="color:var(--soft)">${fmtT(l.t)}</span></div>
     <div>大小：${l.lv0} → ${l.lv2}${l.co?'（大人陪伴）':''}</div>
@@ -1290,6 +1411,7 @@ function logAsText(){const L=logRange(),sm=summarize(L);if(!sm)return '';
   const name={week:'本週',lastweek:'上週',month:'近 30 天',all:'全部'}[S.logRange];
   let t=`情緒紀錄（${name}，共 ${L.length} 次，平均變小 ${sm.avg} 級）\n`;
   t+=Object.entries(sm.byE).map(([k,n])=>`${EMO[k].cname}${EMO[k].name} ${n} 次`).join('、')+'\n';
+  const W=winsRange();if(W.length)t+=`做到的事：${W.map(w=>w.text).join('、')}\n`;
   if(sm.topC)t+=`最常見原因：${sm.topC[0]}\n`;if(sm.best)t+=`效果最好的方法：${sm.best[0]}\n`;
   t+='\n'+L.slice().reverse().map(l=>`${fmtT(l.t)}｜${EMO[l.emo].name} ${l.lv0}→${l.lv2}${l.co?'（大人陪伴）':''}`+(l.cause?`｜原因：${l.cause}`:'')+(l.acts.length?`｜用了：${l.acts.join('、')}`:'')+(l.plan?`｜下次：${l.plan}`:'')+(l.repair?`｜修復：${l.repair}`:'')+(l.note?`｜備註：${l.note}`:'')).join('\n');
   return t}
@@ -1302,15 +1424,15 @@ $('#logClear').onclick=()=>{if(!logArm){logArm=true;$('#logClear').textContent='
 
 /* ---------- week practice ---------- */
 const WTASKS={
-  young:[['mood','情緒臉譜打卡','家園選心情',1],['prac','吹泡泡呼吸','平時練習',1],['light','紅綠燈遊戲','停、吸、想'],['role','玩偶角色扮演','演一個情境'],['time','大人陪玩 15 分鐘','孩子決定玩什麼']],
-  mid:[['mood','心情打卡','家園選心情',1],['prac','平時練習','任一個冷靜活動',1],['light','紅綠燈遊戲','停、吸、想'],['role','角色扮演練習','演一個情境'],['time','特別時光 15 分鐘','孩子決定玩什麼']],
-  old:[['mood','心情打卡','家園選心情',1],['prac','平時練習','任一個冷靜活動',1],['write','寫或畫一句心情','用說的也可以'],['role','想一想 Plan B','練習一個情境'],['time','家人特別時光','15 分鐘不看手機']]
+  young:[['mood','情緒臉譜打卡','家園選心情',1],['prac','吹泡泡呼吸','平時練習',1],['game','遊戲時間','小遊戲或親子遊戲',1],['role','玩偶角色扮演','演一個情境'],['time','大人陪玩 15 分鐘','孩子決定玩什麼']],
+  mid:[['mood','心情打卡','家園選心情',1],['prac','平時練習','任一個冷靜活動',1],['game','遊戲時間','小遊戲或親子遊戲',1],['role','角色扮演練習','演一個情境'],['time','特別時光 15 分鐘','孩子決定玩什麼']],
+  old:[['mood','心情打卡','家園選心情',1],['prac','平時練習','任一個冷靜活動',1],['game','遊戲時間','小遊戲或親子遊戲',1],['write','寫或畫一句心情','用說的也可以'],['role','想一想 Plan B','練習一個情境'],['time','家人特別時光','15 分鐘不看手機']]
 };
 const ROLES=[['玩具被搶走','「這是我在玩的，請還給我。」或請大人幫忙'],['玩遊戲輸了','「好可惜！恭喜你，下次我再試試。」'],['想加入卻被拒絕','「好吧，那我先玩別的，等一下再問。」'],['排隊等很久','「換我了嗎？」然後數到 10'],['作品被說要修改','「我先改一小塊就好。」'],['積木被弄倒','「我很生氣，請不要碰我的積木。」'],['要收玩具了','「可以再一下下嗎？計時器響我就收。」']];
 function weekInfo(){const m=monday(),key=dkey(m);if(store.week.key!==key)store.week={key,ticks:{},claimed:false};
   const days=[...Array(7)].map((_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return dkey(d)});
   const tasks=WTASKS[S.age||'mid'];
-  const isDone=(t,d)=>t[3]?(t[0]==='mood'?store.moodLog.some(x=>x.d===d):store.pracLog.includes(d)):!!(store.week.ticks[t[0]]&&store.week.ticks[t[0]][d]);
+  const isDone=(t,d)=>t[3]?(t[0]==='mood'?store.moodLog.some(x=>x.d===d):t[0]==='game'?store.playLog.includes(d):store.pracLog.includes(d)):!!(store.week.ticks[t[0]]&&store.week.ticks[t[0]][d]);
   let doneCells=0,goodDays=0;
   days.forEach(d=>{const n=tasks.filter(t=>isDone(t,d)).length;doneCells+=n;if(n>=3)goodDays++});
   return {days,tasks,isDone,doneCells,goodDays}}
@@ -1345,6 +1467,224 @@ function renderCpn(){cpnDraft=cpnDraft||coupons().map(c=>({...c}));
 $('#cpnAdd').onclick=()=>{cpnDraft.push({name:'新的兌換券',cost:50});renderCpn()};
 $('#cpnSave').onclick=()=>{store.coupons=cpnDraft.filter(c=>c.name.trim()).map(c=>({name:c.name.trim(),cost:c.cost}));save();cpnDraft=null;toast('兌換券已儲存');go(11);S.shopCat='reward';renderShop()};
 
+/* ---------- wins (10-min routine closing) ---------- */
+function winsRange(){const r=S.logRange||'week';const m=monday().getTime();
+  return store.wins.filter(w=>r==='week'?w.t>=m:r==='lastweek'?(w.t>=m-7*864e5&&w.t<m):r==='month'?w.t>=Date.now()-30*864e5:true)}
+function winsHtml(){const W=winsRange();return W.length?`<div style="margin-top:6px">🌟 做到的事：${W.map(w=>`<b>${w.text}</b>`).join('、')}</div>`:''}
+
+/* ---------- games hub ---------- */
+function gameReward(id,label){if(!store.playLog.includes(today()))store.playLog.push(today());store.playLog=store.playLog.slice(-60);
+  if(store.gameDay[id]!==today()){store.gameDay[id]=today();gain(label,3)}else{save();toast('今天已經拿過這個遊戲的星星了，再玩也很棒！')}}
+const LIB=[
+  ['redgreen','🚦','紅綠燈','大人喊「綠燈」就走或跑，喊「紅燈」立刻定住；加「黃燈」就慢慢走。','聽指令、衝動控制、身體煞車','太簡單：黃燈要單腳站；太難：只用紅燈和綠燈。'],
+  ['tamb','🥁','鈴鼓快慢走','鈴鼓敲快就快走，敲慢就像烏龜慢慢走，聲音停了就要停。沒有鈴鼓可以拍手。','聽指令、調整速度、自我控制','太簡單：加入「倒退走」；太難：只有快和停。'],
+  ['mirror','🪞','鏡子遊戲','大人做慢動作，孩子像鏡子一樣同步模仿，每 30 秒換一個動作，之後交換角色。','視覺專注、觀察、動作控制','太難：動作再慢一點、只動手；太簡單：加入表情。'],
+  ['ball','⚽','顏色球接球','滾不同顏色的球，只接指定顏色，其他顏色要放過去。','選擇性注意、忍住不接','太難：只用兩種顏色；太簡單：規則改成「不接紅色」。'],
+  ['lr','✋','左右手指令','孩子左右手各拿一樣東西，聽指令：「襪子舉起來、牙刷放下來」。','工作記憶、聽覺專注、左右協調','太簡單：一次說兩個指令；太難：只動一隻手。'],
+  ['balloon','🎈','氣球不落地','用手或墊子拍氣球，不讓它掉到地上；熟練後要繞過椅子。','持續注意、手眼協調、情緒調節','太難：兩個人一起拍；太簡單：只能用一隻手。'],
+  ['freeze','🎵','音樂定格','音樂播放時跳舞，音樂一停就變成雕像。下面可以直接播音樂！','在興奮和平靜之間切換','太簡單：停的時候要做指定動作；太難：停久一點再開始。'],
+  ['bear','🐻','小熊與恐龍','聽到「小熊說」才照做，聽到「恐龍說」不能動；熟練後規則反過來。','忍住習慣反應、規則轉換','太難：先只玩「小熊說」；太簡單：規則反轉。'],
+  ['face','🎭','情緒臉譜配對','抽一張怪獸卡，說說「我什麼時候會這樣」，大人也說一次。下面可以直接抽卡！','情緒辨識、說出感覺','太難：大人先說；太簡單：演出那個表情讓對方猜。'],
+  ['corner','🛋️','冷靜角落尋寶','一起布置冷靜角：抱枕、圖卡、壓力球、繪本。生氣時去選一樣「冷靜工具」。','主動使用安撫方法','可以把工具裡孩子覺得最有效的方法畫成卡片放進去。'],
+  ['carry','🤝','合作運送','兩個人背靠背，或用手肘夾著球，一起把球或枕頭運到終點。','輪流、合作、接受別人的想法','太難：用大一點的枕頭；太簡單：加障礙物。'],
+  ['diff','🔍','找不同／迷宮','從簡單的圖卡開始找不同或走迷宮，完成後讓孩子自己指出哪裡不一樣。','持續注意、視覺搜尋','太難：只找 2 個不同；太簡單：限時完成。']
+];
+function ageTime(){return S.age==='young'?'建議時間：3 歲約 3–5 分鐘、4 歲約 5–8 分鐘、5–6 歲約 8–15 分鐘。一次只玩一種，收起其他玩具。':'建議時間：每次 10–15 分鐘。一次只玩一種，收起其他玩具。'}
+function renderGames(){
+  $('#gRoutineSub').textContent=store.gameDay.routine===today()?'今天完成了！再玩一次也可以':'熱身 → 專注 → 情緒 → 收尾，一步一步帶你玩';
+  $('#gCalmSub').textContent=store.pracDay===today()?'今天練過了，再練也可以':'心情好時先練 +5 ⭐';
+  $('#gTime').textContent=ageTime();
+  S.libOpen=S.libOpen||null;
+  $('#gLib').innerHTML=LIB.map(([id,ic,nm,how,sk,adj])=>`<div class="pick gcard" style="margin-top:10px" data-lib="${id}"><b>${ic} ${nm}</b><span>練到：${sk}</span>
+    ${S.libOpen===id?`<div class="gdetail"><b>怎麼玩</b>：${how}<br><b>調整難度</b>：${adj}<div id="libExtra"></div>
+      <div class="row" style="margin-top:8px"><button class="btn small" data-played="${id}">我們玩過了 +3 ⭐</button></div></div>`:''}</div>`).join('');
+  $$('[data-lib]').forEach(c=>c.onclick=e=>{if(e.target.closest('button,#libExtra'))return;S.libOpen=S.libOpen===c.dataset.lib?null:c.dataset.lib;stopAct();renderGames()});
+  $$('[data-played]').forEach(b=>b.onclick=()=>{const g=LIB.find(x=>x[0]===b.dataset.played);gameReward('lib_'+g[0],'親子遊戲：'+g[2])});
+  if(S.libOpen==='freeze')freezeMusic($('#libExtra'));
+  if(S.libOpen==='face')faceCard($('#libExtra'));
+}
+$('#gRoutine').onclick=()=>{S.rStage=0;go(18)};
+$('#gMem').onclick=()=>go(19);$('#gTR').onclick=()=>go(20);$('#gColor').onclick=()=>go(21);
+$('#gCalm').onclick=()=>startPractice('scared','breathe');
+
+/* music freeze helper */
+function freezeMusic(el){
+  el.innerHTML=`<div class="row" style="margin-top:8px"><button class="btn small" id="fzPlay">▶ 播放音樂</button><button class="btn small ghost" id="fzStop">停止</button></div><div class="breath-word" id="fzMsg" style="font-size:1.3rem;min-height:1.6em"></div>`;
+  let playing=false;const notes=[523,587,659,784,880,784,659,587];
+  const loop=(k,left)=>{if(!playing)return;
+    if(left<=0){$('#fzMsg').textContent='🗿 定格！變成雕像！';tone(196,.4,'square',.06);later(()=>{if(!playing)return;$('#fzMsg').textContent='💃 跳舞！';loop(0,20+Math.floor(Math.random()*30))},3000+Math.random()*2000);return}
+    tone(notes[k%notes.length]*(Math.random()<.3?1.5:1),.18,'triangle',.08);later(()=>loop(k+1,left-1),260)};
+  $('#fzPlay').onclick=e=>{e.stopPropagation();ac();if(playing)return;playing=true;$('#fzMsg').textContent='💃 跳舞！';loop(0,20+Math.floor(Math.random()*30))};
+  $('#fzStop').onclick=e=>{e.stopPropagation();playing=false;stopAct();$('#fzMsg').textContent=''};
+}
+/* emotion face card helper */
+function faceCard(el,onDraw){
+  el.innerHTML=`<div class="stage" id="fcMon" style="min-height:110px"></div><div class="sentence" id="fcQ" style="display:none"></div><div class="row"><button class="btn small" id="fcDraw">抽一張怪獸卡</button></div>`;
+  $('#fcDraw').onclick=e=>{e.stopPropagation();const ks=Object.keys(EMO);const k=ks[Math.floor(Math.random()*ks.length)];
+    $('#fcMon').innerHTML=monster(k,100,'wobble');$('#fcQ').style.display='';$('#fcQ').innerHTML=`抽到<u>${EMO[k].name}</u>！<br>你什麼時候會覺得<u>${EMO[k].feel.replace(/^好/,'')}</u>？<br><small>說完換大人說一次</small>`;
+    tone(660,.15);speak(`抽到${EMO[k].name}。你什麼時候會覺得${EMO[k].feel.replace(/^好/,'')}？`);onDraw&&onDraw()};
+}
+
+/* ---------- 10-minute routine ---------- */
+const RSTAGES=[['熱身',120],['專注',240],['情緒',180],['收尾',60]];
+const WINS=['我等到了','我沒有丟玩具','輸了也說再玩一次','我用說的','我有專心玩完','我幫忙了','我自己冷靜下來'];
+function renderRoutine(){
+  const st=S.rStage||0;
+  $('#rStages').innerHTML=RSTAGES.map(([n,t],i)=>`<span class="${i+1===st?'on':i+1<st?'done':''}">${n} ${t/60} 分</span>`).join('');
+  const B=$('#rBody');$('#rTimer').textContent='';
+  const next=lbl=>`<div class="row"><button class="btn" id="rNext">${lbl||'下一步 →'}</button></div>`;
+  const timer=()=>{if(!S.rEnd)S.rEnd=Date.now()+RSTAGES[st-1][1]*1000;
+    const tk=()=>{const left=Math.max(0,Math.round((S.rEnd-Date.now())/1000));$('#rTimer').textContent=left?`⏱ ${fmt(left)}`:'⏰ 時間到，可以進下一步了';if(left===0&&!S.rRang){S.rRang=true;chime()}if(left>0)later(tk,1000)};tk()};
+  const bindNext=()=>{$('#rNext').onclick=()=>{S.rStage=st+1;S.rEnd=0;S.rRang=false;stopAct();renderRoutine();window.scrollTo({top:0})}};
+  if(st===0){B.innerHTML=`<div class="intro"><p>每天固定一個時間，例如晚餐後，跟大人一起玩 10 分鐘：</p>
+    <p>1️⃣ <b>熱身 2 分鐘</b>：音樂定格或紅綠燈，先動一動<br>2️⃣ <b>專注 4 分鐘</b>：記憶翻牌、烏龜兔子、顏色泡泡<br>3️⃣ <b>情緒 3 分鐘</b>：抽怪獸卡、說一件今天的事、吹泡泡呼吸<br>4️⃣ <b>收尾 1 分鐘</b>：說一件「今天我做到的事」</p>
+    <p class="hint" style="text-align:left">${ageTime()}時間只是參考，孩子玩得開心比準時重要。</p></div>`+next('開始！');bindNext();return}
+  if(st===1){timer();B.innerHTML=`<p class="hint">一起動一動！選一個玩：</p><div class="gdetail"><b>🎵 音樂定格</b>：音樂播放就跳舞，一停就變雕像<div id="rFz"></div></div>
+    <div class="gdetail"><b>🚦 紅綠燈</b>：大人喊「綠燈」走，「紅燈」定住，「黃燈」慢慢走</div>`+next();freezeMusic($('#rFz'));bindNext();return}
+  if(st===2){timer();B.innerHTML=`<p class="hint">選一個專注遊戲，玩完按「上一步」回來這裡</p><div class="grid g2">
+    <button class="pick" id="rMem"><b>🃏 記憶翻牌</b></button><button class="pick" id="rTR"><b>🐰 烏龜兔子石頭</b></button>
+    <button class="pick" id="rCB"><b>🫧 顏色泡泡</b></button><button class="pick" id="rLR"><b>✋ 左右手指令</b><span>大人帶著玩</span></button></div>
+    <div class="gdetail" id="rLRd" style="display:none">兩手各拿一樣東西，聽大人說：「襪子舉起來、牙刷放下來」。</div>`+next();
+    $('#rMem').onclick=()=>go(19);$('#rTR').onclick=()=>go(20);$('#rCB').onclick=()=>go(21);$('#rLR').onclick=()=>$('#rLRd').style.display='';bindNext();return}
+  if(st===3){timer();B.innerHTML=`<p class="hint">① 抽一張怪獸卡，說一件今天的事</p><div id="rFace"></div>
+    <p class="hint" style="margin-top:14px">② 吹泡泡呼吸 3 次：吸 3 秒，慢慢吐 5 秒</p>
+    <div class="breath-box" style="height:200px"><div class="ball" id="rBall" style="--mc:#8FC9C0">🫧</div></div><div class="breath-word" id="rBw"></div>
+    <div class="row"><button class="btn small" id="rBreath">開始呼吸</button></div>`+next();
+    faceCard($('#rFace'));
+    $('#rBreath').onclick=()=>{$('#rBreath').style.display='none';let i=0;const ball=$('#rBall');
+      const go1=()=>{if(i>=3){$('#rBw').textContent='好棒，身體變平靜了';chime();ball.style.transform='scale(1)';return}
+        ball.style.transitionDuration='3000ms';ball.style.transform='scale(1.8)';$('#rBw').textContent=`第 ${i+1} 次：吸～`;
+        later(()=>{ball.style.transitionDuration='5000ms';ball.style.transform='scale(1)';$('#rBw').textContent=`第 ${i+1} 次：慢慢吹泡泡～`;i++;later(go1,5300)},3000)};go1()};
+    bindNext();return}
+  if(st===4){timer();B.innerHTML=`<p class="q" style="font-size:1.2rem">今天我做到的一件事</p><div class="chips" id="rWins"></div>
+    <input id="rWinIn" class="namein" style="margin-top:10px;width:260px" maxlength="20" placeholder="或自己寫">
+    <p class="hint" style="margin-top:10px">大人可以具體說出看到的：「你剛剛聽到紅燈就停住了！」</p>`+next('完成今天的遊戲時間！');
+    $('#rWins').innerHTML=WINS.map(w=>`<button class="chip ${S.rWin===w?'sel':''}">${w}</button>`).join('');
+    $$('#rWins .chip').forEach(b=>b.onclick=()=>{S.rWin=b.textContent;$('#rWinIn').value='';$$('#rWins .chip').forEach(x=>x.classList.toggle('sel',x===b))});
+    $('#rNext').onclick=()=>{const w=$('#rWinIn').value.trim()||S.rWin;if(!w){toast('先選一件今天做到的事');return}
+      store.wins.unshift({t:Date.now(),text:w});store.wins=store.wins.slice(0,200);
+      if(!store.playLog.includes(today()))store.playLog.push(today());
+      if(store.gameDay.routine!==today()){store.gameDay.routine=today();gain('完成 10 分鐘遊戲時間',10)}else save();
+      S.rStage=5;S.rWin=null;S.rEnd=0;renderRoutine()};return}
+  B.innerHTML=`<div class="stage">${store.hero?hero(store.hero.type,110):''}</div><p class="q">今天的遊戲時間完成了！</p><p class="hint">明天同一個時間再一起玩吧</p>
+    <div class="row"><button class="btn" id="rHome">🏠 回家園</button></div>`;$('#rHome').onclick=()=>go(10);chime();
+}
+
+/* ---------- memory game ---------- */
+function renderMemory(fresh){
+  if(fresh||!S.mem){const n=S.age==='young'?3:S.age==='old'?6:4;const ks=Object.keys(EMO).sort(()=>Math.random()-.5).slice(0,n);
+    const cards=[...ks,...ks].sort(()=>Math.random()-.5);
+    S.mem={cards,up:[],ok:new Set(),turn:'kid',score:{kid:0,hero:0},lock:false,moves:0,seen:{},mode:(S.mem&&S.mem.mode)||'vs',over:false}}
+  const M=S.mem;const cols=M.cards.length<=6?3:4;
+  $('#memMode').innerHTML=[['vs','和主角比賽'],['coop','一起合作']].map(([k,t])=>`<button class="chip ${M.mode===k?'sel':''}" data-mm="${k}">${t}</button>`).join('');
+  $$('[data-mm]').forEach(b=>b.onclick=()=>{S.mem.mode=b.dataset.mm;stopAct();renderMemory(true)});
+  const hn=store.hero?store.hero.name:'主角';
+  $('#memScore').innerHTML=M.mode==='vs'?`<span class="who ${M.turn==='kid'&&!M.over?'turn':''}">🙋 你 ${M.score.kid}</span><span class="who ${M.turn==='hero'&&!M.over?'turn':''}">${store.hero?hero(store.hero.type,22,{}):''} ${hn} ${M.score.hero}</span>`
+    :`<span class="who turn">🤝 一起翻了 ${M.moves} 次</span>`;
+  const G=$('#memGrid');G.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  G.innerHTML=M.cards.map((k,i)=>{const up=M.up.includes(i)||M.ok.has(i);return `<button class="mcard ${up?'up':''} ${M.ok.has(i)?'ok':''}" data-mc="${i}">${up?monster(k,60,'',{level:1,eq:{}}):'★'}</button>`}).join('');
+  $$('[data-mc]').forEach(b=>b.onclick=()=>{if(M.turn!=='kid'||M.lock||M.over)return;flipCard(+b.dataset.mc)});
+  if(!fresh&&M.turn==='hero'&&!M.lock&&!M.over)later(heroTurn,700);
+  if(fresh)$('#memMsg').style.display='none';
+}
+function flipCard(i){const M=S.mem;if(M.up.includes(i)||M.ok.has(i)||M.up.length>=2)return;
+  M.up.push(i);M.seen[i]=M.cards[i];tone(520+M.up.length*80,.08);renderMemory();
+  if(M.up.length<2)return;
+  M.lock=true;M.moves++;const [a,b]=M.up;
+  if(M.cards[a]===M.cards[b]){later(()=>{M.ok.add(a);M.ok.add(b);M.up=[];M.lock=false;if(M.mode==='vs')M.score[M.turn]++;chime();
+      if(M.ok.size===M.cards.length){endMemory();return}renderMemory();if(M.turn==='hero')later(heroTurn,800)},600)}
+  else later(()=>{M.up=[];M.lock=false;if(M.mode==='vs')M.turn=M.turn==='kid'?'hero':'kid';renderMemory();if(M.turn==='hero')later(heroTurn,800)},1000)}
+function heroTurn(){const M=S.mem;if(M.over||M.turn!=='hero')return;
+  const memP=S.age==='young'?.3:S.age==='old'?.7:.5;
+  const hidden=M.cards.map((_,i)=>i).filter(i=>!M.ok.has(i));
+  const known=hidden.filter(i=>M.seen[i]!==undefined);
+  let pair=null;if(Math.random()<memP){for(const i of known){const j=known.find(j=>j!==i&&M.seen[j]===M.seen[i]);if(j!==undefined){pair=[i,j];break}}}
+  const pick1=pair?pair[0]:hidden[Math.floor(Math.random()*hidden.length)];
+  flipCard(pick1);
+  later(()=>{let j;if(pair)j=pair[1];else{const m=known.find(x=>x!==pick1&&M.seen[x]===M.cards[pick1]);j=(m!==undefined&&Math.random()<memP)?m:hidden.filter(x=>x!==pick1)[Math.floor(Math.random()*(hidden.length-1))]}flipCard(j)},800)}
+function endMemory(){const M=S.mem;M.over=true;renderMemory();const hn=store.hero?store.hero.name:'主角';const m=$('#memMsg');m.style.display='';
+  let t;if(M.mode==='coop')t=`🤝 你們一起用了 ${M.moves} 次就全部找到了！合作好棒！`;
+  else if(M.score.kid>M.score.hero)t=`🎉 你贏了！<br>${hn}：「我輸了，有點可惜……但是跟你玩好開心！我們再來一次？」`;
+  else if(M.score.kid<M.score.hero)t=`${hn}這次贏了。<br>${hn}：「你很想贏，輸了有點不服氣對不對？我們先吹一口氣～呼～。有時候贏、有時候輸，輸了可以說『再玩一次』！」`;
+  else t=`平手！你們都好厲害！`;
+  m.innerHTML=t+`<div class="row" style="margin-top:10px"><button class="btn small" id="memAgain">再玩一次</button>${M.mode==='vs'&&M.score.kid<M.score.hero?'<button class="btn small ghost" id="memCalm">去冷靜站</button>':''}</div>`;
+  $('#memAgain').onclick=()=>renderMemory(true);const c=$('#memCalm');if(c)c.onclick=startFlow;
+  gameReward('memory','記憶翻牌');}
+$('#memNew').onclick=()=>{stopAct();renderMemory(true)};
+
+/* ---------- turtle rabbit stone ---------- */
+const TRC={rabbit:['🐰 兔子！快快點','#FFE1EC'],turtle:['🐢 烏龜…慢慢點','#E3F6E8'],stone:['🪨 石頭！停住！','#E9E4F2']};
+function renderTR(){S.tr={p:0,running:false,cmd:null,last:0,stoneOk:0,stoneTap:0,tapped:false};
+  $('#trCmd').textContent='準備好了嗎？';$('#trCmd').style.background='#FFF3DF';$('#trBar').style.width='0';
+  $('#trRun').style.left='0';$('#trRun').innerHTML=store.hero?hero(store.hero.type,40):'🏃';$('#trTap').textContent='開始';$('#trInfo').textContent='聽到指令就照做，石頭的時候要忍住不點喔！'}
+function trNext(){const T=S.tr;if(!T.running)return;
+  if(T.cmd==='stone'&&!T.tapped){T.stoneOk++;toast('定住了！好厲害 🪨')}
+  const young=S.age==='young';const opts=T.cmd==='stone'?['rabbit','turtle']:['rabbit','turtle','stone','stone'];
+  T.cmd=opts[Math.floor(Math.random()*opts.length)];T.tapped=false;
+  const [txt,bg]=TRC[T.cmd];$('#trCmd').textContent=txt;$('#trCmd').style.background=bg;speak(txt.replace(/[^一-鿿！…]/g,''));
+  tone(T.cmd==='stone'?220:T.cmd==='turtle'?330:660,.2);
+  later(trNext,(young?4000:3000)+Math.random()*(young?2500:2000))}
+$('#trTap').addEventListener('pointerdown',e=>{e.preventDefault();ac();const T=S.tr;if(!T)return;
+  if(!T.running){if(T.p>=100){renderTR();return}T.running=true;$('#trTap').textContent='點我！';trNext();return}
+  const now=performance.now(),info=$('#trInfo');
+  if(T.cmd==='stone'){T.tapped=true;T.stoneTap++;info.textContent='噢！石頭不能動喔，忍住～';$('#trCmd').classList.remove('shake');void $('#trCmd').offsetWidth;$('#trCmd').classList.add('shake');return}
+  if(T.cmd==='turtle'&&now-T.last<800){info.textContent='慢一點～像烏龜一樣';T.last=now;return}
+  T.last=now;T.p=Math.min(100,T.p+(T.cmd==='rabbit'?(S.age==='young'?5:3):4));info.textContent=T.cmd==='rabbit'?'衝啊！':'慢慢的，很好';
+  $('#trBar').style.width=T.p+'%';$('#trRun').style.left=`calc(${T.p}% - ${T.p*0.4}px)`;tone(700,.05,'triangle',.06);
+  if(T.p>=100){T.running=false;stopAct();$('#trCmd').textContent='🏁 到終點了！';$('#trCmd').style.background='#FFF3C4';
+    info.textContent=`石頭時定住成功 ${T.stoneOk} 次！${T.stoneTap?'下次試試看石頭時一次都不動。':'完全沒有偷動，煞車好厲害！'}`;$('#trTap').textContent='再玩一次';chime();gameReward('tr','烏龜兔子石頭')}});
+
+/* ---------- color bubbles ---------- */
+function renderCB(){const young=S.age==='young';const ks=young?['angry','sad','defiant']:['angry','sad','defiant','stuck','scared'];
+  S.cb={ks,goal:young?10:S.age==='old'?20:15,n:0,target:ks[0],run:false};
+  $('#cbHint').textContent=`只戳指定顏色的泡泡，其他顏色要放過！戳到 ${S.cb.goal} 顆就成功`;
+  $('#cbCmd').innerHTML='';$('#cbPond').innerHTML='';$('#cbCount').textContent='';$('#cbStart').style.display='';}
+function cbSetTarget(){const C=S.cb;C.target=C.ks[Math.floor(Math.random()*C.ks.length)];const e=EMO[C.target];
+  $('#cbCmd').innerHTML=`只戳 <span style="background:${e.color};color:#fff;padding:2px 14px;border-radius:999px">${e.cname}</span> 的泡泡！`;speak('只戳'+e.cname+'的泡泡');tone(600,.15)}
+$('#cbStart').onclick=()=>{ac();const C=S.cb;C.run=true;$('#cbStart').style.display='none';cbSetTarget();
+  const pond=$('#cbPond');const young=S.age==='young';
+  const spawn=()=>{if(!C.run||!document.getElementById('cbPond'))return;const b=document.createElement('div');b.className='bub';
+    const k=Math.random()<.45?C.target:C.ks[Math.floor(Math.random()*C.ks.length)];
+    const sz=young?66+Math.random()*26:48+Math.random()*30;b.style.width=b.style.height=sz+'px';b.style.left=Math.random()*(pond.clientWidth-sz)+'px';b.style.top='340px';
+    b.style.setProperty('--bc',EMO[k].color);b.style.animationDuration=(young?7:5.5)+Math.random()*2.5+'s';
+    b.addEventListener('pointerdown',ev=>{ev.preventDefault();if(k===C.target){C.n++;tone(800+Math.random()*300,.08,'triangle',.12);b.remove();
+        $('#cbCount').textContent=`${C.n} / ${C.goal}`;
+        if(C.n>=C.goal){C.run=false;stopAct();pond.innerHTML='';$('#cbCmd').textContent='🎉 全部完成！眼睛好專心！';chime();$('#cbStart').style.display='';$('#cbStart').textContent='再玩一次';gameReward('color','顏色泡泡');S.cb.n=0;return}
+        if(C.n%5===0)cbSetTarget();}
+      else{b.classList.add('shake');tone(200,.12,'sine',.08);$('#cbCount').textContent=`不是這個顏色喔～（${C.n} / ${C.goal}）`}});
+    b.addEventListener('animationend',e=>{if(e.animationName==='rise')b.remove()});pond.appendChild(b);later(spawn,young?850:600)};
+  spawn()};
+
+/* ---------- monster detail ---------- */
+const INTRO={
+  angry:['當事情「不公平」、被打斷、東西被拿走，或事情不照你想的時候，牠就會跑出來。','臉熱熱、心跳變快、拳頭握緊、想大叫或想丟東西。','牠其實是在保護你，告訴你「有件事讓我很不舒服」。生氣沒有錯，但不可以傷害別人和東西。','先讓身體停下來（紅綠燈），把力氣用在安全的地方（戳泡泡、擠檸檬、打枕頭），等身體冷靜了再用說的。'],
+  sad:['失去喜歡的東西、很期待的事沒有發生、被拒絕，或想念一個人的時候。','眼睛酸酸、喉嚨緊緊、沒有力氣、想哭。','牠在告訴你「這件事對我很重要」。難過的時候哭一哭沒關係。','慢慢呼吸、蝴蝶抱抱自己、找一個人抱抱，或把難過說出來、畫出來。'],
+  defiant:['輸了、被比下去、覺得「我明明可以」或覺得不公平的時候。','心裡悶悶的、想爭辯、不想認輸、想再來一次。','牠代表你很在乎、很想做好。這份在乎是很棒的力量！','先擠檸檬把力氣放掉，跟昨天的自己比，說「再玩一次」，想想哪裡可以再練習。'],
+  stuck:['事情太難、試了好幾次還是做不到，或跟你想的不一樣的時候。','想放棄、想把東西丟掉、覺得自己很笨。','牠想說的是「這件事有點難」，不是「你很笨」。你只是「還沒」做到。','先休息一下再回來，把事情切成小步驟，說「我還沒做到」，也可以請人幫忙。'],
+  scared:['遇到新的事、不知道會發生什麼、怕犯錯或怕被罵的時候。','肚子怪怪的、心跳很快、手冰冰的、想躲起來。','牠想保護你，提醒你要小心一點。','慢慢呼吸、用五感找找身邊的東西、跟大人說你在擔心什麼，然後先試一小步。'],
+  wronged:['被誤會、被冤枉、覺得沒有人聽你說的時候。','想哭又說不出來、胸口悶悶的、覺得好不公平。','牠想讓別人聽見你的想法。','先蝴蝶抱抱自己，找一個信任的人說出你的版本，或把事情畫下來。']
+};
+function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);const [when,body,why,how]=INTRO[k];
+  $('#mdMon').innerHTML=monster(k,140,'wobble');
+  $('#mdName').innerHTML=`<span class="cname" style="background:${e.color};font-size:.9rem;vertical-align:middle">${e.cname}</span> ${e.name}`;
+  $('#mdLv').textContent=`Lv.${l} ${TITLES[l-1]}`+(nx.need?`・再 ${nx.need} 經驗升級`:'');
+  const L=store.log.filter(x=>x.emo===k);const ae={};L.forEach(x=>x.acts.forEach(a=>{ae[a]=ae[a]||[0,0];ae[a][0]+=x.lv0-x.lv2;ae[a][1]++}));
+  const best=Object.entries(ae).sort((a,b)=>b[1][0]/b[1][1]-a[1][0]/a[1][1])[0];
+  const cc={};L.forEach(x=>{if(x.cause)cc[x.cause]=(cc[x.cause]||0)+1});const topC=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
+  const age=S.age||'mid';
+  $('#mdBody').innerHTML=`<h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
+    <h4>🫀 牠來的時候，身體會怎樣？</h4><p>${body}</p>
+    <h4>💬 牠想告訴你什麼？</h4><p>${why}</p>
+    <h4>🛠️ 怎麼跟牠相處？</h4><p>${how}</p>
+    <div class="chips" style="justify-content:flex-start">${e.acts.map(a=>`<button class="chip" data-mdact="${a}">練習${ACT_NAME[a]}</button>`).join('')}</div>
+    <h4>📊 你和${e.name}</h4><p>${L.length?`一起冷靜過 <b>${L.length}</b> 次。`+(best?`對你最有效的是 <b>${best[0]}</b>（平均變小 ${(best[1][0]/best[1][1]).toFixed(1)} 級）。`:'')+(topC?`最常因為「${topC[0]}」出現。`:''):'還沒有一起冷靜的紀錄。下次牠來的時候，去冷靜站找牠吧！'}</p>
+    <h4>⭐ 我的冷靜秘訣</h4><p class="hint" style="text-align:left;margin:0 0 6px">寫下（或請大人幫你寫）對付${e.name}最有用的方法</p>
+    <textarea id="mdTip" style="width:100%;min-height:70px;border:2px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit" placeholder="例如：抱著小熊數到 10">${store.tips[k]||''}</textarea>
+    <div class="gdetail"><b>給大人</b>：${PARENT[k].say[age]}<br><small>${PARENT[k].after}</small></div>`;
+  $('#mdTip').onchange=()=>{store.tips[k]=$('#mdTip').value;save();toast('秘訣存好了')};
+  $$('[data-mdact]').forEach(b=>b.onclick=()=>startPractice(k,b.dataset.mdact));
+}
+
 /* SOS quick path */
 $('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!(S.step>=1&&S.step<=8)){resetFlow();S.hist=[10]}if(!S.emo)S.emo='angry';S.lv=S.lv||4;S.lv0=S.lv0||S.lv;S.act='breathe';speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
 
@@ -1371,13 +1711,21 @@ const CASES=[
   ['排隊等不到就推人','<b>情境</b>：溜滑梯等太久，推了前面的小朋友。<br><b>做法</b>：立刻擋下並帶到旁邊：「我不能讓你推人，我們先冷靜。」冷靜後演練「可以問『換我了嗎？』」；回去前先數到 10 再排隊；做到等待時馬上稱讚。'],
   ['被糾正就大哭','<b>情境</b>：建議「這裡可以再塗滿一點」，孩子撕掉紙說「我不會畫」。<br><b>做法</b>：先接住情緒：「聽到要修改，覺得很挫折？」改成先肯定再給一個小建議；把任務切成一小格；完成後說「你沒有撕紙，還完成了，進步好多」。'],
   ['睡前太興奮、發脾氣','<b>情境</b>：睡前跑跳不肯刷牙，一被要求就哭。<br><b>做法</b>：固定睡前順序（洗澡→刷牙→兩本繪本→關燈）；做成圖卡讓孩子自己貼貼紙；睡前半小時少螢幕和激烈遊戲；給二選一「自己刷還是我幫你刷？」'],
+  ['輸了就崩潰','<b>情境</b>：玩遊戲輸了就大哭、翻桌、說不玩了（3–6 歲很常見）。<br><b>做法</b>：遊戲前先說好規則「有時候贏、有時候輸，輸了可以說『再玩一次』」；大人偶爾故意輸，示範「我輸了，有點可惜，我們再來」；孩子崩潰就先暫停比賽：「你很想贏，輸了很生氣，我們先深呼吸」；平靜後回到遊戲，馬上稱讚「你剛剛很生氣，但願意再玩一次，好了不起」。工具裡的「記憶翻牌」可以跟主角比賽練習，也可以切換成合作模式。'],
   ['手足衝突就動手','<b>情境</b>：弟弟弄壞積木，哥哥立刻推弟弟。<br><b>做法</b>：先分開確保安全，不急著判誰對；幫大孩子說出感受「弟弟弄壞你的積木，你很生氣」；教替代句「我很生氣，請不要碰我的積木」；冷靜後練習修復（遞一塊積木、說對不起），重點是練習替代行為，不只是處罰。']
 ];
 let caseI=0;
 function renderCases(){$('#caseTabs').innerHTML=CASES.map((c,i)=>`<button class="chip ${i===caseI?'sel':''}" data-case="${i}">${c[0]}</button>`).join('');
   $$('[data-case]').forEach(b=>b.onclick=()=>{caseI=+b.dataset.case;renderCases()});$('#caseBody').innerHTML=CASES[caseI][1]}
 $('#dOpenLog').onclick=()=>{closeP();go(14)};$('#dOpenWeek').onclick=()=>{closeP();go(15)};$('#dOpenCpn').onclick=()=>{closeP();cpnDraft=null;go(16)};
-const openP=()=>{renderCases();if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
+function renderPNotes(){$('#pNotes').value=store.pnotes||'';$('#commUrl').value=store.commUrl||'';renderComm()}
+function renderComm(){const u=(store.commUrl||'').trim();$('#commLink').innerHTML=/^https?:\/\//.test(u)?`<a class="btn small" href="${u.replace(/"/g,'%22')}" target="_blank" rel="noopener">🔗 打開家長交流</a>`:''}
+$('#pNotes').onchange=()=>{store.pnotes=$('#pNotes').value;save()};
+$('#commUrl').onchange=()=>{store.commUrl=$('#commUrl').value.trim();save();renderComm()};
+$('#pNotesCopy').onclick=async()=>{store.pnotes=$('#pNotes').value;save();
+  let t='我們家的心得筆記\n'+(store.pnotes||'（還沒寫）')+'\n\n孩子的冷靜秘訣\n'+(Object.entries(store.tips).filter(([k,v])=>v&&v.trim()).map(([k,v])=>`${EMO[k].name}：${v}`).join('\n')||'（還沒寫）');
+  try{await navigator.clipboard.writeText(t);toast('已複製')}catch(e){toast('無法自動複製，請長按文字框選取複製')}};
+const openP=()=>{renderCases();renderPNotes();if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
 const closeP=()=>{$('#drawer').classList.remove('on');$('#dbg').style.display='none'};
 $('#openParent').onclick=openP;$('#closeParent').onclick=closeP;$('#dbg').onclick=closeP;
 
