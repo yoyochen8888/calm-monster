@@ -214,13 +214,19 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .scene{margin:12px 0 0}
 .decor-it{cursor:grab;outline:none;animation:dj 1.2s ease-in-out infinite}@keyframes dj{50%{opacity:.75}}
 .decor-it.dragging{animation:none;opacity:1;cursor:grabbing}
-.corner{cursor:pointer}.bob{animation:bob 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}
+.corner{cursor:pointer}
+.flip{transform-box:fill-box;transform-origin:center;transition:transform .3s}.flip.left{transform:scaleX(-1)}
+.act{transform-box:fill-box;transform-origin:bottom center}
+.walk{animation:walk .45s ease-in-out infinite}@keyframes walk{50%{transform:translateY(-2.5px) rotate(2deg)}}
+.rest{animation:rest 2.5s ease-in-out infinite}@keyframes rest{0%,100%{transform:scaleY(.94) scaleX(1.03)}50%{transform:scaleY(.9) scaleX(1.05)}}
+.hop{animation:hop .5s ease-out 2}@keyframes hop{40%{transform:translateY(-9px) scaleY(1.05)}80%{transform:translateY(0) scaleY(.95)}}
+.look{animation:look 2.4s ease-in-out}@keyframes look{25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}.bob{animation:bob 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}
 @keyframes bob{50%{transform:translateY(-1.5px) scaleY(1.02)}}
 .sleepy{animation:slp 4s ease-in-out infinite;transform-box:fill-box;transform-origin:bottom}@keyframes slp{50%{transform:scaleY(.97)}}
 .zzz{animation:zz 2.4s ease-in-out infinite}@keyframes zz{0%{opacity:0;transform:translateY(4px)}50%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
 .twinkle{animation:tw 2.6s ease-in-out infinite}@keyframes tw{50%{opacity:.3}}
 .cloud{animation:cl 40s linear infinite}@keyframes cl{from{transform:translateX(-80px)}to{transform:translateX(380px)}}
-@media (prefers-reduced-motion:reduce){.bob,.sleepy,.zzz,.twinkle,.cloud,.fish{animation:none}}
+@media (prefers-reduced-motion:reduce){.bob,.sleepy,.zzz,.twinkle,.cloud,.fish,.walk,.rest,.hop,.look{animation:none}}
 .homemon{cursor:pointer}.fish{animation:fs 3.5s ease-in-out infinite}@keyframes fs{50%{transform:translateX(6px)}}
 #chores{margin-top:12px;background:#F6FBF2;border-radius:16px;padding:10px 12px}
 .choreh{margin:2px 0 6px;font-weight:700}
@@ -869,6 +875,7 @@ function monster(kind,size=110,cls='',opt={}){
 /* ---------- navigation ---------- */
 S.hist=[];S.earned=[];
 function go(n,noPush){
+  if(n!==10)clearInterval(wanderT);
   if(isNight()&&[11,17,18,19,20,21].includes(n)){toast('晚上了，遊戲和商店明天再開 🌙<br>需要冷靜時，冷靜站還是可以用');if(S.step===10)return;n=10}
   stopAct();clearInterval(coInt);
   if(!noPush&&S.step!==undefined&&S.step!==n)S.hist.push(S.step);
@@ -1286,6 +1293,25 @@ function cornerSvg(k){const c=CORNERS[k],col=EMO[k].color;
 function isNight(){if(S.forceNight!==undefined)return S.forceNight;const n=store.nightAt;if(!n)return false;const h=new Date().getHours();return h>=n||h<7}
 function wrapIt(id,inner){const [dx,dy]=posOf(id);const ed=S.decor;
   return `<g data-it="${id}" transform="translate(${dx} ${dy})" ${ed?'class="decor-it"':''}>${inner}</g>`}
+/* ---------- 家園小動態：走動、休息、跳一跳、東張西望（晚上睡覺、布置時暫停） ---------- */
+const HOME_POS={};let wanderT=null;
+const RM=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
+function actDo(el,cls,ms){const a=el.querySelector('.act');if(!a)return;a.classList.remove('bob','walk','rest','hop','look');void a.getBoundingClientRect();a.classList.add(cls);
+  if(ms)setTimeout(()=>{if(a.isConnected&&a.classList.contains(cls)){a.classList.remove(cls);a.classList.add('bob')}},ms)}
+function startWander(){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
+  const actors=$$('#scene .actor');actors.forEach(el=>{el._next=performance.now()+800+Math.random()*2500});
+  wanderT=setInterval(()=>{if(!actors.length||!actors[0].isConnected){clearInterval(wanderT);return}
+    const now=performance.now();
+    actors.forEach(el=>{if(now<el._next)return;const isHero=el.dataset.actor==='h';const r=Math.random();
+      const m=/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(el.style.transform)||[0,146,96];let x=+m[1],y=+m[2];
+      if(r<.5){/* 走到附近 */const nx=Math.max(isHero?40:10,Math.min(isHero?250:300,x+(Math.random()*140-70))),ny=Math.max(isHero?84:146,Math.min(isHero?120:206,y+(Math.random()*40-20)));
+        const dist=Math.hypot(nx-x,ny-y),dur=Math.max(1.2,dist/22);
+        el.querySelector('.flip').classList.toggle('left',nx<x);
+        el.style.transition=`transform ${dur}s linear`;el.style.transform=`translate(${nx.toFixed(1)}px,${ny.toFixed(1)}px)`;
+        HOME_POS[isHero?'hero':el.dataset.mon]=[nx,ny];actDo(el,'walk',dur*1000);el._next=now+dur*1000+1500+Math.random()*3000}
+      else if(r<.72){actDo(el,'rest',5000);el._next=now+6000+Math.random()*3000}
+      else if(r<.86){actDo(el,'hop',1000);el._next=now+2500+Math.random()*2500}
+      else{actDo(el,'look',2400);el._next=now+3500+Math.random()*2500}})},400)}
 function scene(){
   const o=store.owned,g=store.grow;
   const night=isNight();
@@ -1314,8 +1340,8 @@ function scene(){
   // 情緒怪獸入住：一起冷靜過（有經驗）就搬進來
   const fr=Object.keys(EMO).filter(k=>(store.xp[k]||0)>0);
   const pos=[[96,150],[216,152],[70,186],[244,190],[124,196],[182,200]];
-  fr.forEach((k,i)=>{v+=`<g data-mon="${k}" class="homemon" ${S.decor?'style="pointer-events:none;opacity:.55"':''} transform="translate(${pos[i][0]} ${pos[i][1]})"><g class="${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`});
-  if(store.hero)v+=`<g style="pointer-events:none" transform="translate(146 96)"><g class="${night?'sleepy':'bob'}">${hero(store.hero.type,64)}</g></g>`;
+  fr.forEach((k,i)=>{const [px,py]=HOME_POS[k]||pos[i];v+=`<g data-mon="${k}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`});
+  if(store.hero){const [hx,hy]=HOME_POS.hero||[146,96];v+=`<g data-actor="h" class="actor" style="pointer-events:none;transform:translate(${hx}px,${hy}px)"><g class="flip"><g class="act ${night?'sleepy':'bob'}">${hero(store.hero.type,64)}</g></g></g>`;}
   if(night)v+=`<rect width="360" height="250" fill="#1A1F45" opacity=".28" pointer-events="none"/>`;
   if(!fr.length)v+=`<text x="180" y="244" text-anchor="middle" font-size="11" fill="#5A7A50">去冷靜站陪一隻怪獸冷靜，牠就會搬進家園喔</text>`;
   return v+`</svg>`;
@@ -1331,7 +1357,8 @@ function bindScene(){
     toast(`${c.ico} ${EMO[k].name}的${c.name}：一起練習${ACT_NAME[c.act]}`);startPractice(k,c.act)});
   $$('#scene [data-mon]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.mon,e=EMO[k],l=lvOf(store.xp[k]||0),b=BADGE[k];
     const line=stageOf(l)>=2?`我學會了${b[1]}：${b[2]}！`:HOME_PEP[Math.floor(Math.random()*HOME_PEP.length)];
-    toast(`${e.name}：「${line}」`);speak(line)});
+    toast(`${e.name}：「${line}」`);speak(line);actDo(el,'hop',900)});
+  startWander();
 }
 function renderHome(){
   if(!store.hero){go(12,true);return}
