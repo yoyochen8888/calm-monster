@@ -771,7 +771,9 @@ const moodOf=n=>[1,1,2,3,4,4][n]||3;
 const BADGE={angry:['🚦','紅綠燈徽章','生氣時會先停一下'],sad:['☂️','小雨傘','難過時會照顧自己'],defiant:['🏅','進步獎牌','跟昨天的自己比'],
   stuck:['🚩','一步一步旗','把難事切成小步驟'],scared:['🛡️','勇氣盾牌','先試一小步'],wronged:['💬','說話泡泡','說出自己的想法']};
 /* 已換成 3D 新圖、有 4 階段成長圖的怪獸（徽章已畫在圖裡，不再疊 emoji） */
-const GROWN=new Set(['angry','sad','defiant']);
+const GROWN=new Set(['angry','sad','defiant','stuck']);
+/* 比較寬的圖（手拿旗子、張開手臂）：寬高比，讓身體高度跟其他階段一致 */
+const ASPECT={stuck2:1.03,stuck4:1.11,stuck0:1.18,stuckg2:1.15,stuckg4:1.11};
 const IMG=(k,st)=>`img/${k}${st}.webp`;
 function nextOf(xp){const l=lvOf(xp);if(l>=LEVELS.length)return {pct:100,need:0};const a=LEVELS[l-1],b=LEVELS[l];return {pct:Math.round((xp-a)/(b-a)*100),need:b-xp}}
 const HEROES={fox:{name:'小狐狸',c:'#F39A4B'},bear:{name:'小熊',c:'#B07A52'},rabbit:{name:'小兔子',c:'#E9DDF2'},cat:{name:'小貓',c:'#9AA3B5'}};
@@ -848,7 +850,7 @@ function monster(kind,size=110,cls='',opt={}){
   return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}${mood?' '+SIZES[mood-1].n:' '+STAGES[grow-1].n}">
     ${aura}
     <ellipse cx="60" cy="121" rx="${w*.36}" ry="5" fill="${c}" opacity=".18"/>
-    <image href="${mood||!GROWN.has(kind)?IMG(kind,st):`img/${kind}g${grow}.webp`}" x="${x}" y="${y}" width="${w}" height="${w}"/>
+    ${(()=>{const f=mood||!GROWN.has(kind)?`${kind}${st}`:`${kind}g${grow}`;const ar=ASPECT[f]||1;return `<image href="img/${f}.webp" x="${(60-w*ar/2).toFixed(1)}" y="${y}" width="${(w*ar).toFixed(1)}" height="${w}"/>`})()}
     <g transform="translate(0 ${dy.toFixed(1)})">${eq.neck&&ACC[eq.neck]?`<g transform="translate(0 ${(w*.5).toFixed(1)})">${ACC[eq.neck]}</g>`:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}</g>${badge}${sparks}
   </svg>`;
 }
