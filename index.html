@@ -269,8 +269,8 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
 
   <!-- 1 monster -->
   <section class="step card" data-step="1">
-    <p class="q">現在，你心裡住著哪一隻怪獸？</p>
-    <p class="hint">點一隻最像你的</p>
+    <p class="q" id="monQ">現在，你心裡住著哪一隻怪獸？</p>
+    <p class="hint" id="monHint">點一隻最像你的</p>
     <div class="grid g3" id="monsters"></div>
   </section>
 
@@ -906,9 +906,12 @@ function renderAges(){
 }
 /* step 1 */
 function renderMonsters(){
+  $('#monQ').textContent=S.sos?'你好一點了！剛剛是哪一隻怪獸來找你？':'現在，你心裡住著哪一隻怪獸？';
+  $('#monHint').textContent=S.sos?'點一隻最像剛剛的感覺，我們再看看牠現在多大':'點一隻最像你的';
   $('#monsters').innerHTML=Object.entries(EMO).map(([k,e])=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">
-    ${monster(k,84)}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span><span class="lvtag">Lv.${lvOf(store.xp[k]||0)} ${TITLES[lvOf(store.xp[k]||0)-1]}</span></button>`).join('');
-  $$('[data-emo]').forEach(b=>b.onclick=()=>{S.emo=b.dataset.emo;tone(500,.12);speak('我是'+EMO[S.emo].name);go(2)});
+    ${monster(k,84,'',{mood:2})}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span><span class="lvtag">Lv.${lvOf(store.xp[k]||0)} ${TITLES[lvOf(store.xp[k]||0)-1]}</span></button>`).join('');
+  $$('[data-emo]').forEach(b=>b.onclick=()=>{S.emo=b.dataset.emo;tone(500,.12);speak('我是'+EMO[S.emo].name);
+    if(S.sos){S.sos=false;S.lv0=4;S.lv=4;S.lv2=0;if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}S.sosDone=0;go(4)}else go(2)});
 }
 /* thermometer */
 function thermo(el,stage,key,onPick){
@@ -948,12 +951,12 @@ function stopAct(){timers.forEach(clearTimeout);timers=[];if(raf)cancelAnimation
 let actSpeech='';
 function renderAct(){
   const e=EMO[S.emo];
-  const list=S.practice?['breathe','light','bubbles','squeeze','senses','butterfly']:e.acts.slice();
+  const list=S.sos?['breathe','butterfly','squeeze']:S.practice?['breathe','light','bubbles','squeeze','senses','butterfly']:e.acts.slice();
   if(S.lv>=4 && list[0]!=='breathe' && S.emo!=='angry'){list.splice(list.indexOf('breathe'),1);list.unshift('breathe')}
   if(!S.act)S.act=list[0];
   $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${ACT_NAME[a]}</button>`).join('');
   $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct()});
-  $('#actTitle').textContent=S.practice?'平時練習：心情好的時候先練起來':S.lv>=4?'先讓身體冷靜下來':'冷靜時間';
+  $('#actTitle').textContent=S.sos?'🆘 先一起呼吸，不用想是哪隻怪獸':S.practice?'平時練習：心情好的時候先練起來':S.lv>=4?'先讓身體冷靜下來':'冷靜時間';
   ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly})[S.act]();
 }
 $('#speakAct').onclick=()=>speak(actSpeech);
@@ -962,6 +965,7 @@ $('#actDone').onclick=()=>{
     if(store.pracDay!==today()){store.pracDay=today();store.pracLog.push(today());store.pracLog=store.pracLog.slice(-60);gain('平時練習',5)}else toast('今天已經練習過了，你好認真！');
     S.practice=false;const bk=S.hist.pop();go(bk!==undefined?bk:17,true);return}
   S.actsDone=S.actsDone||[];if(!S.actsDone.includes(S.act))S.actsDone.push(S.act);
+  if(S.sos){S.sosDone=1;go(1);return}
   if(S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}
   S.lv2=0;go(4)};
 
@@ -1150,7 +1154,7 @@ function gain(label,n,opt={}){
   tone(880,.12,'triangle',.1);if(up)setTimeout(()=>{tone(784,.2);setTimeout(()=>tone(1046,.5),180)},350);
   return n;
 }
-function resetFlow(){Object.assign(S,{emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,dmg:null,repair:null,actsDone:[],monUp:null,capToasted:false});
+function resetFlow(){Object.assign(S,{sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,dmg:null,repair:null,actsDone:[],monUp:null,capToasted:false});
   const d=today();if(!store.day||store.day.d!==d)store.day={d,n:0};S.capped=store.day.n>=5;store.day.n++;save()}
 function startFlow(){if(!S.age){go(0);return}resetFlow();S.hist=[10];go(1,true)}
 function holdBtn(label,ms,cb){const b=document.createElement('button');b.className='hold';b.innerHTML=`<i></i><span>${label}</span>`;
@@ -1521,7 +1525,7 @@ function freezeMusic(el){
 function faceCard(el,onDraw){
   el.innerHTML=`<div class="stage" id="fcMon" style="min-height:110px"></div><div class="sentence" id="fcQ" style="display:none"></div><div class="row"><button class="btn small" id="fcDraw">抽一張怪獸卡</button></div>`;
   $('#fcDraw').onclick=e=>{e.stopPropagation();const ks=Object.keys(EMO);const k=ks[Math.floor(Math.random()*ks.length)];
-    $('#fcMon').innerHTML=monster(k,100,'wobble');$('#fcQ').style.display='';$('#fcQ').innerHTML=`抽到<u>${EMO[k].name}</u>！<br>你什麼時候會覺得<u>${EMO[k].feel.replace(/^好/,'')}</u>？<br><small>說完換大人說一次</small>`;
+    $('#fcMon').innerHTML=monster(k,100,'wobble',{mood:2});$('#fcQ').style.display='';$('#fcQ').innerHTML=`抽到<u>${EMO[k].name}</u>！<br>你什麼時候會覺得<u>${EMO[k].feel.replace(/^好/,'')}</u>？<br><small>說完換大人說一次</small>`;
     tone(660,.15);speak(`抽到${EMO[k].name}。你什麼時候會覺得${EMO[k].feel.replace(/^好/,'')}？`);onDraw&&onDraw()};
 }
 
@@ -1582,7 +1586,7 @@ function renderMemory(fresh){
   $('#memScore').innerHTML=M.mode==='vs'?`<span class="who ${M.turn==='kid'&&!M.over?'turn':''}">🙋 你 ${M.score.kid}</span><span class="who ${M.turn==='hero'&&!M.over?'turn':''}">${store.hero?hero(store.hero.type,22,{}):''} ${hn} ${M.score.hero}</span>`
     :`<span class="who turn">🤝 一起翻了 ${M.moves} 次</span>`;
   const G=$('#memGrid');G.style.gridTemplateColumns=`repeat(${cols},1fr)`;
-  G.innerHTML=M.cards.map((k,i)=>{const up=M.up.includes(i)||M.ok.has(i);return `<button class="mcard ${up?'up':''} ${M.ok.has(i)?'ok':''}" data-mc="${i}">${up?monster(k,60,'',{level:1,eq:{}}):'★'}</button>`}).join('');
+  G.innerHTML=M.cards.map((k,i)=>{const up=M.up.includes(i)||M.ok.has(i);return `<button class="mcard ${up?'up':''} ${M.ok.has(i)?'ok':''}" data-mc="${i}">${up?monster(k,60,'',{mood:2,level:1,eq:{}}):'★'}</button>`}).join('');
   $$('[data-mc]').forEach(b=>b.onclick=()=>{if(M.turn!=='kid'||M.lock||M.over)return;flipCard(+b.dataset.mc)});
   if(!fresh&&M.turn==='hero'&&!M.lock&&!M.over)later(heroTurn,700);
   if(fresh)$('#memMsg').style.display='none';
@@ -1691,7 +1695,7 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
 }
 
 /* SOS quick path */
-$('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!(S.step>=1&&S.step<=8)){resetFlow();S.hist=[10]}if(!S.emo)S.emo='angry';S.lv=S.lv||4;S.lv0=S.lv0||S.lv;S.act='breathe';speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
+$('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!(S.step>=1&&S.step<=8)){resetFlow();S.hist=[10]}if(!S.emo){S.sos=true;S.emo='scared'}S.lv=S.lv||4;S.lv0=S.lv0||S.lv;S.act='breathe';speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
 
 /* ---------- parent drawer ---------- */
 let pEmo='angry';
