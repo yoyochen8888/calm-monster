@@ -771,7 +771,7 @@ const moodOf=n=>[1,1,2,3,4,4][n]||3;
 const BADGE={angry:['🚦','紅綠燈徽章','生氣時會先停一下'],sad:['☂️','小雨傘','難過時會照顧自己'],defiant:['🏅','進步獎牌','跟昨天的自己比'],
   stuck:['🚩','一步一步旗','把難事切成小步驟'],scared:['🛡️','勇氣盾牌','先試一小步'],wronged:['💬','說話泡泡','說出自己的想法']};
 /* 已換成 3D 新圖、有 4 階段成長圖的怪獸（徽章已畫在圖裡，不再疊 emoji） */
-const GROWN=new Set(['angry','sad']);
+const GROWN=new Set(['angry','sad','defiant']);
 const IMG=(k,st)=>`img/${k}${st}.webp`;
 function nextOf(xp){const l=lvOf(xp);if(l>=LEVELS.length)return {pct:100,need:0};const a=LEVELS[l-1],b=LEVELS[l];return {pct:Math.round((xp-a)/(b-a)*100),need:b-xp}}
 const HEROES={fox:{name:'小狐狸',c:'#F39A4B'},bear:{name:'小熊',c:'#B07A52'},rabbit:{name:'小兔子',c:'#E9DDF2'},cat:{name:'小貓',c:'#9AA3B5'}};
