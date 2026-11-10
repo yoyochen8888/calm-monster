@@ -330,3 +330,11 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
 /* 圖鑑：拿手方法（v20） */
 .skillbox{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:var(--accent-2);border-radius:14px;padding:10px 12px;margin:8px 0}
 .skillbox span{color:var(--soft);font-size:.9rem;flex:1}
+/* 一起回顧（v22） */
+.rvcard{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#F3EEFB;border-radius:16px;padding:12px 14px;margin-top:12px;font-family:"Noto Sans TC",sans-serif}
+.rvcard b{display:block}.rvcard span{font-size:.9rem;color:var(--soft);line-height:1.6}.rvcard>div:first-child{flex:1;min-width:200px}
+.rvbtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rvmon{display:flex;justify-content:center}
+.rvgood{text-align:center;font-size:1.1rem;line-height:1.7;margin:8px 0 12px}
+.rvdone{background:#F3EEFB;border-radius:10px;padding:4px 10px;margin:4px 0;display:inline-block}
+.rvchip{font-size:.85rem;padding:5px 12px;margin:4px 0;display:block}

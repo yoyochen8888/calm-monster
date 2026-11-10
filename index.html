@@ -141,6 +141,7 @@
     <div class="xpbar" style="margin:8px 0 0"><i id="heroXp"></i></div>
     <div class="scene" id="scene"></div>
     <div class="row" id="decorBar" style="display:none;margin-top:8px"><span class="hint" style="margin:0">按住家具拖拉移動</span><button class="btn small" id="decorDone">布置好了</button></div>
+    <div id="reviewBox"></div>
     <div id="chores"></div>
     <div id="repairBox"></div>
     <div id="voucherBox"></div>
@@ -299,6 +300,15 @@
     <div id="gdArea" class="cornerarea"></div>
     <p class="cornermsg" id="gdMsg"></p>
     <div class="row" id="gdBtns"></div>
+  </section>
+
+  <!-- 26 review together -->
+  <section class="step card" data-step="26">
+    <p class="q" id="rvTitle">一起回顧</p>
+    <p class="hint" id="rvHint"></p>
+    <div class="dots" id="rvDots" style="margin-bottom:12px"></div>
+    <div id="rvArea"></div>
+    <div class="row" id="rvNav"></div>
   </section>
 
   <section class="step card" data-step="13">
@@ -463,6 +473,7 @@
 <script src="js/games.js"></script>
 <script src="js/corners.js"></script>
 <script src="js/parent.js"></script>
+<script src="js/review.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/main.js"></script>
 </body>

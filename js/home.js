@@ -127,7 +127,7 @@ function renderHome(){
   $('#scene').innerHTML=scene();bindScene();
   $('#decorBar').style.display=S.decor?'':'none';
   $('#hWaterSub').textContent=S.decor?'布置中…':'拖拉家具換位置';
-  renderChores();
+  renderChores();renderReviewCard();
   $('#hGamesSub').textContent=store.gameDay.routine===today()?'今天玩過了，再玩也可以':'小遊戲和親子遊戲';
   const vb=$('#voucherBox');vb.innerHTML='';
   store.vouchers.forEach(v=>{const d=document.createElement('div');d.className='task';d.style.background='#EAF6F3';

@@ -106,7 +106,9 @@ function renderLog(){
     ${l.cause?`<div>原因：${l.cause}${l.want?`；想要：${l.want}`:''}</div>`:''}
     ${l.acts.length?`<div>用了：${l.acts.join('、')}</div>`:''}
     ${l.plan?`<div>下次：${l.plan}</div>`:''}${l.repair?`<div>修復：${l.repair}</div>`:''}
+    ${l.rv&&l.rv.t?`<div class="rvdone">💬 回顧：${rvLine(l)}</div>`:''}<button class="chip rvchip" data-rv="${l.t}">💬 ${l.rv&&l.rv.t?'再回顧一次':'一起回顧'}</button>
     <textarea data-note="${l.t}" placeholder="大人備註（例如：在哪裡發生、怎麼結束的）">${l.note||''}</textarea></div>`}).join('');
+  $$('[data-rv]').forEach(b=>b.onclick=()=>startReview(b.dataset.rv));
   $$('[data-note]').forEach(t=>t.onchange=()=>{const l=store.log.find(x=>x.t===+t.dataset.note);if(l){l.note=t.value;save()}});
 }
 function logAsText(){const L=logRange(),sm=summarize(L);
@@ -117,7 +119,7 @@ function logAsText(){const L=logRange(),sm=summarize(L);
   t+=Object.entries(sm.byE).map(([k,n])=>`${EMO[k].cname}${EMO[k].name} ${n} 次`).join('、')+'\n';
   const W=winsRange();if(W.length)t+=`做到的事：${W.map(w=>w.text).join('、')}\n`;
   if(sm.topC)t+=`最常見原因：${sm.topC[0]}\n`;if(sm.best)t+=`效果最好的方法：${sm.best[0]}\n`;
-  t+='\n'+L.slice().reverse().map(l=>`${fmtT(l.t)}｜${EMO[l.emo].name} ${l.lv0}→${l.lv2}${l.co?'（大人陪伴）':''}`+(l.cause?`｜原因：${l.cause}`:'')+(l.acts.length?`｜用了：${l.acts.join('、')}`:'')+(l.plan?`｜下次：${l.plan}`:'')+(l.repair?`｜修復：${l.repair}`:'')+(l.note?`｜備註：${l.note}`:'')).join('\n');
+  t+='\n'+L.slice().reverse().map(l=>`${fmtT(l.t)}｜${EMO[l.emo].name} ${l.lv0}→${l.lv2}${l.co?'（大人陪伴）':''}`+(l.cause?`｜原因：${l.cause}`:'')+(l.acts.length?`｜用了：${l.acts.join('、')}`:'')+(l.plan?`｜下次：${l.plan}`:'')+(l.repair?`｜修復：${l.repair}`:'')+(l.rv&&l.rv.t?`｜回顧：${rvLine(l)}`:'')+(l.note?`｜備註：${l.note}`:'')).join('\n');
   return t}
 $('#logCopy').onclick=async()=>{const t=logAsText();if(!t){toast('這段時間還沒有紀錄');return}
   try{await navigator.clipboard.writeText(t);toast('已複製，可以貼到 LINE 或 email')}
