@@ -141,6 +141,7 @@
     <div class="xpbar" style="margin:8px 0 0"><i id="heroXp"></i></div>
     <div class="scene" id="scene"></div>
     <div class="row" id="decorBar" style="display:none;margin-top:8px"><span class="hint" style="margin:0">按住家具拖拉移動</span><button class="btn small" id="decorDone">布置好了</button></div>
+    <div class="row" style="margin-top:8px"><button class="chip" id="hQuiet">🌿 靜靜看</button></div>
     <div id="reviewBox"></div>
     <div id="wishBox"></div>
     <div id="chores"></div>
@@ -303,6 +304,13 @@
     <div class="row" id="gdBtns"></div>
   </section>
 
+  <!-- 27 quiet view -->
+  <section class="step card" data-step="27">
+    <div class="scene quiet" id="quietScene"></div>
+    <p class="hint" id="quietWord" style="margin:12px 0 4px;min-height:1.6em;font-size:1.15rem"></p>
+    <div class="row" id="quietBtns"></div>
+  </section>
+
   <!-- 26 review together -->
   <section class="step card" data-step="26">
     <p class="q" id="rvTitle">一起回顧</p>
@@ -394,6 +402,9 @@
     <li>不要用「不准拿星星」或「沒收家園」來懲罰，以免孩子把冷靜站跟處罰連在一起。</li>
   </ul>
   <button class="chip" id="resetAll" style="margin-top:6px">重設星星與等級</button>
+  <button class="chip" id="introAgain" style="margin-top:10px">📖 重看使用說明</button>
+  <h3>🔈 環境音</h3>
+  <div id="soundBox"></div>
   <h3>📲 加到主畫面、備份紀錄</h3>
   <div id="appBox"></div>
   <div id="bkBox"></div>
@@ -474,6 +485,8 @@
 <script src="js/games.js"></script>
 <script src="js/corners.js"></script>
 <script src="js/parent.js"></script>
+<script src="js/ambient.js"></script>
+<script src="js/intro.js"></script>
 <script src="js/wish.js"></script>
 <script src="js/review.js"></script>
 <script src="js/backup.js"></script>

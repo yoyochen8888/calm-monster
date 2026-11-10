@@ -198,3 +198,13 @@ const HOME_ITEMS=[
   {id:'garden',base:246,draw:(C,x)=>clayGardenBed(C,x.crop)},
   {id:'flowers',base:222,draw:(C,x)=>clayFlowers(C,(x.g.flowers||1)*2,x.seed)},
 ];
+
+/* ---------- 底部導覽列的黏土小圖示（v24，取代 emoji） ---------- */
+function navIcons(){const C=Clay('nv'),I={
+  10:`<path d="M4 14 L14 5 L24 14" fill="none" stroke="${tint('#F59B8E',-.05)}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="13" width="14" height="11" rx="3" fill="${C.v('#FFF1DC',.2,-.1)}" stroke="#EAD7BD" stroke-width="1"/><rect x="12" y="17" width="4.5" height="7" rx="2" fill="#C99467"/>`,
+  1:`<path d="M14 24 C4 17 3 11 6.5 7.5 C9.5 4.8 13 6.5 14 9 C15 6.5 18.5 4.8 21.5 7.5 C25 11 24 17 14 24 Z" fill="${C.g('#FFC94D',.45,-.12)}" stroke="#EBA91F" stroke-width="1"/><ellipse cx="9.5" cy="10.5" rx="2.2" ry="1.4" fill="#fff" opacity=".6"/>`,
+  17:`<rect x="3" y="8" width="22" height="13" rx="6.5" fill="${C.g('#B9A0F0',.4,-.15)}" stroke="#9C84D6" stroke-width="1"/><path d="M9 11.5 v6 M6 14.5 h6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="18" cy="16" r="1.7" fill="#FFD86B"/><circle cx="21.2" cy="12.8" r="1.7" fill="#FF9EC4"/>`,
+  11:`<path d="M9.5 11 V9 a4.5 4.5 0 0 1 9 0 V11" fill="none" stroke="#3FA394" stroke-width="2.2" stroke-linecap="round"/><path d="M6 11 H22 L20.5 23 a2 2 0 0 1 -2 1.6 H9.5 a2 2 0 0 1 -2 -1.6 Z" fill="${C.v('#7FD3C4',.3,-.12)}" stroke="#3FA394" stroke-width="1" stroke-linejoin="round"/><path d="M14 14.2 l1.1 2.3 2.5 .3 -1.8 1.7 .5 2.5 -2.3 -1.2 -2.3 1.2 .5 -2.5 -1.8 -1.7 2.5 -.3 Z" fill="#FFE38A"/>`,
+  9:`<path d="M14 8 C11 5.5 6.5 5.5 4 7 V22 C6.5 20.5 11 20.5 14 23 Z" fill="${C.v('#9CC2F5',.35,-.05)}" stroke="#6F9FDD" stroke-width="1" stroke-linejoin="round"/><path d="M14 8 C17 5.5 21.5 5.5 24 7 V22 C21.5 20.5 17 20.5 14 23 Z" fill="${C.v('#BFD9FA',.35,-.05)}" stroke="#6F9FDD" stroke-width="1" stroke-linejoin="round"/><path d="M7 11 h4 M7 14.5 h4 M17 11 h4 M17 14.5 h4" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>`};
+  $$('.tabbar [data-tab]').forEach((b,i)=>{const ic=I[+b.dataset.tab];if(!ic)return;const sp=b.querySelector('span');
+    b.innerHTML=`<svg class="navico" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">${i===0?C.defs():''}${ic}</svg>`;if(sp)b.appendChild(sp)})}

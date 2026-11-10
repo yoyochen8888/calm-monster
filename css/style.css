@@ -349,3 +349,25 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
 .wishask{background:#fff;border-radius:22px;padding:20px 18px;max-width:420px;text-align:center;font-family:"Noto Sans TC",sans-serif;line-height:1.7}
 .wishask p{margin:6px 0}.wishask .wj{display:flex;justify-content:center}
 @media (prefers-reduced-motion:reduce){.jar.full{animation:none}}
+/* 靜靜看（v24） */
+body.quietmode header,body.quietmode .tabbar,body.quietmode #navrow,body.quietmode #dots{display:none!important}
+.scene.quiet{position:relative;pointer-events:none}
+.qring{display:none;position:absolute;left:50%;top:50%;width:44%;aspect-ratio:1;margin:-22% 0 0 -22%;border-radius:50%;border:4px solid rgba(255,255,255,.85);background:rgba(255,255,255,.14);box-shadow:0 0 24px rgba(255,255,255,.5)}
+.qring.on{display:block;animation:qbreath 10s ease-in-out infinite}
+@keyframes qbreath{0%{transform:scale(.45)}40%{transform:scale(1)}100%{transform:scale(.45)}}
+@media (prefers-reduced-motion:reduce){.qring.on{animation-duration:10s}}
+/* 新手引導（v24） */
+.introov{position:fixed;inset:0;background:rgba(59,47,42,.5);display:flex;align-items:center;justify-content:center;z-index:70;padding:16px}
+.introcard{background:#fff;border-radius:24px;padding:22px 20px;max-width:460px;width:100%;max-height:92vh;overflow:auto;text-align:center}
+.introcard h2{margin:6px 0 8px;font-size:1.3rem}.introtxt{font-family:"Noto Sans TC",sans-serif;line-height:1.75;text-align:left;font-size:.98rem}
+.introtxt p{margin:6px 0}.introtxt ul{margin:6px 0;padding-left:1.2em}.introtxt li{margin:4px 0}
+.introrow{display:flex;justify-content:center;gap:4px}.introico{font-size:3.4rem;line-height:1.3}
+/* 介面統一（v24）：柔和的陰影和立體感，跟黏土畫風搭配 */
+.card{border-color:#F3E7D6;box-shadow:0 6px 18px rgba(150,110,70,.08)}
+.btn{background:linear-gradient(#3DA898,#2F8F83);box-shadow:0 3px 0 #257166,0 6px 12px rgba(47,143,131,.18)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #257166}
+.btn.ghost{background:#fff;box-shadow:0 2px 0 var(--line)}.btn.ghost:active{box-shadow:none}
+.pick{box-shadow:0 3px 0 var(--line)}.pick.sel{box-shadow:0 3px 0 #BFE3DC}
+.chip{box-shadow:0 2px 0 var(--line)}.chip.sel{box-shadow:0 2px 0 #BFE3DC}
+.tabbar{border-top:0;border-radius:22px 22px 0 0;box-shadow:0 -4px 18px rgba(150,110,70,.12)}
+.navico{display:block;margin:0 auto}.tabbar button.on .navico{transform:scale(1.08)}

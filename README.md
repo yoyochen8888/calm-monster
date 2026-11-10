@@ -34,6 +34,8 @@
 - `js/games.js`：遊戲時間與安靜觀察
 - `js/corners.js`：療癒小角落（池塘、菜園）與看魚呼吸
 - `js/parent.js`：大人區、使用時間提醒、測試模式、計時器
+- `js/ambient.js`：環境音（預設關閉）與「靜靜看」
+- `js/intro.js`：第一次打開的使用說明
 - `js/wish.js`：願望罐（延遲滿足）
 - `js/review.js`：一起回顧（事後帶孩子回頭看那一次）
 - `js/backup.js`：加到主畫面的說明、離線狀態、備份與還原

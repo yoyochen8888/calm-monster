@@ -85,7 +85,7 @@ function renderAct(){
   if(S.lv>=4 && list[0]!=='breathe' && S.emo!=='angry'){list.splice(list.indexOf('breathe'),1);list.unshift('breathe')}
   if(!S.act)S.act=list[0];
   $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${ACT_NAME[a]}</button>`).join('');
-  $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct()});
+  $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct();ambSync()});
   $('#actTitle').textContent=S.sos?'🆘 先一起呼吸，不用想是哪隻怪獸':S.practice?'平時練習：心情好的時候先練起來':S.lv>=4?'先讓身體冷靜下來':'冷靜時間';
   ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly,fish:actFish})[S.act]();
 }

@@ -119,7 +119,7 @@ function renderHome(){
   $('#heroName').textContent=store.hero.name;
   $('#heroLv').textContent=`Lv.${pl} ${PTITLES[pl-1]}`+(pn.need?`・再 ${pn.need} 經驗升級`:'');
   $('#heroXp').style.width=pn.pct+'%';$('#homeStars').textContent=store.stars||0;
-  $('#scene').innerHTML=scene();bindScene();
+  $('#quietScene').innerHTML='';$('#scene').innerHTML=scene();bindScene();
   $('#decorBar').style.display=S.decor?'':'none';
   $('#hWaterSub').textContent=S.decor?'布置中…':'拖拉家具換位置';
   renderChores();renderReviewCard();renderWishCard();
@@ -144,6 +144,7 @@ function renderHome(){
     const g=$('#moodGo');if(g)g.onclick=startFlow;});
 }
 $('#hStart').onclick=startFlow;
+$('#hQuiet').onclick=()=>go(27);
 function startPractice(emo,act){resetFlow();store.day.n--;save();S.practice=true;S.emo=emo||'scared';S.act=act||'breathe';go(3)}
 $('#hGames').onclick=()=>go(17);
 $('#hWater').onclick=()=>{const has=SHOP.some(x=>x.cat==='home'&&SPOTS[x.id]&&store.owned.includes(x.id));
