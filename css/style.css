@@ -371,3 +371,10 @@ body.quietmode header,body.quietmode .tabbar,body.quietmode #navrow,body.quietmo
 .chip{box-shadow:0 2px 0 var(--line)}.chip.sel{box-shadow:0 2px 0 #BFE3DC}
 .tabbar{border-top:0;border-radius:22px 22px 0 0;box-shadow:0 -4px 18px rgba(150,110,70,.12)}
 .navico{display:block;margin:0 auto}.tabbar button.on .navico{transform:scale(1.08)}
+
+/* v25：陪伴模式最上面的三件事＋收合的完整步驟 */
+.coquick{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+.coquick li{background:#fff;border-radius:12px;padding:10px 12px;line-height:1.55}
+.coquick li b{display:block;font-size:1.12rem;color:var(--accent);margin-bottom:2px}
+.comore{margin-top:12px;border-top:1px dashed #D6ECE8;padding-top:8px}
+.comore summary{cursor:pointer;color:var(--accent);font-weight:700;padding:8px 0;font-size:.98rem}

@@ -6,6 +6,8 @@ function renderCo(){
   if(!coStart)coStart=Date.now();
   const age=S.age||'mid';
   const ageName={young:'3–5 歲',mid:'6–8 歲',old:'9–12 歲'}[age];
+  $('#coQuick').innerHTML=CO_QUICK.map(([t,d],i)=>`<li><b>${i+1}. ${t}</b>${d}</li>`).join('');
+  $$('.comore').forEach(d=>d.open=false);
   $('#checks').innerHTML=CO_STEPS.map(([t,d],i)=>`<li data-i="${i}"><span class="bx">✓</span><span class="tx"><b>${i+1}. ${t}</b><br>${d}</span></li>`).join('');
   $$('#checks li').forEach(li=>li.onclick=()=>li.classList.toggle('done'));
   $('#linesTitle').textContent=`可以說的短句（${ageName}）`;
@@ -24,7 +26,12 @@ function renderCo(){
   };
   tick();coInt=setInterval(tick,1000);
 }
-$('#coCalm').onclick=()=>{if(!S.coRewarded){S.coRewarded=true;gain('請大人陪伴，求助也是勇氣',10,{flow:1})}coStart=0;S.lv2=0;go(4)};
+$('#coCalm').onclick=()=>{
+  /* 從「馬上冷靜」進來、還沒選怪獸：先選是哪一隻，星星等選完再給（才會記在對的怪獸身上） */
+  if(S.sos){coStart=0;S.lv2=0;go(1);return}
+  if(!S.coRewarded){S.coRewarded=true;gain('請大人陪伴，求助也是勇氣',10,{flow:1})}coStart=0;S.lv2=0;go(4)};
+$('#openCoTop').onclick=()=>$('#openCo').click();
+$('#actAdult').onclick=()=>{coStart=0;go(8)};
 $('#openCo').onclick=()=>{closeP();if(!(S.step>=1&&S.step<=8)){resetFlow();S.hist=[10]}if(!S.emo)S.emo='angry';coStart=0;go(8)};
 $$('[data-back]').forEach(b=>b.onclick=()=>go(S.step-1));
 
@@ -41,7 +48,7 @@ function renderMonsters(){
   $('#monsters').innerHTML=visibleEmo().map(k=>[k,EMO[k]]).map(([k,e])=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">
     ${monster(k,84,'',{mood:2})}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span><span class="lvtag">Lv.${lvOf(store.xp[k]||0)} ${TITLES[lvOf(store.xp[k]||0)-1]}</span></button>`).join('');
   $$('[data-emo]').forEach(b=>b.onclick=()=>{S.emo=b.dataset.emo;tone(500,.12);speak('我是'+EMO[S.emo].name);
-    if(S.sos){S.sos=false;S.lv0=4;S.lv=4;S.lv2=0;if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}S.sosDone=0;go(4)}else go(2)});
+    if(S.sos){S.sos=false;S.lv0=S.usedCo?5:4;S.lv=S.lv0;S.lv2=0;if(S.usedCo&&!S.coRewarded){S.coRewarded=true;gain('請大人陪伴，求助也是勇氣',10,{flow:1})}if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}S.sosDone=0;go(4)}else go(2)});
 }
 /* thermometer */
 function thermo(el,stage,key,onPick){
@@ -86,6 +93,7 @@ function renderAct(){
   if(!S.act)S.act=list[0];
   $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${ACT_NAME[a]}</button>`).join('');
   $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct();ambSync()});
+  $('#actAdultRow').style.display=(!S.practice&&(S.sos||S.lv>=4))?'':'none';
   $('#actTitle').textContent=S.sos?'🆘 先一起呼吸，不用想是哪隻怪獸':S.practice?'平時練習：心情好的時候先練起來':S.lv>=4?'先讓身體冷靜下來':'冷靜時間';
   ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly,fish:actFish})[S.act]();
 }
@@ -117,6 +125,8 @@ function actBreathe(){
       <div class="row"><button class="btn" id="bStart">開始</button></div>`;
     $('#bStart').onclick=()=>{$('#bStart').style.display='none';ballRun(0,young)};
   }
+  /* 從「馬上冷靜」進來：不用再按「開始」，停一下就自己開始 */
+  if(S.autoStart){S.autoStart=false;const st=$('#bStart'),run=st.onclick;st.style.display='none';st.onclick=null;$('#bw').textContent='我們一起呼吸';later(run,1200)}
 }
 function ballRun(i,young){
   const ball=$('#ball'),bw=$('#bw'),bc=$('#bc');if(!ball)return;
@@ -284,7 +294,7 @@ function gain(label,n,opt={}){
   tone(880,.12,'triangle',.1);if(up)setTimeout(()=>{tone(784,.2);setTimeout(()=>tone(1046,.5),180)},350);
   return n;
 }
-function resetFlow(){Object.assign(S,{sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,dmg:null,repair:null,actsDone:[],monUp:null,capToasted:false});
+function resetFlow(){Object.assign(S,{autoStart:false,sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,dmg:null,repair:null,actsDone:[],monUp:null,capToasted:false});
   const d=today();if(!store.day||store.day.d!==d)store.day={d,n:0};S.capped=store.day.n>=5;store.day.n++;save()}
 function startFlow(){if(!S.age){go(0);return}resetFlow();S.hist=[10];go(1,true)}
 function holdBtn(label,ms,cb){const b=document.createElement('button');b.className='hold';b.innerHTML=`<i></i><span>${label}</span>`;

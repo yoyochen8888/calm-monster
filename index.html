@@ -69,6 +69,7 @@
       <button class="speak" id="speakAct">🔊 唸給我聽</button>
       <button class="btn" id="actDone">我好一點了</button>
     </div>
+    <div class="row" id="actAdultRow" style="display:none;margin-top:10px"><button class="btn ghost" id="actAdult">🤝 請大人來陪我</button></div>
   </section>
 
   <!-- 4 re-check -->
@@ -335,13 +336,20 @@
     <div class="breath-word" id="coWord">我在這裡，你很安全</div>
 
     <div class="adult">
-      <div class="adult-head"><b>給大人：情緒爆發時（4–5 級）</b><span>已經過了 <b id="elapsed">0:00</b></span></div>
-      <p style="margin:6px 0 0;color:var(--soft);line-height:1.6">這時孩子的大腦聽不進道理，最有用的是大人的平靜。由上往下做，做完可以打勾。</p>
-      <ol class="check" id="checks"></ol>
+      <div class="adult-head"><b>給大人：現在只要做 3 件事</b><span>已經過了 <b id="elapsed">0:00</b></span></div>
+      <ol class="coquick" id="coQuick"></ol>
       <h4 id="linesTitle">可以說的短句</h4>
       <div class="lines" id="lines"></div>
-      <h4>給身體一個出口（看孩子平常哪種有效）</h4>
-      <div class="chips" id="outlets" style="justify-content:flex-start"></div>
+      <details class="comore">
+        <summary>看完整步驟（7 步，可以打勾）</summary>
+        <p style="margin:6px 0 0;color:var(--soft);line-height:1.6">這時孩子的大腦聽不進道理，最有用的是大人的平靜。由上往下做，做完可以打勾。</p>
+        <ol class="check" id="checks"></ol>
+      </details>
+      <details class="comore">
+        <summary>給身體一個出口</summary>
+        <p style="margin:6px 0 8px;color:var(--soft)">看孩子平常哪種有效</p>
+        <div class="chips" id="outlets" style="justify-content:flex-start"></div>
+      </details>
       <div class="warn" id="longWarn">情緒通常會先升到最高點再下降。只要陪著，不必急著讓它停下來。</div>
     </div>
 
@@ -368,6 +376,7 @@
     <button class="btn ghost small" id="closeParent">關閉</button>
   </div>
   <p style="color:var(--soft)">先連結，再引導。情緒大的時候，大腦聽不進道理；先讓身體安靜，再談事情。</p>
+  <button class="btn adult-btn" id="openCoTop" style="margin:4px 0 14px">🤝 現在情緒很大：打開陪伴模式</button>
   <div class="tabs" id="pTabs"></div>
   <div id="pBody"></div>
   <h3>孩子情緒超過能自己處理的程度時（4–5 級）</h3>
