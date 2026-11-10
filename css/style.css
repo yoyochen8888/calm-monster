@@ -281,3 +281,16 @@ body.bg-sky{background:linear-gradient(180deg,#D7EEFF 0%,#FFF8EE 70%)}
 body.bg-rainbow{background:linear-gradient(180deg,#FFE0E0 0%,#FFF1CC 25%,#E3F8DA 50%,#DDEFFF 75%,#F0E4FF 100%)}
 body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 34px,radial-gradient(#FFE89A 1px,transparent 1.5px) 17px 17px/34px 34px,linear-gradient(180deg,#CFC6F5,#EDE8FF)}
 @keyframes wob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+/* 週回顧（v16） */
+.review{border:2px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;background:#fff;font-family:"Noto Sans TC",sans-serif}
+.rv-kid{background:var(--accent-2);border-radius:14px;padding:12px 14px}
+.rv-adult{margin-top:12px;font-size:.92rem}
+.rv-list{margin:6px 0 0;padding-left:1.2em;line-height:1.8}
+.rv-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px;text-align:center}
+.rv-days>div{border:2px solid var(--line);border-radius:12px;padding:6px 2px;min-height:70px}
+.rv-days>div.today{border-color:var(--accent)}
+.rv-days small{display:block;color:var(--soft);font-size:.78rem}
+.rv-days span{display:block;font-size:1.35rem;line-height:1.5}
+.rv-days em{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;font-style:normal}
+.rv-days i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.rv-key{color:var(--soft);font-size:.8rem;margin:6px 0 0}

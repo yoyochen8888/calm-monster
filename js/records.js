@@ -17,15 +17,86 @@ function summarize(L){
   const ae={};L.forEach(l=>l.acts.forEach(a=>{ae[a]=ae[a]||[0,0];ae[a][0]+=l.lv0-l.lv2;ae[a][1]++}));
   const best=Object.entries(ae).filter(x=>x[1][1]>=1).sort((a,b)=>b[1][0]/b[1][1]-a[1][0]/a[1][1])[0];
   return {byE,avg,topC,best,co:L.filter(l=>l.co).length,rep:L.filter(l=>l.repair).length}}
+/* ---------- 週回顧（v16）：本週／上週，跟前一週比較 ---------- */
+const DAYPART=[['早上',5,11],['中午',11,14],['下午',14,17],['傍晚',17,20],['晚上',20,29]];
+function partOf(t){let h=new Date(t).getHours();if(h<5)h+=24;const p=DAYPART.find(x=>h>=x[1]&&h<x[2]);return p?p[0]:'晚上'}
+function weekData(off){/* off=0 本週，1 上週，2 上上週 */
+  const m=monday();m.setDate(m.getDate()-7*off);const a=m.getTime(),b=a+7*864e5;
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);return dkey(d)});
+  const L=store.log.filter(l=>l.t>=a&&l.t<b);
+  const W=store.wins.filter(w=>w.t>=a&&w.t<b);
+  const moods={};store.moodLog.forEach(x=>{if(days.includes(x.d))moods[x.d]=x.m});
+  const prac=days.filter(d=>store.pracLog.includes(d)).length;
+  const play=days.filter(d=>store.playLog.includes(d)).length;
+  const perDay=days.map(d=>L.filter(l=>dkey(new Date(l.t))===d));
+  const avg=L.length?L.reduce((s,l)=>s+(l.lv0-l.lv2),0)/L.length:0;
+  const big=L.filter(l=>l.lv0>=4).length;
+  const parts={};L.forEach(l=>{const p=partOf(l.t);parts[p]=(parts[p]||0)+1});
+  const topP=Object.entries(parts).sort((x,y)=>y[1]-x[1])[0];
+  const plans={};L.forEach(l=>{if(l.plan)plans[l.plan]=(plans[l.plan]||0)+1});
+  const topPlan=Object.entries(plans).sort((x,y)=>y[1]-x[1])[0];
+  return {a,days,L,W,moods,prac,play,perDay,avg,big,topP,topPlan,sm:summarize(L)}}
+function cmp(now,before,unit){/* 跟上週比的一句話，用中性的說法 */
+  const d=Math.round((now-before)*10)/10;if(!d)return '跟上週一樣';
+  return `比上週${d>0?'多':'少'} ${Math.abs(d)} ${unit}`}
+function reviewHtml(off){
+  const w=weekData(off),p=weekData(off+1);
+  const who=(store.hero&&store.hero.name)||'你';const wd=['一','二','三','四','五','六','日'];
+  const MO={};MOODS.forEach(x=>MO[x[1]]=x[0]);
+  /* 給孩子看：只說做到的事，不比較、不扣分 */
+  const kid=[];
+  if(w.L.length){kid.push(`陪怪獸冷靜了 <b>${w.L.length}</b> 次`);
+    if(w.avg>=0.5)kid.push(`怪獸平均變小了 <b>${w.avg.toFixed(1)}</b> 級`);
+    if(w.sm.best)kid.push(`最有用的方法是「<b>${w.sm.best[0]}</b>」`);
+    if(w.L.some(l=>l.co))kid.push('需要的時候會請大人幫忙，這也是勇氣');
+    if(w.L.some(l=>l.repair))kid.push('做錯事會想辦法彌補');}
+  if(w.W.length)kid.push(`做到了：${w.W.slice(0,4).map(x=>`<b>${x.text}</b>`).join('、')}`);
+  if(w.prac)kid.push(`平時練習了 <b>${w.prac}</b> 天`);
+  const mdays=Object.keys(w.moods).length;if(mdays)kid.push(`說出自己的心情 <b>${mdays}</b> 天`);
+  const kidHtml=kid.length?`<ul class="rv-list">${kid.map(x=>`<li>${x}</li>`).join('')}</ul>`
+    :`<p>${off?'上週':'這週'}還沒有用冷靜站。想練習的時候，隨時都可以來。</p>`;
+  /* 七天一覽：心情＋冷靜次數 */
+  const td=today();
+  const strip=`<div class="rv-days">${w.days.map((d,i)=>{const n=w.perDay[i];
+    return `<div class="${d===td?'today':''}"><small>${wd[i]}</small><span>${w.moods[d]?MO[w.moods[d]]||'·':'·'}</span>
+      <em>${n.map(l=>`<i style="background:${EMO[l.emo].color}"></i>`).join('')||'&nbsp;'}</em></div>`}).join('')}</div>
+    <p class="rv-key">上面是心情打卡，下面的圓點是用冷靜站（顏色＝哪隻怪獸）</p>`;
+  /* 給大人看 */
+  const ad=[];
+  if(w.L.length||p.L.length){
+    ad.push(`冷靜站 <b>${w.L.length}</b> 次（${cmp(w.L.length,p.L.length,'次')}）`);
+    if(w.L.length)ad.push(`平均變小 <b>${w.avg.toFixed(1)}</b> 級${p.L.length?`（上週 ${p.avg.toFixed(1)} 級）`:''}`);
+    if(w.big)ad.push(`開始時就很大（4–5 級）：${w.big} 次${p.L.length?`（上週 ${p.big} 次）`:''}`);}
+  if(w.topP&&w.topP[1]>=2)ad.push(`比較常發生在<b>${w.topP[0]}</b>（${w.topP[1]} 次）`);
+  if(w.topPlan)ad.push(`孩子選的「下次可以」：${w.topPlan[0]}`);
+  ad.push(`平時練習 ${w.prac} 天、遊戲時間 ${w.play} 天、心情打卡 ${mdays} 天`);
+  const adHtml=`<ul class="rv-list">${ad.map(x=>`<li>${x}</li>`).join('')}</ul>`+
+    (w.L.length&&p.L.length&&w.L.length>p.L.length?'<p class="rv-key">次數變多不一定是變差，也可能是孩子更願意用冷靜站了；可以一起看看「平均變小」和「4–5 級」的次數。</p>':'');
+  return `<div class="rv-kid"><b>🌟 ${who}${off?'上週':'這週'}做到的事</b>${kidHtml}</div>${strip}
+    <div class="rv-adult"><b>📊 給大人看的重點</b>${adHtml}</div>`}
+function reviewText(off){const w=weekData(off),p=weekData(off+1);const wd=['一','二','三','四','五','六','日'];
+  const mdays=Object.keys(w.moods).length;
+  let t=`【${off?'上週':'本週'}回顧】${fmtT(w.a).split(' ')[0]} 起\n`;
+  t+=`冷靜站 ${w.L.length} 次（${cmp(w.L.length,p.L.length,'次')}）`+(w.L.length?`，平均變小 ${w.avg.toFixed(1)} 級`:'')+(w.big?`，開始時 4–5 級 ${w.big} 次`:'')+'\n';
+  if(w.topP&&w.topP[1]>=2)t+=`比較常發生在${w.topP[0]}\n`;
+  t+=`平時練習 ${w.prac} 天、遊戲時間 ${w.play} 天、心情打卡 ${mdays} 天\n`;
+  t+='每天：'+w.days.map((d,i)=>`${wd[i]}${w.moods[d]?w.moods[d]:''}${w.perDay[i].length?`（冷靜站${w.perDay[i].length}次）`:''}`).join('、')+'\n\n';
+  return t}
 function renderLog(){
   S.logRange=S.logRange||'week';
   $('#logTabs').innerHTML=[['week','本週'],['lastweek','上週'],['month','近 30 天'],['all','全部']].map(([k,t])=>`<button class="chip ${S.logRange===k?'sel':''}" data-lr="${k}">${t}</button>`).join('');
   $$('[data-lr]').forEach(b=>b.onclick=()=>{S.logRange=b.dataset.lr;$('#logText').style.display='none';renderLog()});
   const L=logRange(),sm=summarize(L);
-  if(!sm){$('#logSum').innerHTML='這段時間還沒有冷靜站紀錄。用完冷靜站後會自動記錄。'+winsHtml();$('#logList').innerHTML='';return}
+  const off={week:0,lastweek:1}[S.logRange];const rv=off===undefined?'':`<div class="review">${reviewHtml(off)}</div>`;
+  $('#logRv').innerHTML=rv;$('#logRv').style.display=rv?'':'none';
+  $('#logSum').style.display='';
+  if(!sm){if(rv)$('#logSum').style.display='none';$('#logSum').innerHTML='這段時間還沒有冷靜站紀錄。用完冷靜站後會自動記錄。'+winsHtml();$('#logList').innerHTML='';return}
   const mx=Math.max(...Object.values(sm.byE));
+  const bars=`<div class="bars">${Object.entries(sm.byE).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div><span style="width:84px">${EMO[k].name}</span><b style="width:${n/mx*150}px;background:${EMO[k].color}"></b>${n}</div>`).join('')}</div>`;
+  const topC=sm.topC?`<div>最常見的原因：<b>${sm.topC[0]}</b>（${sm.topC[1]} 次）</div>`:'';
+  if(rv){$('#logSum').innerHTML=`<b>哪隻怪獸來了</b>${bars}${topC}`}else
   $('#logSum').innerHTML=`<b>共 ${L.length} 次</b>　平均怪獸變小 <b>${sm.avg}</b> 級
-    <div class="bars">${Object.entries(sm.byE).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div><span style="width:84px">${EMO[k].name}</span><b style="width:${n/mx*150}px;background:${EMO[k].color}"></b>${n}</div>`).join('')}</div>
+    ${bars}
     ${sm.topC?`<div>最常見的原因：<b>${sm.topC[0]}</b>（${sm.topC[1]} 次）</div>`:''}
     ${sm.best?`<div>效果最好的方法：<b>${sm.best[0]}</b>（平均變小 ${(sm.best[1][0]/sm.best[1][1]).toFixed(1)} 級）</div>`:''}
     ${sm.co?`<div>請大人陪伴：${sm.co} 次</div>`:''}${sm.rep?`<div>修復任務：${sm.rep} 次</div>`:''}`+winsHtml();
@@ -38,9 +109,11 @@ function renderLog(){
     <textarea data-note="${l.t}" placeholder="大人備註（例如：在哪裡發生、怎麼結束的）">${l.note||''}</textarea></div>`}).join('');
   $$('[data-note]').forEach(t=>t.onchange=()=>{const l=store.log.find(x=>x.t===+t.dataset.note);if(l){l.note=t.value;save()}});
 }
-function logAsText(){const L=logRange(),sm=summarize(L);if(!sm)return '';
+function logAsText(){const L=logRange(),sm=summarize(L);
+  const off={week:0,lastweek:1}[S.logRange];const rt=off===undefined?'':reviewText(off);
+  if(!sm)return rt;
   const name={week:'本週',lastweek:'上週',month:'近 30 天',all:'全部'}[S.logRange];
-  let t=`情緒紀錄（${name}，共 ${L.length} 次，平均變小 ${sm.avg} 級）\n`;
+  let t=rt+`情緒紀錄（${name}，共 ${L.length} 次，平均變小 ${sm.avg} 級）\n`;
   t+=Object.entries(sm.byE).map(([k,n])=>`${EMO[k].cname}${EMO[k].name} ${n} 次`).join('、')+'\n';
   const W=winsRange();if(W.length)t+=`做到的事：${W.map(w=>w.text).join('、')}\n`;
   if(sm.topC)t+=`最常見原因：${sm.topC[0]}\n`;if(sm.best)t+=`效果最好的方法：${sm.best[0]}\n`;
