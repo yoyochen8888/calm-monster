@@ -281,3 +281,93 @@ body.bg-sky{background:linear-gradient(180deg,#D7EEFF 0%,#FFF8EE 70%)}
 body.bg-rainbow{background:linear-gradient(180deg,#FFE0E0 0%,#FFF1CC 25%,#E3F8DA 50%,#DDEFFF 75%,#F0E4FF 100%)}
 body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 34px,radial-gradient(#FFE89A 1px,transparent 1.5px) 17px 17px/34px 34px,linear-gradient(180deg,#CFC6F5,#EDE8FF)}
 @keyframes wob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+/* 週回顧（v16） */
+.review{border:2px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px;background:#fff;font-family:"Noto Sans TC",sans-serif}
+.rv-kid{background:var(--accent-2);border-radius:14px;padding:12px 14px}
+.rv-adult{margin-top:12px;font-size:.92rem}
+.rv-list{margin:6px 0 0;padding-left:1.2em;line-height:1.8}
+.rv-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px;text-align:center}
+.rv-days>div{border:2px solid var(--line);border-radius:12px;padding:6px 2px;min-height:70px}
+.rv-days>div.today{border-color:var(--accent)}
+.rv-days small{display:block;color:var(--soft);font-size:.78rem}
+.rv-days span{display:block;font-size:1.35rem;line-height:1.5}
+.rv-days em{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;font-style:normal}
+.rv-days i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.rv-key{color:var(--soft);font-size:.8rem;margin:6px 0 0}
+/* 療癒小角落（v17） */
+.cornerarea{display:flex;justify-content:center;margin:4px 0 10px}
+.pondcv{border-radius:18px;display:block;touch-action:none;max-width:100%}
+#fishPond{display:flex;justify-content:center;margin-bottom:8px}
+.cornermsg{text-align:center;min-height:1.4em;color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;margin:4px 0}
+.gardensvg{display:block;border-radius:18px;max-width:560px;touch-action:none}
+.gardensvg .leaf{transform-box:view-box;cursor:pointer}
+.gardensvg .leaf.sway{animation:gsway 2.6s ease-in-out 2}
+.gardensvg .leaf.touch{animation:gsway 1s ease-in-out 1}
+@keyframes gsway{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.gardensvg .drop{animation:gdrop .9s ease-in forwards}
+@keyframes gdrop{to{transform:translateY(80px);opacity:.2}}
+.btn.hold-water{user-select:none;-webkit-user-select:none;touch-action:none}
+.share{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 0}
+.sharemon{animation:hop .5s ease-out 3}
+.bubble{background:#fff;border:2px solid var(--line);border-radius:16px;padding:8px 14px;font-family:"Noto Sans TC",sans-serif}
+@media (prefers-reduced-motion: reduce){.gardensvg .leaf.sway,.gardensvg .leaf.touch,.sharemon{animation:none}}
+/* 家園環境動態（v19）：都很慢、很小，只是讓畫面有呼吸感 */
+.amb-sway{transform-box:fill-box;transform-origin:50% 100%;animation:ambsway 5s ease-in-out infinite}
+@keyframes ambsway{0%,100%{transform:rotate(-1.8deg)}50%{transform:rotate(1.8deg)}}
+.amb-smoke{transform-box:fill-box;transform-origin:center;opacity:0;animation:ambsmoke 6s ease-out infinite}
+@keyframes ambsmoke{0%{transform:translate(0,0) scale(.5);opacity:0}20%{opacity:.6}100%{transform:translate(8px,-24px) scale(1.6);opacity:0}}
+.amb-glow{animation:ambglow 4.5s ease-in-out infinite}@keyframes ambglow{50%{opacity:.55}}
+.amb-flag{transform-box:fill-box;transform-origin:0 50%;animation:ambflag 2.4s ease-in-out infinite}@keyframes ambflag{50%{transform:scaleX(.75) skewY(8deg)}}
+.bfly{animation:bf1 28s ease-in-out infinite}.bfly.b2{animation:bf2 36s ease-in-out infinite}.bfly.b3{animation:bf3 44s ease-in-out infinite}
+@keyframes bf1{0%,100%{transform:translate(30px,196px)}20%{transform:translate(70px,178px)}45%{transform:translate(150px,200px)}70%{transform:translate(96px,226px)}}
+@keyframes bf2{0%,100%{transform:translate(320px,160px)}25%{transform:translate(250px,180px)}50%{transform:translate(200px,150px)}75%{transform:translate(280px,196px)}}
+@keyframes bf3{0%,100%{transform:translate(180px,232px)}30%{transform:translate(120px,170px)}60%{transform:translate(220px,188px)}}
+.flap{transform-box:fill-box;transform-origin:center;animation:flap .45s ease-in-out infinite}@keyframes flap{50%{transform:scaleX(.25)}}
+.bird{animation:bird 40s linear infinite}@keyframes bird{0%{transform:translate(-30px,70px)}40%,100%{transform:translate(400px,24px)}}
+.flapy{transform-box:fill-box;transform-origin:center;animation:flapy .7s ease-in-out infinite}@keyframes flapy{50%{transform:scaleY(.4)}}
+.ffly{animation:ffly 9s ease-in-out infinite}@keyframes ffly{0%,100%{transform:translate(0,0);opacity:.1}50%{transform:translate(12px,-14px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.amb-sway,.amb-smoke,.amb-glow,.amb-flag,.bfly,.flap,.bird,.flapy,.ffly{animation:none}.bird,.amb-smoke{display:none}.bfly.b1{transform:translate(70px,178px)}.bfly.b2{transform:translate(250px,180px)}.bfly.b3{transform:translate(120px,170px)}.ffly{opacity:.8}}
+/* 圖鑑：拿手方法（v20） */
+.skillbox{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:var(--accent-2);border-radius:14px;padding:10px 12px;margin:8px 0}
+.skillbox span{color:var(--soft);font-size:.9rem;flex:1}
+/* 一起回顧（v22） */
+.rvcard{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#F3EEFB;border-radius:16px;padding:12px 14px;margin-top:12px;font-family:"Noto Sans TC",sans-serif}
+.rvcard b{display:block}.rvcard span{font-size:.9rem;color:var(--soft);line-height:1.6}.rvcard>div:first-child{flex:1;min-width:200px}
+.rvbtns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rvmon{display:flex;justify-content:center}
+.rvgood{text-align:center;font-size:1.1rem;line-height:1.7;margin:8px 0 12px}
+.rvdone{background:#F3EEFB;border-radius:10px;padding:4px 10px;margin:4px 0;display:inline-block}
+.rvchip{font-size:.85rem;padding:5px 12px;margin:4px 0;display:block}
+/* 願望罐（v23） */
+.wishcard{display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;background:#FFF6DC;border-radius:16px;padding:10px 14px;margin-top:12px;font-family:"Noto Sans TC",sans-serif}
+.wishcard.full{background:#FFEFC2}
+.wishcard .wt{flex:1;min-width:190px}.wishcard .wt b{display:block}.wishcard .wt span{font-size:.92rem;color:var(--soft);line-height:1.6}.wishcard .wt span b{display:inline;color:var(--ink)}
+.wishcard .wb{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.jar.full{animation:jarglow 3s ease-in-out infinite}@keyframes jarglow{50%{filter:drop-shadow(0 0 6px #FFD86B)}}
+.wishset{font-size:.82rem;padding:4px 10px;margin-top:6px}.wishtag{display:inline-block;font-size:.82rem;margin-top:8px;background:#FFF6DC;border-radius:999px;padding:4px 10px}
+.wishov{position:fixed;inset:0;background:rgba(59,47,42,.45);display:flex;align-items:center;justify-content:center;z-index:60;padding:18px}
+.wishask{background:#fff;border-radius:22px;padding:20px 18px;max-width:420px;text-align:center;font-family:"Noto Sans TC",sans-serif;line-height:1.7}
+.wishask p{margin:6px 0}.wishask .wj{display:flex;justify-content:center}
+@media (prefers-reduced-motion:reduce){.jar.full{animation:none}}
+/* 靜靜看（v24） */
+body.quietmode header,body.quietmode .tabbar,body.quietmode #navrow,body.quietmode #dots{display:none!important}
+.scene.quiet{position:relative;pointer-events:none}
+.qring{display:none;position:absolute;left:50%;top:50%;width:44%;aspect-ratio:1;margin:-22% 0 0 -22%;border-radius:50%;border:4px solid rgba(255,255,255,.85);background:rgba(255,255,255,.14);box-shadow:0 0 24px rgba(255,255,255,.5)}
+.qring.on{display:block;animation:qbreath 10s ease-in-out infinite}
+@keyframes qbreath{0%{transform:scale(.45)}40%{transform:scale(1)}100%{transform:scale(.45)}}
+@media (prefers-reduced-motion:reduce){.qring.on{animation-duration:10s}}
+/* 新手引導（v24） */
+.introov{position:fixed;inset:0;background:rgba(59,47,42,.5);display:flex;align-items:center;justify-content:center;z-index:70;padding:16px}
+.introcard{background:#fff;border-radius:24px;padding:22px 20px;max-width:460px;width:100%;max-height:92vh;overflow:auto;text-align:center}
+.introcard h2{margin:6px 0 8px;font-size:1.3rem}.introtxt{font-family:"Noto Sans TC",sans-serif;line-height:1.75;text-align:left;font-size:.98rem}
+.introtxt p{margin:6px 0}.introtxt ul{margin:6px 0;padding-left:1.2em}.introtxt li{margin:4px 0}
+.introrow{display:flex;justify-content:center;gap:4px}.introico{font-size:3.4rem;line-height:1.3}
+/* 介面統一（v24）：柔和的陰影和立體感，跟黏土畫風搭配 */
+.card{border-color:#F3E7D6;box-shadow:0 6px 18px rgba(150,110,70,.08)}
+.btn{background:linear-gradient(#3DA898,#2F8F83);box-shadow:0 3px 0 #257166,0 6px 12px rgba(47,143,131,.18)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #257166}
+.btn.ghost{background:#fff;box-shadow:0 2px 0 var(--line)}.btn.ghost:active{box-shadow:none}
+.pick{box-shadow:0 3px 0 var(--line)}.pick.sel{box-shadow:0 3px 0 #BFE3DC}
+.chip{box-shadow:0 2px 0 var(--line)}.chip.sel{box-shadow:0 2px 0 #BFE3DC}
+.tabbar{border-top:0;border-radius:22px 22px 0 0;box-shadow:0 -4px 18px rgba(150,110,70,.12)}
+.navico{display:block;margin:0 auto}.tabbar button.on .navico{transform:scale(1.08)}

@@ -34,7 +34,7 @@ function monster(kind,size=110,cls='',opt={}){
   return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}${mood?' '+SIZES[mood-1].n:' '+STAGES[grow-1].n}">
     ${aura}
     <ellipse cx="60" cy="121" rx="${w*.36}" ry="5" fill="${c}" opacity=".18"/>
-    ${HASART.has(kind)?(()=>{const f=mood||!GROWN.has(kind)?`${kind}${st}`:`${kind}g${grow}`;const ar=ASPECT[f]||1;return `<image href="img/${f}.webp" x="${(60-w*ar/2).toFixed(1)}" y="${y}" width="${(w*ar).toFixed(1)}" height="${w}"/>`})():placeholderMon(c,x,y,w,mood)}
+    ${HASART.has(kind)?(()=>{const f=mood||!GROWN.has(kind)?`${kind}${st}`:`${kind}g${grow}`;const ar=ASPECT[f]||1;return `<image href="img/${f}.webp" x="${(60-w*ar/2).toFixed(1)}" y="${y}" width="${(w*ar).toFixed(1)}" height="${w}"/>`})():clayMon(c,x,y,w,mood,kind)}
     <g transform="translate(0 ${dy.toFixed(1)})">${eq.neck&&ACC[eq.neck]?`<g transform="translate(0 ${(w*.5).toFixed(1)})">${ACC[eq.neck]}</g>`:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}</g>${badge}${sparks}
   </svg>`;
 }
@@ -42,9 +42,10 @@ function monster(kind,size=110,cls='',opt={}){
 /* ---------- navigation ---------- */
 S.hist=[];S.earned=[];
 function go(n,noPush){
-  if(n!==10)clearInterval(wanderT);
+  if(n!==10&&n!==27)clearInterval(wanderT);
+  if(n!==27)document.body.classList.remove('quietmode');
   if(n!==23)stopWatch();
-  if(isNight()&&([11,17,18,19,20,21].includes(n)||(n===23&&S.wMode!=='album'))){toast('晚上了，遊戲和商店明天再開 🌙<br>需要冷靜時，冷靜站還是可以用');if(S.step===10)return;n=10}
+  if(isNight()&&([11,17,18,19,20,21,24,25].includes(n)||(n===23&&S.wMode!=='album'))){toast('晚上了，遊戲和商店明天再開 🌙<br>需要冷靜時，冷靜站還是可以用');if(S.step===10)return;n=10}
   stopAct();clearInterval(coInt);
   if(!noPush&&S.step!==undefined&&S.step!==n)S.hist.push(S.step);
   if(n===7||n===10)S.hist=[];
@@ -52,7 +53,7 @@ function go(n,noPush){
   $('#dots').style.display=(n>=1&&n<=7)?'':'none';
   $('#navrow').style.display=(n===0||n===7||n===10)?'none':'';
   $('#navBack').style.visibility=S.hist.length?'visible':'hidden';
-  const tab=(n>=1&&n<=8)?1:((n>=18&&n<=21)||n===23)?17:n===22?9:n;
+  const tab=(n>=1&&n<=8)?1:((n>=18&&n<=21)||n===23)?17:n===22?9:(n>=24&&n<=27)?10:n;
   $$('[data-tab]').forEach(b=>b.classList.toggle('on',+b.dataset.tab===tab));
   $$('.step').forEach(s=>s.classList.toggle('on',+s.dataset.step===n));
   $('#dots').innerHTML=Array.from({length:8},(_,i)=>`<i class="${i===n?'on':''}"></i>`).join('');
@@ -79,5 +80,10 @@ function go(n,noPush){
   if(n===21)renderCB();
   if(n===22)renderMD();
   if(n===23)renderWatch();
+  if(n===24)renderPond();
+  if(n===25)renderGarden();
+  if(n===26)renderReview();
+  if(n===27)renderQuiet();
+  if(typeof ambSync==='function')ambSync();
 }
 

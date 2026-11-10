@@ -76,18 +76,18 @@ $('#selfTry').onclick=()=>{S.lv0=S.lv;S.tries=0;S.act=null;go(3)};
 /* ---------- activities ---------- */
 let timers=[];let raf=null;
 function later(fn,ms){timers.push(setTimeout(fn,ms))}
-function stopAct(){timers.forEach(clearTimeout);timers=[];if(raf)cancelAnimationFrame(raf);raf=null;try{speechSynthesis.cancel()}catch(e){}}
+function stopAct(){timers.forEach(clearTimeout);timers=[];if(raf)cancelAnimationFrame(raf);raf=null;if(typeof stopCorners==='function')stopCorners();try{speechSynthesis.cancel()}catch(e){}}
 
 let actSpeech='';
 function renderAct(){
   const e=EMO[S.emo];
-  const list=S.sos?['breathe','butterfly','squeeze']:S.practice?['breathe','light','bubbles','squeeze','senses','butterfly']:e.acts.slice();
+  const list=S.sos?['breathe','butterfly','squeeze']:S.practice?['breathe','light','bubbles','squeeze','senses','butterfly','fish']:e.acts.slice();
   if(S.lv>=4 && list[0]!=='breathe' && S.emo!=='angry'){list.splice(list.indexOf('breathe'),1);list.unshift('breathe')}
   if(!S.act)S.act=list[0];
   $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${ACT_NAME[a]}</button>`).join('');
-  $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct()});
+  $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct();ambSync()});
   $('#actTitle').textContent=S.sos?'🆘 先一起呼吸，不用想是哪隻怪獸':S.practice?'平時練習：心情好的時候先練起來':S.lv>=4?'先讓身體冷靜下來':'冷靜時間';
-  ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly})[S.act]();
+  ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly,fish:actFish})[S.act]();
 }
 $('#speakAct').onclick=()=>speak(actSpeech);
 $('#actDone').onclick=()=>{
@@ -316,7 +316,7 @@ $('#finish').onclick=()=>{
   $('#winMon').innerHTML=`<div class="morph"><div class="m-a">${monster(S.emo,150,'',{mood:moodOf(S.lv0||3)})}</div><div class="m-b">${monster(S.emo,150,'wobble')}</div></div>`;
   $('#winLv').textContent=`${e.name} Lv.${lv} ${TITLES[lv-1]}`+(nx.need?`（再 ${nx.need} 經驗升級）`:'（最高等級！）');
   setTimeout(()=>$('#winXp').style.width=nx.pct+'%',100);
-  $('#levelUp').innerHTML=S.monUp?`${S.monUp.from<CORNER_LV&&S.monUp.to>=CORNER_LV?`<div class="levelup">🏡 家園多了一個冷靜角落：${CORNERS[S.emo].ico} ${CORNERS[S.emo].name}！</div>`:''}<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 長大成「${STAGES[stageOf(S.monUp.to)-1].n}」，學會了${BADGE[S.emo][1]}：${BADGE[S.emo][2]}！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{level:S.monUp.from})}<b>➜</b>${monster(S.emo,96,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
+  $('#levelUp').innerHTML=S.monUp?`${S.monUp.from<CORNER_LV&&S.monUp.to>=CORNER_LV?`<div class="levelup">⭐ ${EMO[S.emo].name}教你牠的拿手方法：${CORNERS[S.emo].ico} ${CORNERS[S.emo].name}！到圖鑑就可以一起練習</div>`:''}<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 長大成「${STAGES[stageOf(S.monUp.to)-1].n}」，學會了${BADGE[S.emo][1]}：${BADGE[S.emo][2]}！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{level:S.monUp.from})}<b>➜</b>${monster(S.emo,96,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
   const total=S.earned.reduce((a,b)=>a+b[1],0);
   $('#rewardList').innerHTML=S.capped?`<li>今天已經練習 5 次以上了，星星明天再來拿。你還是很棒！</li>`
     :S.earned.map(([t,n])=>`<li><span>${t}</span><b>+${n} ⭐</b></li>`).join('')+`<li class="total"><span>這次一共拿到</span><b>${total} ⭐</b></li>`;

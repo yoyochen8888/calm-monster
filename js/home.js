@@ -51,7 +51,7 @@ const CORNERS={angry:{ico:'🚦',name:'紅綠燈小路',act:'light',x:30,y:150},
   lonely:{ico:'🏮',name:'小燈籠亭',act:'butterfly',x:180,y:236},stress:{ico:'🎒',name:'放下背包椅',act:'squeeze',x:106,y:236}};
 const CORNER_LV=4;
 function cornersOpen(){return Object.keys(CORNERS).filter(k=>lvOf(store.xp[k]||0)>=CORNER_LV)}
-function cornerSvg(k){const c=CORNERS[k],col=EMO[k].color;
+function cornerSvg(k,C){const c=CORNERS[k],col=EMO[k].color;if(C)return clayCornerSign(C,c.x,c.y,col,c.ico);
   return `<g transform="translate(${c.x} ${c.y})"><ellipse cx="0" cy="14" rx="17" ry="4" fill="#000" opacity=".12"/>
     <rect x="-2" y="-6" width="4" height="20" rx="1.5" fill="#B07A52"/>
     <rect x="-15" y="-24" width="30" height="22" rx="7" fill="#FFF8EC" stroke="${col}" stroke-width="2.5"/>
@@ -65,8 +65,8 @@ const HOME_POS={};let wanderT=null;
 const RM=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
 function actDo(el,cls,ms){const a=el.querySelector('.act');if(!a)return;a.classList.remove('bob','walk','rest','hop','look');void a.getBoundingClientRect();a.classList.add(cls);
   if(ms)setTimeout(()=>{if(a.isConnected&&a.classList.contains(cls)){a.classList.remove(cls);a.classList.add('bob')}},ms)}
-function startWander(){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
-  const actors=$$('#scene .actor');actors.forEach(el=>{el._next=performance.now()+800+Math.random()*2500});
+function startWander(root='#scene'){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
+  const actors=$$(root+' .actor');actors.forEach(el=>{el._next=performance.now()+800+Math.random()*2500});
   wanderT=setInterval(()=>{if(!actors.length||!actors[0].isConnected){clearInterval(wanderT);return}
     const now=performance.now();
     actors.forEach(el=>{if(now<el._next)return;const isHero=el.dataset.actor==='h';const r=Math.random();
@@ -81,37 +81,23 @@ function startWander(){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
       else{actDo(el,'look',2400);el._next=now+3500+Math.random()*2500}})},400)}
 function scene(){
   const o=store.owned,g=store.grow;
-  const night=isNight();
-  const sky=night?'#2F3566':({sky:'#CFE9FF',rainbow:'#FFEFD6',night:'#D4CCF6'}[store.equip.bg]||'#E3F2FF');
-  let v=`<svg viewBox="0 0 360 250" width="100%" style="display:block;border-radius:18px"><rect width="360" height="250" fill="${sky}"/>`;
-  if(night)v+=[[30,30],[90,18],[150,40],[210,20],[260,50],[40,80],[120,70],[300,80],[340,24]].map(([x,y],i)=>`<circle class="twinkle" style="animation-delay:${i*.4}s" cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join('')+`<circle cx="318" cy="38" r="16" fill="#FFF3C4"/><circle cx="326" cy="32" r="14" fill="#2F3566"/>`;
-  else if(store.equip.bg==='night')v+=[[30,30],[90,18],[150,40],[210,20],[260,50],[40,80],[120,70]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join('');
-  if(!night&&store.equip.bg!=='night')v+=`<circle cx="322" cy="34" r="18" fill="#FFE08A"/><g class="cloud"><ellipse cx="60" cy="40" rx="22" ry="8" fill="#fff" opacity=".8"/><ellipse cx="74" cy="34" rx="14" ry="8" fill="#fff" opacity=".8"/></g>`;
-  if(o.includes('rainbowsky'))v+=`<g fill="none" stroke-width="7" opacity=".85">${['#F26B5B','#F5A524','#F7D046','#7CC47C','#5B8DEF','#9B7BE0'].map((c,i)=>`<path d="M${60+i*8} 130 A${120-i*8} ${100-i*8} 0 0 1 ${300-i*8} 130" stroke="${c}"/>`).join('')}</g>`;
-  v+=`<path d="M0 150 Q90 128 180 146 T360 140 V250 H0Z" fill="#BFE3A6"/><path d="M0 176 Q120 160 240 172 T360 168 V250 H0Z" fill="#A6D68C"/>`;
-  if(o.includes('house'))v+=wrapIt('house',`<g transform="translate(246 62)"><rect x="8" y="34" width="70" height="52" fill="#FBE3C4"/><path d="M0 38 L43 4 L86 38Z" fill="#E4574B"/><rect x="34" y="56" width="18" height="30" fill="#B07A52"/><rect x="14" y="46" width="14" height="12" fill="#BFE3FF"/><rect x="58" y="46" width="14" height="12" fill="#BFE3FF"/></g>`);
-  if(o.includes('tree')){const st=g.tree||1,sc=[.6,.8,1][st-1];v+=wrapIt('tree',`<g transform="translate(52 162) scale(${sc})"><rect x="-7" y="-52" width="14" height="52" fill="#9C6B3C"/><circle cx="0" cy="-74" r="32" fill="#5DBB63"/><circle cx="-20" cy="-58" r="20" fill="#6CCB70"/><circle cx="20" cy="-60" r="20" fill="#4FAE55"/>${st>=3?`<circle cx="-12" cy="-80" r="5" fill="#F26B5B"/><circle cx="14" cy="-68" r="5" fill="#F26B5B"/>`:''}</g>`)}
-  if(o.includes('tent'))v+=wrapIt('tent',`<g transform="translate(96 112)"><path d="M0 46 L32 0 L64 46Z" fill="#F5A524"/><path d="M32 0 L22 46 H42Z" fill="#C97F0B"/></g>`);
-  if(o.includes('lamp'))v+=wrapIt('lamp',`<g transform="translate(226 98)"><circle cx="0" cy="8" r="17" fill="#FFE89A" opacity=".35"/><rect x="-2" y="12" width="4" height="56" fill="#666"/><circle cx="0" cy="8" r="9" fill="#FFE89A"/></g>`);
-  if(o.includes('swing'))v+=wrapIt('swing',`<g transform="translate(296 140)"><path d="M0 70 L8 0 L48 0 L56 70" stroke="#9C6B3C" stroke-width="5" fill="none"/><path d="M20 0 V48 M36 0 V48" stroke="#777" stroke-width="2"/><rect x="15" y="46" width="26" height="6" rx="2" fill="#E4574B"/></g>`);
-  if(o.includes('pond')){const n=Math.max(1,store.fish||1);let f='';for(let i=0;i<n;i++){const x=226+i*11,y=203+(i%2)*6,c=['#F5A524','#F26B5B','#F7D046','#FF9EC4','#9B7BE0'][i%5];
-      f+=`<g class="fish" style="animation-delay:${i*.6}s"><path d="M${x} ${y} q5 -4 10 0 q-5 4 -10 0z M${x+10} ${y} l4 -3 v6z" fill="${c}"/></g>`}
-    v+=wrapIt('pond',`<ellipse cx="250" cy="206" rx="44" ry="14" fill="#7CC5F0"/><ellipse cx="236" cy="202" rx="13" ry="3" fill="#fff" opacity=".6"/>${f}`)}
-  if(o.includes('garden')){const c=store.crop;let pl='';
-    if(c){const st=c.st||0;for(let i=0;i<3;i++){const x=34+i*20;pl+=st>=3?`<text x="${x}" y="236" text-anchor="middle" font-size="15">${CROPS[c.k][0]}</text>`
-      :`<path d="M${x} 236 v-${4+st*4}" stroke="#3E9B47" stroke-width="2.5"/><ellipse cx="${x-3}" cy="${232-st*4}" rx="${2+st}" ry="${1.5+st*.6}" fill="#5DBB63"/><ellipse cx="${x+3}" cy="${232-st*4}" rx="${2+st}" ry="${1.5+st*.6}" fill="#4FAE55"/>`}}
-    v+=wrapIt('garden',`<rect x="16" y="226" width="72" height="18" rx="6" fill="#9C6B3C"/><path d="M22 232 H82 M22 238 H82" stroke="#7A5230" stroke-width="1.5"/>${pl}`)}
-  if(o.includes('flowers')){const n=(g.flowers||1)*2;let f='';for(let i=0;i<n;i++){const x=16+i*15,y=206-(i%2)*6,c=['#F26B5B','#FFB3D1','#F7D046','#9B7BE0'][i%4];
-    f+=`<path d="M${x} ${y} v14" stroke="#4FAE55" stroke-width="2"/><circle cx="${x}" cy="${y}" r="5" fill="${c}"/><circle cx="${x}" cy="${y}" r="2" fill="#fff"/>`}v+=wrapIt('flowers',f)}
-  cornersOpen().forEach(k=>{v+=wrapIt('c_'+k,`<g data-corner="${k}" class="corner">${cornerSvg(k)}</g>`)});
+  const night=isNight();const C=Clay('hs');
+  let v=claySky(C,night,store.equip.bg,o.includes('rainbowsky'));
+  /* 前後層次（v19）：腳的位置越下面，畫在越前面 */
+  const L=[];const add=(y,h)=>L.push([y,h]);
+  const ctx={g,night,crop:store.crop,fish:store.fish,seed:store.seed||7};
+  HOME_ITEMS.forEach(it=>{if(o.includes(it.id))add(it.base+posOf(it.id)[1],wrapIt(it.id,artImg(it.id,it.draw(C,ctx),it.k?it.k(ctx):1)))});
+  clayProps(C,ctx.seed).forEach(p=>add(p[0],p[1]));
+  /* v20：冷靜角落招牌拿掉（容易誤觸），Lv.4 的「拿手方法」改放在怪獸圖鑑 */
   // 情緒怪獸入住：一起冷靜過（有經驗）就搬進來
   const fr=Object.keys(EMO).filter(k=>(store.xp[k]||0)>0);
   const pos=[[96,150],[216,152],[70,186],[244,190],[124,196],[182,200],[40,160],[290,170],[150,214],[260,214],[20,214],[310,150],[200,176],[100,222]];
-  fr.forEach((k,i)=>{const [px,py]=HOME_POS[k]||pos[i];v+=`<g data-mon="${k}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`});
-  if(store.hero){const [hx,hy]=HOME_POS.hero||[146,96];v+=`<g data-actor="h" class="actor" style="pointer-events:none;transform:translate(${hx}px,${hy}px)"><g class="flip"><g class="act ${night?'sleepy':'bob'}">${hero(store.hero.type,64)}</g></g></g>`;}
-  if(night)v+=`<rect width="360" height="250" fill="#1A1F45" opacity=".28" pointer-events="none"/>`;
+  fr.forEach((k,i)=>{const [px,py]=HOME_POS[k]||pos[i];add(py+42,`<g data-mon="${k}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`)});
+  if(store.hero){const [hx,hy]=HOME_POS.hero||[150,102];add(hy+56,`<g data-actor="h" class="actor" style="pointer-events:none;transform:translate(${hx}px,${hy}px)"><g class="flip"><g class="act ${night?'sleepy':'bob'}">${hero(store.hero.type,56)}</g></g></g>`)}
+  v+=L.sort((a,b)=>a[0]-b[0]).map(x=>x[1]).join('')+clayAmbient(C,night);
+  if(night)v+=`<rect width="360" height="250" fill="#1A1F45" opacity=".22" pointer-events="none"/>`;
   if(!fr.length)v+=`<text x="180" y="244" text-anchor="middle" font-size="11" fill="#5A7A50">去冷靜站陪一隻怪獸冷靜，牠就會搬進家園喔</text>`;
-  return v+`</svg>`;
+  return `<svg viewBox="0 0 360 250" width="100%" style="display:block;border-radius:18px">${C.defs()}`+v+`</svg>`;
 }
 function bindScene(){
   const svg=$('#scene svg');
@@ -120,8 +106,8 @@ function bindScene(){
       const k=360/svg.getBoundingClientRect().width,sx=ev.clientX,sy=ev.clientY;let nx=x0,ny=y0;try{el.setPointerCapture(ev.pointerId)}catch(e){}el.classList.add('dragging');
       el.onpointermove=e=>{nx=Math.max(-330,Math.min(330,x0+(e.clientX-sx)*k));ny=Math.max(-180,Math.min(120,y0+(e.clientY-sy)*k));el.setAttribute('transform',`translate(${nx.toFixed(1)} ${ny.toFixed(1)})`)};
       el.onpointerup=el.onpointercancel=()=>{el.onpointermove=null;el.classList.remove('dragging');store.pos[id]={x:Math.round(nx),y:Math.round(ny)};save();tone(520,.06)}}})}
-  $$('#scene [data-corner]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.corner,c=CORNERS[k];
-    toast(`${c.ico} ${EMO[k].name}的${c.name}：一起練習${ACT_NAME[c.act]}`);startPractice(k,c.act)});
+  [['pond',24],['garden',25],['flowers',25]].forEach(([id,st])=>{const el=$(`#scene [data-it="${id}"]`);if(el)el.onclick=()=>{if(S.decor)return;
+    if(isNight()){toast('晚上了，大家都在睡覺，明天再來吧 🌙');return}go(st)}});
   $$('#scene [data-mon]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.mon,e=EMO[k],l=lvOf(store.xp[k]||0),b=BADGE[k];
     const line=stageOf(l)>=2?`我學會了${b[1]}：${b[2]}！`:HOME_PEP[Math.floor(Math.random()*HOME_PEP.length)];
     toast(`${e.name}：「${line}」`);speak(line);actDo(el,'hop',900)});
@@ -133,10 +119,10 @@ function renderHome(){
   $('#heroName').textContent=store.hero.name;
   $('#heroLv').textContent=`Lv.${pl} ${PTITLES[pl-1]}`+(pn.need?`・再 ${pn.need} 經驗升級`:'');
   $('#heroXp').style.width=pn.pct+'%';$('#homeStars').textContent=store.stars||0;
-  $('#scene').innerHTML=scene();bindScene();
+  $('#quietScene').innerHTML='';$('#scene').innerHTML=scene();bindScene();
   $('#decorBar').style.display=S.decor?'':'none';
   $('#hWaterSub').textContent=S.decor?'布置中…':'拖拉家具換位置';
-  renderChores();
+  renderChores();renderReviewCard();renderWishCard();
   $('#hGamesSub').textContent=store.gameDay.routine===today()?'今天玩過了，再玩也可以':'小遊戲和親子遊戲';
   const vb=$('#voucherBox');vb.innerHTML='';
   store.vouchers.forEach(v=>{const d=document.createElement('div');d.className='task';d.style.background='#EAF6F3';
@@ -158,9 +144,10 @@ function renderHome(){
     const g=$('#moodGo');if(g)g.onclick=startFlow;});
 }
 $('#hStart').onclick=startFlow;
+$('#hQuiet').onclick=()=>go(27);
 function startPractice(emo,act){resetFlow();store.day.n--;save();S.practice=true;S.emo=emo||'scared';S.act=act||'breathe';go(3)}
 $('#hGames').onclick=()=>go(17);
-$('#hWater').onclick=()=>{const has=SHOP.some(x=>x.cat==='home'&&SPOTS[x.id]&&store.owned.includes(x.id))||cornersOpen().length;
+$('#hWater').onclick=()=>{const has=SHOP.some(x=>x.cat==='home'&&SPOTS[x.id]&&store.owned.includes(x.id));
   if(!has){toast('先去商店買家具，才能布置喔');S.shopCat='home';go(11);return}
   if(isNight()){toast('晚上了，大家都在睡覺，明天再布置吧 🌙');return}
   S.decor=!S.decor;renderHome();if(S.decor)toast('用手指按住家具，拖到你喜歡的地方')};
@@ -170,26 +157,22 @@ function renderChores(){
   const o=store.owned,t=today(),box=$('#chores');const rows=[];
   if(isNight()){box.innerHTML=`<p class="choreh">🌙 晚上了</p><p class="hint" style="text-align:left;margin:4px 0">怪獸們和${store.hero?store.hero.name:'你'}都睡了，家園工作明天再做。<br>需要冷靜的時候，冷靜站和「🆘 馬上冷靜」都還可以用。晚安！</p>`;return}
   const plants=SHOP.filter(x=>x.plant&&o.includes(x.id));const hasG=o.includes('garden');
-  if(plants.length||hasG)rows.push(store.waterDay===t?['💧','澆水','今天澆過了 ✓',null]:['💧','澆水','花草和菜都會長大一點','water']);
-  if(o.includes('pond'))rows.push(store.fishDay===t?['🐟','餵魚',`吃飽了 ✓（${store.fish||1} 條魚）`,null]:['🐟','餵魚',`餵 3 天會多一條魚（${store.fish||1}/5）`,'feed']);
-  if(hasG){const c=store.crop;
-    if(!c)rows.push(['🌱','種菜','選一種種子種下去','seed']);
-    else if((c.st||0)>=3)rows.push([CROPS[c.k][0],'收成',`${CROPS[c.k][1]}長好了！`,'harvest']);
-    else rows.push([CROPS[c.k][0],CROPS[c.k][1],`再澆 ${3-(c.st||0)} 天水就能收成`,null]);}
+  /* 池塘、菜園是療癒小角落（v17）：隨時可以去，照顧過也還能去看看 */
+  if(o.includes('pond'))rows.push(['🐟','池塘',store.fishDay===t?'今天餵過了，也可以去看看魚 ✓':'去看看魚、碰碰水面','pond',store.fishDay===t]);
+  if(plants.length||hasG){const c=store.crop;
+    const sub=store.waterDay===t?(c&&(c.st||0)>=3?`${CROPS[c.k][1]}長好了，可以分給怪獸吃 ✓`:'今天澆過水了，可以去摸摸葉子 ✓')
+      :hasG&&!c?'選一種種子種下去':c&&(c.st||0)>=3?`${CROPS[c.k][1]}長好了！`:'慢慢澆水，看泥土變深';
+    rows.push([c?CROPS[c.k][0]:'🌱',hasG?'菜園':'花草',sub,'garden',store.waterDay===t&&!(c&&(c.st||0)>=3)])}
   const rt=REAL_TASKS[(new Date().getDate()+(store.rtOff||0))%REAL_TASKS.length];
   rows.push(store.realDay===t?['🏡','真實家事','今天做到了 ✓',null]:['🏡','真實家事',`今天試試：${rt}`,'real']);
-  const left=rows.filter(r=>r[3]).length;
-  box.innerHTML=`<p class="choreh">🧺 今天的家園小工作</p>`+rows.map(r=>`<div class="chore ${r[3]?'':'done'}"><span class="ci">${r[0]}</span><span class="ct"><b>${r[1]}</b><small>${r[2]}</small></span>${r[3]==='real'?'<span class="slot"></span>':r[3]?`<button class="btn small" data-ch="${r[3]}">${r[3]==='seed'?'種':r[3]==='harvest'?'收成':'做'}</button>`:''}</div>`).join('')
+  const left=rows.filter(r=>r[3]&&!r[4]).length;
+  box.innerHTML=`<p class="choreh">🧺 今天的家園小工作</p>`+rows.map(r=>`<div class="chore ${r[3]&&!r[4]?'':'done'}"><span class="ci">${r[0]}</span><span class="ct"><b>${r[1]}</b><small>${r[2]}</small></span>${r[3]==='real'?'<span class="slot"></span>':r[3]?`<button class="btn small ${r[4]?'ghost':''}" data-ch="${r[3]}">去看看</button>`:''}</div>`).join('')
     +(left===0?`<p class="hint choredone">🌞 今天的家園工作都完成了！怪獸們要去休息了，你也去玩真的遊戲、找家人說說話吧。</p>`:'')
     +(!plants.length&&!hasG&&!o.includes('pond')?`<p class="hint">在商店買小菜園、池塘或植物，就有更多家園工作可以做。</p>`:'');
   const slot=box.querySelector('.slot');if(slot){slot.appendChild(holdBtn('大人按住確認',1500,()=>{store.realDay=t;save();gain('在家裡幫忙',5);chime();renderHome()}))}
   box.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{const k=b.dataset.ch;
-    if(k==='water'){store.waterDay=t;plants.forEach(p=>store.grow[p.id]=Math.min(3,(store.grow[p.id]||1)+1));if(store.crop)store.crop.st=Math.min(3,(store.crop.st||0)+1);save();gain('照顧家園',2);tone(520,.15)}
-    if(k==='feed'){store.fishDay=t;store.fed=(store.fed||0)+1;if(store.fed>=3&&(store.fish||1)<5){store.fed=0;store.fish=(store.fish||1)+1;toast('🐟 池塘裡多了一條小魚！')}save();gain('照顧家園',2)}
-    if(k==='seed'){box.querySelector(`[data-ch="seed"]`).parentElement.insertAdjacentHTML('afterend',`<div class="chips" id="seedPick">${Object.entries(CROPS).map(([id,c])=>`<button class="chip" data-seed="${id}">${c[0]} ${c[1]}</button>`).join('')}</div>`);
-      b.remove();$$('[data-seed]').forEach(x=>x.onclick=()=>{store.crop={k:x.dataset.seed,st:0};save();tone(600,.12);toast(`種下${CROPS[x.dataset.seed][1]}了，每天澆水它會慢慢長大`);renderHome()});return}
-    if(k==='harvest'){const c=store.crop;store.basket=store.basket||{};store.basket[c.k]=(store.basket[c.k]||0)+1;store.crop=null;save();gain('收成',5);chime();
-      toast(`收成${CROPS[c.k][1]}！照顧需要耐心，就像陪情緒怪獸一樣 💛`,true)}
+    if(k==='pond'){go(24);return}
+    if(k==='garden'){go(25);return}
     renderHome()});
 }
 $('#hParent').onclick=()=>go(13);
@@ -221,10 +204,12 @@ function renderShop(){
   if(S.shopCat==='reward'){
     const cp=coupons();
     $('#shop').innerHTML=cp.map((c,i)=>`<div class="pick shopitem" style="cursor:default"><div class="shopicon">🎟</div><b style="font-size:1rem">${c.name}</b>
-      <button class="btn small" data-cpn="${i}" ${store.stars<c.cost?'disabled':''}>${c.cost} ⭐ 換</button></div>`).join('')+
+      <button class="btn small" data-cpn="${i}" ${store.stars<c.cost?'disabled':''}>${c.cost} ⭐ 換</button>
+      ${store.wish&&store.wish.name===c.name?`<span class="wishtag">🫙 我的願望</span>`:`<button class="chip wishset" data-wish="${i}">🫙 設為願望</button>`}</div>`).join('')+
       `<div class="pick" style="cursor:default;display:flex;align-items:center;justify-content:center"><span>兌換券由大人在「大人看這裡」設定</span></div>`;
     $$('[data-cpn]').forEach(b=>b.onclick=()=>{const c=cp[+b.dataset.cpn];if(store.stars<c.cost)return;
-      store.stars-=c.cost;store.vouchers.push({id:Date.now(),name:c.name});save();chime();toast(`換到「${c.name}」！拿給大人看，請大人兌現`,true);renderShop()});
+      wishGuard(c.name,c.cost,()=>{redeemCoupon(c);renderShop()})});
+    $$('[data-wish]').forEach(b=>b.onclick=()=>{setWish(cp[+b.dataset.wish]);renderShop()});
     return;
   }
   const ht=store.hero?store.hero.type:'fox';
@@ -239,8 +224,8 @@ function renderShop(){
       :`<button class="btn small" data-buy="${it.id}" ${store.stars<it.cost?'disabled':''}>${it.cost} ⭐ 買</button>`;
     return `<div class="pick shopitem" style="cursor:default">${prev}<b>${it.name}</b>${btn}</div>`}).join('');
   $$('[data-buy]').forEach(b=>b.onclick=()=>{const it=SHOP.find(x=>x.id===b.dataset.buy);if(store.stars<it.cost)return;
-    store.stars-=it.cost;store.owned.push(it.id);if(it.slot)store.equip[it.slot]=it.id;if(it.plant)store.grow[it.id]=1;save();chime();
-    toast(it.cat==='home'?`${it.name}放進家園了！`:`買到${it.name}了！`);renderShop()});
+    wishGuard(it.name,it.cost,()=>{store.stars-=it.cost;store.owned.push(it.id);if(it.slot)store.equip[it.slot]=it.id;if(it.plant)store.grow[it.id]=1;save();chime();
+    toast(it.cat==='home'?`${it.name}放進家園了！`:`買到${it.name}了！`);renderShop()})});
   $$('[data-eq]').forEach(b=>b.onclick=()=>{const it=SHOP.find(x=>x.id===b.dataset.eq);
     store.equip[it.slot]=store.equip[it.slot]===it.id?null:it.id;save();tone(620,.12);renderShop()});
 }
@@ -278,13 +263,14 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
   const cc={};L.forEach(x=>{if(x.cause)cc[x.cause]=(cc[x.cause]||0)+1});const topC=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
   const age=S.age||'mid';
   $('#mdBody').innerHTML=`<h4>🌱 成長進化</h4><div class="evorow">${STAGES.map((t,i)=>`<div class="evocell ${i+1>cur?'lock':''} ${i+1===cur?'now':''}">${monster(k,66,'',{grow:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small><small>${i+1>cur?'🔒 Lv.'+t.from:i+1===cur?'現在':'✓'}</small></div>`).join('')}</div>
-    <p class="hint" style="text-align:left">${lvOf(store.xp[k]||0)>=CORNER_LV?`🏡 已解鎖家園冷靜角落：${CORNERS[k].ico} ${CORNERS[k].name}。`:`Lv.${CORNER_LV} 會在家園解鎖冷靜角落：${CORNERS[k].ico} ${CORNERS[k].name}。`}每次陪牠冷靜，牠就會長大、變得更成熟。長大後會學會「${BADGE[k][0]} ${BADGE[k][1]}」：${BADGE[k][2]}。</p>
+    <p class="hint" style="text-align:left">${lvOf(store.xp[k]||0)>=CORNER_LV?'':`到 Lv.${CORNER_LV}，牠會教你牠的拿手方法。`}每次陪牠冷靜，牠就會長大、變得更成熟。長大後會學會「${BADGE[k][0]} ${BADGE[k][1]}」：${BADGE[k][2]}。</p>
     <h4>🌡️ 牠變大的時候</h4><div class="evorow">${SIZES.map((t,i)=>`<div class="evocell mood">${monster(k,58,'',{mood:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small></div>`).join('')}<div class="evocell calm">${HASART.has(k)?`<svg class="mon" width="58" height="58" viewBox="-8 -22 136 150"><image href="img/${k}0.webp" x="-4" y="-8" width="128" height="128"/></svg>`:monster(k,58,'',{grow:1,level:1,eq:{head:null,neck:null}})}<small>冷靜下來</small></div></div>
     <p class="hint" style="text-align:left">情緒越大，牠看起來越兇，這是在告訴你「我很不舒服」。冷靜下來，牠就會變回溫柔的樣子。</p>
     <h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
     <h4>🫀 牠來的時候，身體會怎樣？</h4><p>${body}</p>
     <h4>💬 牠想告訴你什麼？</h4><p>${why}</p>
     <h4>🛠️ 怎麼跟牠相處？</h4><p>${how}</p>
+    ${lvOf(store.xp[k]||0)>=CORNER_LV?`<div class="skillbox"><b>⭐ 牠的拿手方法：${CORNERS[k].ico} ${CORNERS[k].name}</b><span>一起練習「${ACT_NAME[CORNERS[k].act]}」</span><button class="btn small" data-mdact="${CORNERS[k].act}">一起練習</button></div>`:''}
     <div class="chips" style="justify-content:flex-start">${e.acts.map(a=>`<button class="chip" data-mdact="${a}">練習${ACT_NAME[a]}</button>`).join('')}</div>
     <h4>📊 你和${e.name}</h4><p>${L.length?`一起冷靜過 <b>${L.length}</b> 次。`+(best?`對你最有效的是 <b>${best[0]}</b>（平均變小 ${(best[1][0]/best[1][1]).toFixed(1)} 級）。`:'')+(topC?`最常因為「${topC[0]}」出現。`:''):'還沒有一起冷靜的紀錄。下次牠來的時候，去冷靜站找牠吧！'}</p>
     <h4>⭐ 我的冷靜秘訣</h4><p class="hint" style="text-align:left;margin:0 0 6px">寫下（或請大人幫你寫）對付${e.name}最有用的方法</p>

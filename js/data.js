@@ -7,19 +7,19 @@ const AGES=[
 ];
 const EMO={
   angry:{cname:'紅色',name:'生氣怪獸',color:'#F26B5B',feel:'好生氣',body:'臉熱熱、拳頭握緊緊',acts:['bubbles','light','breathe','squeeze'],face:'angry'},
-  sad:{cname:'藍色',name:'難過怪獸',color:'#5B8DEF',feel:'好難過',body:'眼睛酸酸、想哭',acts:['breathe','butterfly','senses'],face:'sad'},
+  sad:{cname:'藍色',name:'難過怪獸',color:'#5B8DEF',feel:'好難過',body:'眼睛酸酸、想哭',acts:['breathe','butterfly','senses','fish'],face:'sad'},
   defiant:{cname:'橘色',name:'不服氣怪獸',color:'#F5A524',feel:'好不服氣',body:'心裡悶悶、不甘心',acts:['light','squeeze','breathe','bubbles'],face:'defiant'},
-  stuck:{cname:'紫色',name:'做不到怪獸',color:'#9B7BE0',feel:'好挫折，覺得做不到',body:'想放棄、想丟掉',acts:['breathe','squeeze','bubbles'],face:'stuck'},
-  scared:{cname:'綠色',name:'擔心怪獸',color:'#3FB6A8',feel:'好擔心',body:'肚子怪怪、心跳很快',acts:['breathe','senses','butterfly'],face:'scared'},
-  wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses'],face:'wronged'},
+  stuck:{cname:'紫色',name:'做不到怪獸',color:'#9B7BE0',feel:'好挫折，覺得做不到',body:'想放棄、想丟掉',acts:['breathe','squeeze','bubbles','fish'],face:'stuck'},
+  scared:{cname:'綠色',name:'擔心怪獸',color:'#3FB6A8',feel:'好擔心',body:'肚子怪怪、心跳很快',acts:['breathe','senses','butterfly','fish'],face:'scared'},
+  wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses','fish'],face:'wronged'},
   reluctant:{cname:'蜂蜜色',name:'捨不得怪獸',color:'#E9B53C',feel:'好捨不得，還想玩、不想分開',body:'想黏著不放手、想哭、腳不想動',acts:['light','breathe','butterfly'],face:'sad'},
   jealous:{cname:'黃綠色',name:'嫉妒怪獸',color:'#9CC93B',feel:'好嫉妒，別人有我沒有',body:'心裡酸酸的、想搶過來',acts:['breathe','squeeze','senses'],face:'defiant'},
-  shy:{cname:'桃色',name:'害羞怪獸',color:'#F59A72',feel:'好害羞，不敢說',body:'臉熱熱、想躲到大人後面',acts:['breathe','butterfly','senses'],face:'scared'},
+  shy:{cname:'桃色',name:'害羞怪獸',color:'#F59A72',feel:'好害羞，不敢說',body:'臉熱熱、想躲到大人後面',acts:['breathe','butterfly','senses','fish'],face:'scared'},
   hyper:{cname:'天藍色',name:'興奮過頭怪獸',color:'#2EB8E0',feel:'好興奮，停不下來',body:'身體一直動、聲音越來越大',acts:['light','breathe','squeeze'],face:'angry'},
   embarrassed:{cname:'梅紅色',name:'尷尬怪獸',color:'#C766B8',feel:'好尷尬、好丟臉',body:'臉紅紅、想消失',acts:['breathe','butterfly','squeeze'],face:'wronged'},
-  guilty:{cname:'灰藍色',name:'內疚怪獸',color:'#7C93B5',feel:'好內疚，覺得自己做錯了',body:'心裡沉沉的、不敢看別人',acts:['breathe','butterfly','senses'],face:'sad'},
-  lonely:{cname:'靛藍色',name:'孤單怪獸',color:'#4F63B0',feel:'好孤單，好像沒人陪',body:'心裡空空的、提不起勁',acts:['butterfly','breathe','senses'],face:'sad'},
-  stress:{cname:'咖啡色',name:'壓力怪獸',color:'#A97B50',feel:'壓力好大，事情好多',body:'肩膀緊緊、頭脹脹、睡不好',acts:['breathe','squeeze','senses'],face:'stuck'}
+  guilty:{cname:'灰藍色',name:'內疚怪獸',color:'#7C93B5',feel:'好內疚，覺得自己做錯了',body:'心裡沉沉的、不敢看別人',acts:['breathe','butterfly','senses','fish'],face:'sad'},
+  lonely:{cname:'靛藍色',name:'孤單怪獸',color:'#4F63B0',feel:'好孤單，好像沒人陪',body:'心裡空空的、提不起勁',acts:['butterfly','breathe','senses','fish'],face:'sad'},
+  stress:{cname:'咖啡色',name:'壓力怪獸',color:'#A97B50',feel:'壓力好大，事情好多',body:'肩膀緊緊、頭脹脹、睡不好',acts:['breathe','squeeze','senses','fish'],face:'stuck'}
 };
 /* 依年齡顯示的怪獸（已經一起冷靜過的怪獸一定會顯示） */
 const AGE_EMO={young:['angry','sad','scared','wronged','reluctant'],
@@ -31,7 +31,7 @@ const HASART=new Set(['angry','sad','defiant','stuck','scared','wronged']);
 const LV=[
   {n:1,t:'小小的',h:'#6CCB70'},{n:2,t:'有一點',h:'#A8D86B'},{n:3,t:'中中的',h:'#F7D046'},{n:4,t:'很大',h:'#F5A524'},{n:5,t:'超級大',h:'#F26B5B'}
 ];
-const ACT_NAME={light:'紅綠燈',breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱'};
+const ACT_NAME={light:'紅綠燈',breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱',fish:'看魚呼吸'};
 const CAUSES=['我做不到 / 太難了','我輸了','跟我想的不一樣','我覺得不公平','我被說 / 被罵','不能再玩了','東西壞掉了','被別人誤會','我也不知道'];
 const WANTS=['抱抱','自己靜一下','再試一次','有人幫我','休息一下','說給別人聽'];
 const PLANS={
@@ -149,7 +149,7 @@ const S={step:0,age:null,emo:null,lv:0,lv2:0,act:null,cause:null,want:null,plan:
 let store={};
 try{store=JSON.parse(localStorage.getItem('calmMonster')||'{}')}catch(e){store={}}
 function save(){try{localStorage.setItem('calmMonster',JSON.stringify(store))}catch(e){}refreshHdr()}
-store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.repairs=store.repairs||[];store.log=store.log||[];store.moodLog=store.moodLog||[];store.pracLog=store.pracLog||[];store.vouchers=store.vouchers||[];store.week=store.week||{};store.playLog=store.playLog||[];store.gameDay=store.gameDay||{};store.wins=store.wins||[];store.tips=store.tips||{};store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;store.pos=store.pos||{};if(store.limit===undefined)store.limit=20;if(store.nightAt===undefined)store.nightAt=20;
+store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.repairs=store.repairs||[];store.log=store.log||[];store.moodLog=store.moodLog||[];store.pracLog=store.pracLog||[];store.vouchers=store.vouchers||[];store.week=store.week||{};store.playLog=store.playLog||[];store.gameDay=store.gameDay||{};store.wins=store.wins||[];store.tips=store.tips||{};store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;store.pos=store.pos||{};if(!store.seed)store.seed=1+Math.floor(Math.random()*1e6);if(store.limit===undefined)store.limit=20;if(store.nightAt===undefined)store.nightAt=20;
 const LEVELS=[0,30,80,150,250,400];
 const TITLES=['初次見面','認識你了','好朋友','好夥伴','默契搭檔','情緒小達人'];
 function lvOf(xp){let l=0;LEVELS.forEach((t,i)=>{if(xp>=t)l=i});return l+1}
@@ -176,7 +176,7 @@ const PTITLES=['新手冒險家','情緒探險家','冷靜小勇士','情緒守�
 function lvIn(a,x){let l=0;a.forEach((t,i)=>{if(x>=t)l=i});return l+1}
 function nextIn(a,x){const l=lvIn(a,x);if(l>=a.length)return {pct:100,need:0};return {pct:Math.round((x-a[l-1])/(a[l]-a[l-1])*100),need:a[l]-x}}
 const SHOP_CATS=[['reward','兌換券'],['home','家園'],['hero','主角'],['monster','怪獸'],['bg','背景']];
-const SHOP_HINT={reward:'換真的活動和特權！買了之後請大人兌現',home:'買了會放進家園，植物要每天照顧才會長大',hero:'幫主角換裝扮',monster:'所有怪獸會一起穿上',bg:'整個畫面的背景'};
+const SHOP_HINT={reward:'換真的活動和特權！也可以選一個當願望，放進願望罐慢慢存',home:'買了會放進家園，植物要每天照顧才會長大',hero:'幫主角換裝扮',monster:'所有怪獸會一起穿上',bg:'整個畫面的背景'};
 const GOODS=['生氣時用說的，沒有動手','自己想到深呼吸','輸了也能說恭喜','做不到時請人幫忙','願意再試一次','主動道歉或修復','說出自己難過的感覺','等待、輪流很有耐心'];
 const REPAIRS={young:['說對不起','一起收拾','畫一張道歉卡','抱抱對方'],mid:['說對不起','一起收拾乾淨','幫忙修好','做一件事來彌補'],old:['好好道歉並說明','收拾或修好','用做家事或零用錢補償','跟對方討論怎麼彌補']};
 const MOODS=[['😊','開心',1],['😌','平靜',1],['😢','難過',0],['😠','生氣',0],['😟','擔心',0]];
