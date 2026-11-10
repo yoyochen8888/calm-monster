@@ -51,6 +51,8 @@ function go(n,noPush){
   if(n===7||n===10)S.hist=[];
   S.step=n;
   $('#dots').style.display=(n>=1&&n<=7)?'':'none';
+  /* 已經在冷靜活動或陪伴模式時，收起「馬上冷靜」按鈕，不擋住呼吸提示和大人的字 */
+  $('#sos').style.display=(n===3||n===8)?'none':'';
   $('#navrow').style.display=(n===0||n===7||n===10)?'none':'';
   $('#navBack').style.visibility=S.hist.length?'visible':'hidden';
   const tab=(n>=1&&n<=8)?1:((n>=18&&n<=21)||n===23)?17:n===22?9:(n>=24&&n<=27)?10:n;

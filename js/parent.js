@@ -51,7 +51,7 @@ function refreshTest(){let t=$('#testTag');if(inTest()){if(!t){t=document.create
 refreshTest();
 
 /* SOS quick path */
-$('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!(S.step>=1&&S.step<=8)){resetFlow();S.hist=[10]}if(!S.emo){S.sos=true;S.emo='scared'}S.lv=S.lv||4;S.lv0=S.lv0||S.lv;S.act='breathe';speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
+$('#sos').onclick=()=>{ac();if(!S.age)S.age='mid';if(!(S.step>=1&&S.step<=8)){resetFlow();S.hist=[10]}if(!S.emo){S.sos=true;S.emo='scared'}S.lv=S.lv||4;S.lv0=S.lv0||S.lv;S.act='breathe';S.autoStart=true;speak('沒關係，我在這裡。我們先一起呼吸。');go(3)};
 
 /* ---------- parent drawer ---------- */
 let pEmo='angry';
