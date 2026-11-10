@@ -327,3 +327,6 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
 .flapy{transform-box:fill-box;transform-origin:center;animation:flapy .7s ease-in-out infinite}@keyframes flapy{50%{transform:scaleY(.4)}}
 .ffly{animation:ffly 9s ease-in-out infinite}@keyframes ffly{0%,100%{transform:translate(0,0);opacity:.1}50%{transform:translate(12px,-14px);opacity:1}}
 @media (prefers-reduced-motion:reduce){.amb-sway,.amb-smoke,.amb-glow,.amb-flag,.bfly,.flap,.bird,.flapy,.ffly{animation:none}.bird,.amb-smoke{display:none}.bfly.b1{transform:translate(70px,178px)}.bfly.b2{transform:translate(250px,180px)}.bfly.b3{transform:translate(120px,170px)}.ffly{opacity:.8}}
+/* 圖鑑：拿手方法（v20） */
+.skillbox{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;background:var(--accent-2);border-radius:14px;padding:10px 12px;margin:8px 0}
+.skillbox span{color:var(--soft);font-size:.9rem;flex:1}

@@ -93,7 +93,7 @@ function scene(){
   if(o.includes('pond'))add(214+posOf('pond')[1],wrapIt('pond',artImg('pond',clayPond(C,Math.max(1,store.fish||1)))));
   if(o.includes('garden'))add(246+posOf('garden')[1],wrapIt('garden',artImg('garden',clayGardenBed(C,store.crop))));
   if(o.includes('flowers'))add(222+posOf('flowers')[1],wrapIt('flowers',artImg('flowers',clayFlowers(C,(g.flowers||1)*2))));
-  cornersOpen().forEach(k=>{add(CORNERS[k].y+12+posOf('c_'+k)[1],wrapIt('c_'+k,`<g data-corner="${k}" class="corner">${cornerSvg(k,C)}</g>`))});
+  /* v20：冷靜角落招牌拿掉（容易誤觸），Lv.4 的「拿手方法」改放在怪獸圖鑑 */
   // 情緒怪獸入住：一起冷靜過（有經驗）就搬進來
   const fr=Object.keys(EMO).filter(k=>(store.xp[k]||0)>0);
   const pos=[[96,150],[216,152],[70,186],[244,190],[124,196],[182,200],[40,160],[290,170],[150,214],[260,214],[20,214],[310,150],[200,176],[100,222]];
@@ -113,8 +113,6 @@ function bindScene(){
       el.onpointerup=el.onpointercancel=()=>{el.onpointermove=null;el.classList.remove('dragging');store.pos[id]={x:Math.round(nx),y:Math.round(ny)};save();tone(520,.06)}}})}
   [['pond',24],['garden',25],['flowers',25]].forEach(([id,st])=>{const el=$(`#scene [data-it="${id}"]`);if(el)el.onclick=()=>{if(S.decor)return;
     if(isNight()){toast('晚上了，大家都在睡覺，明天再來吧 🌙');return}go(st)}});
-  $$('#scene [data-corner]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.corner,c=CORNERS[k];
-    toast(`${c.ico} ${EMO[k].name}的${c.name}：一起練習${ACT_NAME[c.act]}`);startPractice(k,c.act)});
   $$('#scene [data-mon]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.mon,e=EMO[k],l=lvOf(store.xp[k]||0),b=BADGE[k];
     const line=stageOf(l)>=2?`我學會了${b[1]}：${b[2]}！`:HOME_PEP[Math.floor(Math.random()*HOME_PEP.length)];
     toast(`${e.name}：「${line}」`);speak(line);actDo(el,'hop',900)});
@@ -153,7 +151,7 @@ function renderHome(){
 $('#hStart').onclick=startFlow;
 function startPractice(emo,act){resetFlow();store.day.n--;save();S.practice=true;S.emo=emo||'scared';S.act=act||'breathe';go(3)}
 $('#hGames').onclick=()=>go(17);
-$('#hWater').onclick=()=>{const has=SHOP.some(x=>x.cat==='home'&&SPOTS[x.id]&&store.owned.includes(x.id))||cornersOpen().length;
+$('#hWater').onclick=()=>{const has=SHOP.some(x=>x.cat==='home'&&SPOTS[x.id]&&store.owned.includes(x.id));
   if(!has){toast('先去商店買家具，才能布置喔');S.shopCat='home';go(11);return}
   if(isNight()){toast('晚上了，大家都在睡覺，明天再布置吧 🌙');return}
   S.decor=!S.decor;renderHome();if(S.decor)toast('用手指按住家具，拖到你喜歡的地方')};
@@ -267,13 +265,14 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
   const cc={};L.forEach(x=>{if(x.cause)cc[x.cause]=(cc[x.cause]||0)+1});const topC=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
   const age=S.age||'mid';
   $('#mdBody').innerHTML=`<h4>🌱 成長進化</h4><div class="evorow">${STAGES.map((t,i)=>`<div class="evocell ${i+1>cur?'lock':''} ${i+1===cur?'now':''}">${monster(k,66,'',{grow:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small><small>${i+1>cur?'🔒 Lv.'+t.from:i+1===cur?'現在':'✓'}</small></div>`).join('')}</div>
-    <p class="hint" style="text-align:left">${lvOf(store.xp[k]||0)>=CORNER_LV?`🏡 已解鎖家園冷靜角落：${CORNERS[k].ico} ${CORNERS[k].name}。`:`Lv.${CORNER_LV} 會在家園解鎖冷靜角落：${CORNERS[k].ico} ${CORNERS[k].name}。`}每次陪牠冷靜，牠就會長大、變得更成熟。長大後會學會「${BADGE[k][0]} ${BADGE[k][1]}」：${BADGE[k][2]}。</p>
+    <p class="hint" style="text-align:left">${lvOf(store.xp[k]||0)>=CORNER_LV?'':`到 Lv.${CORNER_LV}，牠會教你牠的拿手方法。`}每次陪牠冷靜，牠就會長大、變得更成熟。長大後會學會「${BADGE[k][0]} ${BADGE[k][1]}」：${BADGE[k][2]}。</p>
     <h4>🌡️ 牠變大的時候</h4><div class="evorow">${SIZES.map((t,i)=>`<div class="evocell mood">${monster(k,58,'',{mood:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small></div>`).join('')}<div class="evocell calm">${HASART.has(k)?`<svg class="mon" width="58" height="58" viewBox="-8 -22 136 150"><image href="img/${k}0.webp" x="-4" y="-8" width="128" height="128"/></svg>`:monster(k,58,'',{grow:1,level:1,eq:{head:null,neck:null}})}<small>冷靜下來</small></div></div>
     <p class="hint" style="text-align:left">情緒越大，牠看起來越兇，這是在告訴你「我很不舒服」。冷靜下來，牠就會變回溫柔的樣子。</p>
     <h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
     <h4>🫀 牠來的時候，身體會怎樣？</h4><p>${body}</p>
     <h4>💬 牠想告訴你什麼？</h4><p>${why}</p>
     <h4>🛠️ 怎麼跟牠相處？</h4><p>${how}</p>
+    ${lvOf(store.xp[k]||0)>=CORNER_LV?`<div class="skillbox"><b>⭐ 牠的拿手方法：${CORNERS[k].ico} ${CORNERS[k].name}</b><span>一起練習「${ACT_NAME[CORNERS[k].act]}」</span><button class="btn small" data-mdact="${CORNERS[k].act}">一起練習</button></div>`:''}
     <div class="chips" style="justify-content:flex-start">${e.acts.map(a=>`<button class="chip" data-mdact="${a}">練習${ACT_NAME[a]}</button>`).join('')}</div>
     <h4>📊 你和${e.name}</h4><p>${L.length?`一起冷靜過 <b>${L.length}</b> 次。`+(best?`對你最有效的是 <b>${best[0]}</b>（平均變小 ${(best[1][0]/best[1][1]).toFixed(1)} 級）。`:'')+(topC?`最常因為「${topC[0]}」出現。`:''):'還沒有一起冷靜的紀錄。下次牠來的時候，去冷靜站找牠吧！'}</p>
     <h4>⭐ 我的冷靜秘訣</h4><p class="hint" style="text-align:left;margin:0 0 6px">寫下（或請大人幫你寫）對付${e.name}最有用的方法</p>
