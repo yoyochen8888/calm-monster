@@ -89,3 +89,25 @@ Game item sheet in the same 3D clay style, separate and evenly spaced: row 1 a s
 - 直接請 Claude 或 Gemini 依這份風格寫新的提示詞最穩
 - 也可以參考 Gemini 內建的範例、或搜尋「3D clay character prompt」，看到喜歡的再改成自己的角色
 - 找到的提示詞記得拿掉品牌或作品名稱，只留風格描述
+
+## 家園物件（v18 起是程式畫的黏土風，可以逐一換成生成圖）
+目前家園的樹、花圃、帳篷、路燈、鞦韆、菜園、池塘、小房子是用程式畫的（`js/art.js`）。想換成生成圖時，一次換一樣就好，其他的會照舊。
+
+步驟：
+1. 用上面的「共用風格」生圖，背景要透明，或是淺色、方便去背
+2. 存成 `img/home_名字.webp`（例如 `img/home_tree.webp`）
+3. 打開 `js/art.js`，在最上面的 `ART` 裡加一行：`tree:'img/home_tree.webp',`
+4. 大小、位置不對，就改成 `tree:{src:'img/home_tree.webp',scale:1.1,dx:0,dy:-4},`
+
+| 名字 | 東西 | 建議比例（寬:高） | 提示詞重點 |
+|---|---|---|---|
+| tree | 小樹 | 4:5 | small round cartoon tree, soft green leaves, short brown trunk |
+| flowers | 花圃 | 3:1 | a short row of small pastel flowers on stems |
+| tent | 帳篷 | 5:4 | small cozy mustard-yellow camping tent with a tiny pink flag |
+| lamp | 路燈 | 1:2 | short garden lamp post with a warm glowing round bulb |
+| swing | 鞦韆 | 1:1 | small wooden swing set with a pastel pink seat |
+| garden | 菜園 | 5:2 | small wooden raised garden bed with dark soil, empty（蔬菜會由程式畫上去） |
+| pond | 池塘 | 5:2 | small oval pond seen from the front, light blue water, round pebbles around the edge, empty（魚會由程式畫上去） |
+| house | 小房子 | 1:1 | small cozy cottage, cream walls, coral-pink roof, round-top door, two small windows |
+
+小提醒：會動的東西（魚、水波、菜長大、葉子搖）建議繼續由程式畫，生成圖只換「不會動的底」，例如池塘、菜園的木框。

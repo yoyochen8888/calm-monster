@@ -17,7 +17,7 @@ function drip(){tone(PENTA[Math.floor(Math.random()*PENTA.length)],.5,'sine',.06
 function stopCorners(){rainStop()}
 
 /* ---------- 池塘畫布（家園的池塘和看魚呼吸共用） ---------- */
-const FISH_C=['#F5A524','#F26B5B','#F7D046','#FF9EC4','#9B7BE0'];
+const FISH_C=['#FFB25B','#FF8A80','#FFD86B','#FFA8CF','#B9A0F0'];
 function pondCanvas(A,nFish){
   A.innerHTML=`<canvas class="pondcv"></canvas>`;const cv=A.querySelector('canvas');
   const W=Math.min(A.clientWidth||340,560),H=Math.round(W*.72),dpr=window.devicePixelRatio||1;
@@ -37,13 +37,14 @@ function pondCanvas(A,nFish){
     f.tx=W*(.1+.8*Math.random());f.ty=H*(.15+.7*Math.random())}
   function drawFish(f){x.save();x.translate(f.x,f.y);x.rotate(f.a);const L=f.len,sw=Math.sin(f.w)*.35;
     x.fillStyle='rgba(20,60,90,.15)';x.beginPath();x.ellipse(3,5,L*.55,L*.24,0,0,6.28);x.fill();
-    x.fillStyle=f.c;x.beginPath();x.ellipse(0,0,L*.55,L*.25,0,0,6.28);x.fill();
+    const bg=x.createRadialGradient(-L*.15,-L*.12,L*.02,0,0,L*.6);bg.addColorStop(0,tint(f.c,.5));bg.addColorStop(.6,f.c);bg.addColorStop(1,tint(f.c,-.15));
+    x.fillStyle=bg;x.beginPath();x.ellipse(0,0,L*.55,L*.25,0,0,6.28);x.fill();x.fillStyle=f.c;
     x.beginPath();x.moveTo(-L*.45,0);x.lineTo(-L*.85,-L*.25+sw*L*.2);x.lineTo(-L*.85,L*.25+sw*L*.2);x.closePath();x.fill();
     x.fillStyle='#fff';x.beginPath();x.arc(L*.3,-L*.07,L*.07,0,6.28);x.fill();
     x.fillStyle='#333';x.beginPath();x.arc(L*.32,-L*.07,L*.035,0,6.28);x.fill();x.restore()}
   function frame(now){if(!cv.isConnected)return;
     const t=(now-P.t0)/1000;
-    const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#8FD3F4');g.addColorStop(1,'#4FA3D9');x.fillStyle=g;x.fillRect(0,0,W,H);
+    const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#B5E6F5');g.addColorStop(1,'#6FB9DE');x.fillStyle=g;x.fillRect(0,0,W,H);
     x.fillStyle='rgba(255,255,255,.10)';for(let i=0;i<6;i++){const cx=(W*(i/6)+t*8*(i%2?1:-1)+W)%W,cy=H*(.2+.12*i)+Math.sin(t*.5+i)*6;x.beginPath();x.ellipse(cx,cy,W*.12,H*.025,0,0,6.28);x.fill()}
     if(P.ring){const R=P.ring;x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=4;x.beginPath();x.arc(W/2,H/2,R.r,0,6.28);x.stroke();
       x.fillStyle='rgba(255,255,255,.12)';x.beginPath();x.arc(W/2,H/2,R.r,0,6.28);x.fill()}
@@ -58,7 +59,8 @@ function pondCanvas(A,nFish){
       const sp=f.s*P.speed*(P.food.length&&!P.rest?1.8:1)*(P.rest?.9:1);
       f.x+=Math.cos(f.a)*sp;f.y+=Math.sin(f.a)*sp;f.w+=.08*P.speed;
       f.x=Math.max(10,Math.min(W-10,f.x));f.y=Math.max(10,Math.min(H-10,f.y));drawFish(f)});
-    pads.forEach(([px,py,r],i)=>{x.fillStyle=i===1&&P.rest?'#5FB86A':'#6CC47A';x.beginPath();x.moveTo(px,py);const rot=i*2.1+Math.sin(t*.3+i)*.05;x.arc(px,py,r,rot+.12,rot+6.16);x.closePath();x.fill();
+    pads.forEach(([px,py,r],i)=>{x.fillStyle='rgba(40,90,120,.12)';x.beginPath();x.ellipse(px+3,py+5,r,r*.9,0,0,6.28);x.fill();
+      const pg=x.createRadialGradient(px-r*.35,py-r*.35,r*.1,px,py,r);pg.addColorStop(0,'#A6DC94');pg.addColorStop(1,i===1&&P.rest?'#5FB06A':'#6FBF6E');x.fillStyle=pg;x.beginPath();x.moveTo(px,py);const rot=i*2.1+Math.sin(t*.3+i)*.05;x.arc(px,py,r,rot+.12,rot+6.16);x.closePath();x.fill();
       x.fillStyle='rgba(255,255,255,.15)';x.beginPath();x.arc(px-r*.3,py-r*.3,r*.25,0,6.28);x.fill()});
     if(!pads[2].flower){x.fillStyle='#FFB3D1';const [px,py]=pads[2];for(let k=0;k<5;k++){x.beginPath();x.ellipse(px+Math.cos(k*1.26)*6,py+Math.sin(k*1.26)*6,5,3,k*1.26,0,6.28);x.fill()}x.fillStyle='#F7D046';x.beginPath();x.arc(px,py,3,0,6.28);x.fill()}
     P.rip=P.rip.filter(r=>r.a>0.02);P.rip.forEach(r=>{r.r+=.9;r.a*=.975;x.strokeStyle=`rgba(255,255,255,${r.a})`;x.lineWidth=2;x.beginPath();x.arc(r.x,r.y,r.r,0,6.28);x.stroke();
@@ -91,24 +93,24 @@ function renderPond(){
 
 /* ---------- 菜園（step 25） ---------- */
 function gardenSvg(m,sway){
-  const o=store.owned,c=store.crop,g=store.grow;
+  const o=store.owned,c=store.crop,g=store.grow,C=Clay('gd');
   const soil=`rgb(${Math.round(185-75*m)},${Math.round(138-64*m)},${Math.round(94-48*m)})`;
+  const lf=(x,inner)=>`<g class="leaf ${sway?'sway':''}" data-leaf="1" style="transform-origin:${x}px 204px">${inner}</g>`;
   let pl='';
   if(o.includes('garden')){
-    if(c){const st=c.st||0;for(let i=0;i<3;i++){const x=110+i*70;
-      pl+=st>=3?`<g class="leaf ${sway?'sway':''}" data-leaf="1" style="transform-origin:${x}px 200px"><text x="${x}" y="200" text-anchor="middle" font-size="42">${CROPS[c.k][0]}</text></g>`
-        :`<g class="leaf ${sway?'sway':''}" data-leaf="1" style="transform-origin:${x}px 200px"><path d="M${x} 200 v-${14+st*14}" stroke="#3E9B47" stroke-width="5" stroke-linecap="round"/>
-          <ellipse cx="${x-10-st*3}" cy="${188-st*14}" rx="${9+st*4}" ry="${5+st*2}" fill="#5DBB63" transform="rotate(-25 ${x-10-st*3} ${188-st*14})"/>
-          <ellipse cx="${x+10+st*3}" cy="${190-st*14}" rx="${9+st*4}" ry="${5+st*2}" fill="#4FAE55" transform="rotate(25 ${x+10+st*3} ${190-st*14})"/></g>`}}
+    if(c){const st=c.st||0;for(let i=0;i<3;i++){const x=110+i*70;pl+=lf(x,st>=3?clayCrop(C,c.k,x,206,2.1):claySprout(C,x,202,st,2.6))}}
     else pl+=`<text x="180" y="221" text-anchor="middle" font-size="14" fill="#fff">還沒有種東西</text>`}
-  if(o.includes('flowers')){const n=(g.flowers||1)*2;for(let i=0;i<n;i++){const x=28+i*14,y=150-(i%2)*8,cc=['#F26B5B','#FFB3D1','#F7D046','#9B7BE0'][i%4];
-    pl+=`<g class="leaf ${sway?'sway':''}" data-leaf="1" style="transform-origin:${x}px 172px"><path d="M${x} ${y} v22" stroke="#4FAE55" stroke-width="3"/><circle cx="${x}" cy="${y}" r="7" fill="${cc}"/><circle cx="${x}" cy="${y}" r="3" fill="#fff"/></g>`}}
-  if(o.includes('tree')){const st=g.tree||1,sc=[.5,.65,.8][st-1];pl+=`<g class="leaf ${sway?'sway':''}" data-leaf="1" style="transform-origin:320px 172px"><g transform="translate(320 172) scale(${sc})"><rect x="-8" y="-60" width="16" height="60" fill="#9C6B3C"/><circle cx="0" cy="-84" r="36" fill="#5DBB63"/><circle cx="-22" cy="-66" r="22" fill="#6CCB70"/><circle cx="22" cy="-68" r="22" fill="#4FAE55"/></g></g>`}
-  return `<svg viewBox="0 0 360 250" width="100%" class="gardensvg"><rect width="360" height="250" fill="#E3F2FF"/>
-    <path d="M0 150 Q90 132 180 146 T360 140 V250 H0Z" fill="#BFE3A6"/>
-    <rect x="70" y="196" width="220" height="40" rx="12" fill="${soil}" id="soil"/>
-    <path d="M84 208 H276 M84 222 H276" stroke="rgba(0,0,0,.12)" stroke-width="2"/>
-    ${pl}<g id="drops"></g></svg>`}
+  if(o.includes('flowers')){const n=(g.flowers||1)*2;for(let i=0;i<n;i++){const x=24+i*14,y=146-(i%2)*8;pl+=lf(x,clayFlower(C,x,y,FLOWER_COL[i%4],6.5))}}
+  if(o.includes('tree')){const st=g.tree||1;pl+=lf(320,`<g transform="translate(268 10)">${clayTree(C,st)}</g>`)}
+  const sky=`<rect width="360" height="250" fill="${C.lin('sky',[[0,'#D6EEFF'],[1,'#F2FAFF']])}"/>
+    <circle cx="322" cy="34" r="26" fill="${C.glow('sunglow','#FFE7A0')}"/><circle cx="322" cy="34" r="15" fill="${C.g('#FFD978',.5)}"/>${clayCloud(C,70,44)}
+    <path d="M0 150 Q90 132 180 146 T360 140 V250 H0Z" fill="${C.lin('hill',[[0,'#CDEBB5'],[1,'#A9D98F']])}"/>`;
+  const bed=`<ellipse cx="180" cy="242" rx="120" ry="7" fill="#4E6B3A" opacity=".16" ${C.blur}/>
+    <rect x="62" y="190" width="236" height="52" rx="16" fill="${C.v('#C99467',.2)}" ${C.sh}/>
+    <rect x="72" y="196" width="216" height="40" rx="12" fill="${soil}" id="soil"/>
+    <rect x="72" y="196" width="216" height="40" rx="12" fill="${C.lin('soilsh',[[0,'rgba(255,255,255,.14)'],[1,'rgba(0,0,0,.12)']])}"/>
+    ${[90,130,170,210,250].map(x=>`<ellipse cx="${x}" cy="${222+(x%3)}" rx="4" ry="1.6" fill="rgba(0,0,0,.10)"/>`).join('')}`;
+  return `<svg viewBox="0 0 360 250" width="100%" class="gardensvg">${C.defs()}${sky}${bed}${pl}<g id="drops"></g></svg>`}
 function renderGarden(){
   stopAct();const t=today(),o=store.owned;const A=$('#gdArea'),btns=$('#gdBtns'),msg=$('#gdMsg');msg.textContent='';
   const watered=store.waterDay===t;let m=watered?1:0,done=watered;

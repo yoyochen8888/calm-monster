@@ -51,7 +51,7 @@ const CORNERS={angry:{ico:'🚦',name:'紅綠燈小路',act:'light',x:30,y:150},
   lonely:{ico:'🏮',name:'小燈籠亭',act:'butterfly',x:180,y:236},stress:{ico:'🎒',name:'放下背包椅',act:'squeeze',x:106,y:236}};
 const CORNER_LV=4;
 function cornersOpen(){return Object.keys(CORNERS).filter(k=>lvOf(store.xp[k]||0)>=CORNER_LV)}
-function cornerSvg(k){const c=CORNERS[k],col=EMO[k].color;
+function cornerSvg(k,C){const c=CORNERS[k],col=EMO[k].color;if(C)return clayCornerSign(C,c.x,c.y,col,c.ico);
   return `<g transform="translate(${c.x} ${c.y})"><ellipse cx="0" cy="14" rx="17" ry="4" fill="#000" opacity=".12"/>
     <rect x="-2" y="-6" width="4" height="20" rx="1.5" fill="#B07A52"/>
     <rect x="-15" y="-24" width="30" height="22" rx="7" fill="#FFF8EC" stroke="${col}" stroke-width="2.5"/>
@@ -81,37 +81,25 @@ function startWander(){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
       else{actDo(el,'look',2400);el._next=now+3500+Math.random()*2500}})},400)}
 function scene(){
   const o=store.owned,g=store.grow;
-  const night=isNight();
-  const sky=night?'#2F3566':({sky:'#CFE9FF',rainbow:'#FFEFD6',night:'#D4CCF6'}[store.equip.bg]||'#E3F2FF');
-  let v=`<svg viewBox="0 0 360 250" width="100%" style="display:block;border-radius:18px"><rect width="360" height="250" fill="${sky}"/>`;
-  if(night)v+=[[30,30],[90,18],[150,40],[210,20],[260,50],[40,80],[120,70],[300,80],[340,24]].map(([x,y],i)=>`<circle class="twinkle" style="animation-delay:${i*.4}s" cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join('')+`<circle cx="318" cy="38" r="16" fill="#FFF3C4"/><circle cx="326" cy="32" r="14" fill="#2F3566"/>`;
-  else if(store.equip.bg==='night')v+=[[30,30],[90,18],[150,40],[210,20],[260,50],[40,80],[120,70]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join('');
-  if(!night&&store.equip.bg!=='night')v+=`<circle cx="322" cy="34" r="18" fill="#FFE08A"/><g class="cloud"><ellipse cx="60" cy="40" rx="22" ry="8" fill="#fff" opacity=".8"/><ellipse cx="74" cy="34" rx="14" ry="8" fill="#fff" opacity=".8"/></g>`;
-  if(o.includes('rainbowsky'))v+=`<g fill="none" stroke-width="7" opacity=".85">${['#F26B5B','#F5A524','#F7D046','#7CC47C','#5B8DEF','#9B7BE0'].map((c,i)=>`<path d="M${60+i*8} 130 A${120-i*8} ${100-i*8} 0 0 1 ${300-i*8} 130" stroke="${c}"/>`).join('')}</g>`;
-  v+=`<path d="M0 150 Q90 128 180 146 T360 140 V250 H0Z" fill="#BFE3A6"/><path d="M0 176 Q120 160 240 172 T360 168 V250 H0Z" fill="#A6D68C"/>`;
-  if(o.includes('house'))v+=wrapIt('house',`<g transform="translate(246 62)"><rect x="8" y="34" width="70" height="52" fill="#FBE3C4"/><path d="M0 38 L43 4 L86 38Z" fill="#E4574B"/><rect x="34" y="56" width="18" height="30" fill="#B07A52"/><rect x="14" y="46" width="14" height="12" fill="#BFE3FF"/><rect x="58" y="46" width="14" height="12" fill="#BFE3FF"/></g>`);
-  if(o.includes('tree')){const st=g.tree||1,sc=[.6,.8,1][st-1];v+=wrapIt('tree',`<g transform="translate(52 162) scale(${sc})"><rect x="-7" y="-52" width="14" height="52" fill="#9C6B3C"/><circle cx="0" cy="-74" r="32" fill="#5DBB63"/><circle cx="-20" cy="-58" r="20" fill="#6CCB70"/><circle cx="20" cy="-60" r="20" fill="#4FAE55"/>${st>=3?`<circle cx="-12" cy="-80" r="5" fill="#F26B5B"/><circle cx="14" cy="-68" r="5" fill="#F26B5B"/>`:''}</g>`)}
-  if(o.includes('tent'))v+=wrapIt('tent',`<g transform="translate(96 112)"><path d="M0 46 L32 0 L64 46Z" fill="#F5A524"/><path d="M32 0 L22 46 H42Z" fill="#C97F0B"/></g>`);
-  if(o.includes('lamp'))v+=wrapIt('lamp',`<g transform="translate(226 98)"><circle cx="0" cy="8" r="17" fill="#FFE89A" opacity=".35"/><rect x="-2" y="12" width="4" height="56" fill="#666"/><circle cx="0" cy="8" r="9" fill="#FFE89A"/></g>`);
-  if(o.includes('swing'))v+=wrapIt('swing',`<g transform="translate(296 140)"><path d="M0 70 L8 0 L48 0 L56 70" stroke="#9C6B3C" stroke-width="5" fill="none"/><path d="M20 0 V48 M36 0 V48" stroke="#777" stroke-width="2"/><rect x="15" y="46" width="26" height="6" rx="2" fill="#E4574B"/></g>`);
-  if(o.includes('pond')){const n=Math.max(1,store.fish||1);let f='';for(let i=0;i<n;i++){const x=226+i*11,y=203+(i%2)*6,c=['#F5A524','#F26B5B','#F7D046','#FF9EC4','#9B7BE0'][i%5];
-      f+=`<g class="fish" style="animation-delay:${i*.6}s"><path d="M${x} ${y} q5 -4 10 0 q-5 4 -10 0z M${x+10} ${y} l4 -3 v6z" fill="${c}"/></g>`}
-    v+=wrapIt('pond',`<ellipse cx="250" cy="206" rx="44" ry="14" fill="#7CC5F0"/><ellipse cx="236" cy="202" rx="13" ry="3" fill="#fff" opacity=".6"/>${f}`)}
-  if(o.includes('garden')){const c=store.crop;let pl='';
-    if(c){const st=c.st||0;for(let i=0;i<3;i++){const x=34+i*20;pl+=st>=3?`<text x="${x}" y="236" text-anchor="middle" font-size="15">${CROPS[c.k][0]}</text>`
-      :`<path d="M${x} 236 v-${4+st*4}" stroke="#3E9B47" stroke-width="2.5"/><ellipse cx="${x-3}" cy="${232-st*4}" rx="${2+st}" ry="${1.5+st*.6}" fill="#5DBB63"/><ellipse cx="${x+3}" cy="${232-st*4}" rx="${2+st}" ry="${1.5+st*.6}" fill="#4FAE55"/>`}}
-    v+=wrapIt('garden',`<rect x="16" y="226" width="72" height="18" rx="6" fill="#9C6B3C"/><path d="M22 232 H82 M22 238 H82" stroke="#7A5230" stroke-width="1.5"/>${pl}`)}
-  if(o.includes('flowers')){const n=(g.flowers||1)*2;let f='';for(let i=0;i<n;i++){const x=16+i*15,y=206-(i%2)*6,c=['#F26B5B','#FFB3D1','#F7D046','#9B7BE0'][i%4];
-    f+=`<path d="M${x} ${y} v14" stroke="#4FAE55" stroke-width="2"/><circle cx="${x}" cy="${y}" r="5" fill="${c}"/><circle cx="${x}" cy="${y}" r="2" fill="#fff"/>`}v+=wrapIt('flowers',f)}
-  cornersOpen().forEach(k=>{v+=wrapIt('c_'+k,`<g data-corner="${k}" class="corner">${cornerSvg(k)}</g>`)});
+  const night=isNight();const C=Clay('hs');
+  let v=claySky(C,night,store.equip.bg,o.includes('rainbowsky'));
+  if(o.includes('house'))v+=wrapIt('house',artImg('house',clayHouse(C)));
+  if(o.includes('tree')){const st=g.tree||1;v+=wrapIt('tree',artImg('tree',clayTree(C,st),[.6,.8,1][st-1]))}
+  if(o.includes('tent'))v+=wrapIt('tent',artImg('tent',clayTent(C)));
+  if(o.includes('lamp'))v+=wrapIt('lamp',artImg('lamp',clayLamp(C,night)));
+  if(o.includes('swing'))v+=wrapIt('swing',artImg('swing',claySwing(C)));
+  if(o.includes('pond'))v+=wrapIt('pond',artImg('pond',clayPond(C,Math.max(1,store.fish||1))));
+  if(o.includes('garden'))v+=wrapIt('garden',artImg('garden',clayGardenBed(C,store.crop)));
+  if(o.includes('flowers'))v+=wrapIt('flowers',artImg('flowers',clayFlowers(C,(g.flowers||1)*2)));
+  cornersOpen().forEach(k=>{v+=wrapIt('c_'+k,`<g data-corner="${k}" class="corner">${cornerSvg(k,C)}</g>`)});
   // 情緒怪獸入住：一起冷靜過（有經驗）就搬進來
   const fr=Object.keys(EMO).filter(k=>(store.xp[k]||0)>0);
   const pos=[[96,150],[216,152],[70,186],[244,190],[124,196],[182,200],[40,160],[290,170],[150,214],[260,214],[20,214],[310,150],[200,176],[100,222]];
   fr.forEach((k,i)=>{const [px,py]=HOME_POS[k]||pos[i];v+=`<g data-mon="${k}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`});
   if(store.hero){const [hx,hy]=HOME_POS.hero||[146,96];v+=`<g data-actor="h" class="actor" style="pointer-events:none;transform:translate(${hx}px,${hy}px)"><g class="flip"><g class="act ${night?'sleepy':'bob'}">${hero(store.hero.type,64)}</g></g></g>`;}
-  if(night)v+=`<rect width="360" height="250" fill="#1A1F45" opacity=".28" pointer-events="none"/>`;
+  if(night)v+=`<rect width="360" height="250" fill="#1A1F45" opacity=".22" pointer-events="none"/>`;
   if(!fr.length)v+=`<text x="180" y="244" text-anchor="middle" font-size="11" fill="#5A7A50">去冷靜站陪一隻怪獸冷靜，牠就會搬進家園喔</text>`;
-  return v+`</svg>`;
+  return `<svg viewBox="0 0 360 250" width="100%" style="display:block;border-radius:18px">${C.defs()}`+v+`</svg>`;
 }
 function bindScene(){
   const svg=$('#scene svg');
