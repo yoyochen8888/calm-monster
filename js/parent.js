@@ -90,7 +90,7 @@ $('#commUrl').onchange=()=>{store.commUrl=$('#commUrl').value.trim();save();rend
 $('#pNotesCopy').onclick=async()=>{store.pnotes=$('#pNotes').value;save();
   let t='我們家的心得筆記\n'+(store.pnotes||'（還沒寫）')+'\n\n孩子的冷靜秘訣\n'+(Object.entries(store.tips).filter(([k,v])=>v&&v.trim()).map(([k,v])=>`${EMO[k].name}：${v}`).join('\n')||'（還沒寫）');
   try{await navigator.clipboard.writeText(t);toast('已複製')}catch(e){toast('無法自動複製，請長按文字框選取複製')}};
-const openP=()=>{renderLimit();renderTest();renderCases();renderPNotes();if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
+const openP=()=>{renderApp();renderBackup();renderLimit();renderTest();renderCases();renderPNotes();if(S.emo)pEmo=S.emo;renderParent();renderToughNote();resetArm=false;$('#resetAll').textContent='重設星星與等級';$('#drawer').classList.add('on');$('#dbg').style.display='block'};
 const closeP=()=>{$('#drawer').classList.remove('on');$('#dbg').style.display='none'};
 $('#openParent').onclick=openP;$('#closeParent').onclick=closeP;$('#dbg').onclick=closeP;
 
