@@ -34,7 +34,7 @@ function monster(kind,size=110,cls='',opt={}){
   return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name}${mood?' '+SIZES[mood-1].n:' '+STAGES[grow-1].n}">
     ${aura}
     <ellipse cx="60" cy="121" rx="${w*.36}" ry="5" fill="${c}" opacity=".18"/>
-    ${HASART.has(kind)?(()=>{const f=mood||!GROWN.has(kind)?`${kind}${st}`:`${kind}g${grow}`;const ar=ASPECT[f]||1;return `<image href="img/${f}.webp" x="${(60-w*ar/2).toFixed(1)}" y="${y}" width="${(w*ar).toFixed(1)}" height="${w}"/>`})():clayMon(c,x,y,w,mood)}
+    ${HASART.has(kind)?(()=>{const f=mood||!GROWN.has(kind)?`${kind}${st}`:`${kind}g${grow}`;const ar=ASPECT[f]||1;return `<image href="img/${f}.webp" x="${(60-w*ar/2).toFixed(1)}" y="${y}" width="${(w*ar).toFixed(1)}" height="${w}"/>`})():clayMon(c,x,y,w,mood,kind)}
     <g transform="translate(0 ${dy.toFixed(1)})">${eq.neck&&ACC[eq.neck]?`<g transform="translate(0 ${(w*.5).toFixed(1)})">${ACC[eq.neck]}</g>`:''}${eq.head&&ACC[eq.head]?ACC[eq.head]:''}</g>${badge}${sparks}
   </svg>`;
 }

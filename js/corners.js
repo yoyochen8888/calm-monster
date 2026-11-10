@@ -100,8 +100,8 @@ function gardenSvg(m,sway){
   if(o.includes('garden')){
     if(c){const st=c.st||0;for(let i=0;i<3;i++){const x=110+i*70;pl+=lf(x,st>=3?clayCrop(C,c.k,x,206,2.1):claySprout(C,x,202,st,2.6))}}
     else pl+=`<text x="180" y="221" text-anchor="middle" font-size="14" fill="#fff">還沒有種東西</text>`}
-  if(o.includes('flowers')){const n=(g.flowers||1)*2;for(let i=0;i<n;i++){const x=24+i*14,y=146-(i%2)*8;pl+=lf(x,clayFlower(C,x,y,FLOWER_COL[i%4],6.5))}}
-  if(o.includes('tree')){const st=g.tree||1;pl+=lf(320,`<g transform="translate(268 10)">${clayTree(C,st)}</g>`)}
+  if(o.includes('flowers')){const n=(g.flowers||1)*2;for(let i=0;i<n;i++){const x=24+i*14,y=146-(i%2)*8;pl+=lf(x,clayFlower(C,x,y,FLOWER_COL[(i+(store.seed||0))%4],6.5,(i+(store.seed||0))%3))}}
+  if(o.includes('tree')){const st=g.tree||1;pl+=lf(320,`<g transform="translate(268 10)">${clayTree(C,st,(store.seed||7)%2)}</g>`)}
   const sky=`<rect width="360" height="250" fill="${C.lin('sky',[[0,'#D6EEFF'],[1,'#F2FAFF']])}"/>
     <circle cx="322" cy="34" r="26" fill="${C.glow('sunglow','#FFE7A0')}"/><circle cx="322" cy="34" r="15" fill="${C.g('#FFD978',.5)}"/>${clayCloud(C,70,44)}
     <path d="M0 150 Q90 132 180 146 T360 140 V250 H0Z" fill="${C.lin('hill',[[0,'#CDEBB5'],[1,'#A9D98F']])}"/>`;

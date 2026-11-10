@@ -65,8 +65,8 @@ const HOME_POS={};let wanderT=null;
 const RM=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
 function actDo(el,cls,ms){const a=el.querySelector('.act');if(!a)return;a.classList.remove('bob','walk','rest','hop','look');void a.getBoundingClientRect();a.classList.add(cls);
   if(ms)setTimeout(()=>{if(a.isConnected&&a.classList.contains(cls)){a.classList.remove(cls);a.classList.add('bob')}},ms)}
-function startWander(){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
-  const actors=$$('#scene .actor');actors.forEach(el=>{el._next=performance.now()+800+Math.random()*2500});
+function startWander(root='#scene'){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
+  const actors=$$(root+' .actor');actors.forEach(el=>{el._next=performance.now()+800+Math.random()*2500});
   wanderT=setInterval(()=>{if(!actors.length||!actors[0].isConnected){clearInterval(wanderT);return}
     const now=performance.now();
     actors.forEach(el=>{if(now<el._next)return;const isHero=el.dataset.actor==='h';const r=Math.random();
@@ -85,14 +85,9 @@ function scene(){
   let v=claySky(C,night,store.equip.bg,o.includes('rainbowsky'));
   /* 前後層次（v19）：腳的位置越下面，畫在越前面 */
   const L=[];const add=(y,h)=>L.push([y,h]);
-  if(o.includes('house'))add(150+posOf('house')[1],wrapIt('house',artImg('house',clayHouse(C))));
-  if(o.includes('tree')){const st=g.tree||1;add(164+posOf('tree')[1],wrapIt('tree',artImg('tree',clayTree(C,st),[.6,.8,1][st-1])))}
-  if(o.includes('tent'))add(158+posOf('tent')[1],wrapIt('tent',artImg('tent',clayTent(C))));
-  if(o.includes('lamp'))add(168+posOf('lamp')[1],wrapIt('lamp',artImg('lamp',clayLamp(C,night))));
-  if(o.includes('swing'))add(212+posOf('swing')[1],wrapIt('swing',artImg('swing',claySwing(C))));
-  if(o.includes('pond'))add(214+posOf('pond')[1],wrapIt('pond',artImg('pond',clayPond(C,Math.max(1,store.fish||1)))));
-  if(o.includes('garden'))add(246+posOf('garden')[1],wrapIt('garden',artImg('garden',clayGardenBed(C,store.crop))));
-  if(o.includes('flowers'))add(222+posOf('flowers')[1],wrapIt('flowers',artImg('flowers',clayFlowers(C,(g.flowers||1)*2))));
+  const ctx={g,night,crop:store.crop,fish:store.fish,seed:store.seed||7};
+  HOME_ITEMS.forEach(it=>{if(o.includes(it.id))add(it.base+posOf(it.id)[1],wrapIt(it.id,artImg(it.id,it.draw(C,ctx),it.k?it.k(ctx):1)))});
+  clayProps(C,ctx.seed).forEach(p=>add(p[0],p[1]));
   /* v20：冷靜角落招牌拿掉（容易誤觸），Lv.4 的「拿手方法」改放在怪獸圖鑑 */
   // 情緒怪獸入住：一起冷靜過（有經驗）就搬進來
   const fr=Object.keys(EMO).filter(k=>(store.xp[k]||0)>0);

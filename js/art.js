@@ -44,12 +44,13 @@ const groundSh=(C,cx,cy,rx,ry)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="$
 const shine=(cx,cy,rx,ry,o=.45)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#fff" opacity="${o}"/>`;
 
 /* ---------- 家園物件（座標跟 v17 以前相同，布置位置不會跑掉） ---------- */
-function clayTree(C,st){const sc=[.6,.8,1][st-1];
+function clayTree(C,st,variant=0){const sc=[.6,.8,1][st-1];
   return `<g transform="translate(52 162) scale(${sc})">${groundSh(C,0,2,30,6)}
     <path d="M-8 0 Q-6 -30 -6 -52 L6 -52 Q6 -30 8 0 Z" fill="${C.v('#B9855A')}" ${C.sh}/>
     <g class="amb-sway"><circle cx="-20" cy="-58" r="21" fill="${C.g('#7FCB7A')}" ${C.sh}/><circle cx="20" cy="-60" r="21" fill="${C.g('#6FBF6E')}" ${C.sh}/>
     <circle cx="0" cy="-78" r="30" fill="${C.g('#86D283')}" ${C.sh}/>${shine(-10,-92,10,6,.35)}
-    ${st>=3?`<circle cx="-12" cy="-80" r="5.5" fill="${C.g('#FF8A80')}"/><circle cx="14" cy="-66" r="5.5" fill="${C.g('#FF8A80')}"/><circle cx="-24" cy="-58" r="5" fill="${C.g('#FF8A80')}"/>`:''}</g></g>`}
+    ${st>=3?(variant?[[-12,-82],[14,-66],[-24,-58],[6,-92],[24,-54],[-4,-64]].map(([fx,fy])=>`<g>${[0,1,2,3,4].map(k=>`<circle cx="${(fx+Math.cos(k*1.2566)*2.6).toFixed(1)}" cy="${(fy+Math.sin(k*1.2566)*2.6).toFixed(1)}" r="2.3" fill="#FFC4DC"/>`).join('')}<circle cx="${fx}" cy="${fy}" r="1.5" fill="#FFE9A0"/></g>`).join('')
+      :`<circle cx="-12" cy="-80" r="5.5" fill="${C.g('#FF8A80')}"/><circle cx="14" cy="-66" r="5.5" fill="${C.g('#FF8A80')}"/><circle cx="-24" cy="-58" r="5" fill="${C.g('#FF8A80')}"/>`):''}</g></g>`}
 function clayHouse(C){return `<g transform="translate(246 62)">${groundSh(C,43,88,48,6)}
     ${[0,2,4].map(d=>`<circle class="amb-smoke" style="animation-delay:${d}s" cx="69.5" cy="12" r="4" fill="#fff"/>`).join('')}
     <rect x="64" y="16" width="11" height="16" rx="4" fill="${C.v('#E6A57E')}" ${C.sh}/>
@@ -99,11 +100,15 @@ function clayGardenBed(C,crop){let pl='';
   return `${groundSh(C,52,244,40,4)}<rect x="16" y="226" width="72" height="18" rx="7" fill="${C.v('#C99467',.2)}" ${C.sh}/>
     <rect x="20" y="228.5" width="64" height="8" rx="4" fill="${C.v('#8A5E3F',.1)}"/>${pl}`}
 const FLOWER_COL=['#FF8A80','#FFB3D1','#FFD86B','#B9A0F0'];
-function clayFlower(C,x,y,c,r=5){return `<g class="amb-sway" style="animation-delay:-${(x%7)*.6}s;animation-duration:${4+x%3}s"><path d="M${x} ${y} q-1 ${r*1.6} 0 ${r*2.8}" stroke="#5DAF62" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <ellipse cx="${x+r*.7}" cy="${y+r*2}" rx="${r*.55}" ry="${r*.28}" fill="#7FCB7A" transform="rotate(-30 ${x+r*.7} ${y+r*2})"/>
-    ${[0,1,2,3,4].map(k=>{const a=k*1.2566-1.57;return `<circle cx="${(x+Math.cos(a)*r*.62).toFixed(1)}" cy="${(y+Math.sin(a)*r*.62).toFixed(1)}" r="${r*.5}" fill="${C.g(c,.35)}"/>`}).join('')}
-    <circle cx="${x}" cy="${y}" r="${r*.36}" fill="${C.g('#FFE9A0',.5)}"/></g>`}
-function clayFlowers(C,n){let f='';for(let i=0;i<n;i++)f+=clayFlower(C,16+i*15,206-(i%2)*6,FLOWER_COL[i%4]);return f}
+function clayFlower(C,x,y,c,r=5,type=0){
+  const stem=`<path d="M${x} ${y} q-1 ${r*1.6} 0 ${r*2.8}" stroke="#5DAF62" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <ellipse cx="${x+r*.7}" cy="${y+r*2}" rx="${r*.55}" ry="${r*.28}" fill="#7FCB7A" transform="rotate(-30 ${x+r*.7} ${y+r*2})"/>`;
+  let head;
+  if(type===1)/* 鬱金香 */head=`<path d="M${x-r*.75} ${y-r*.7} q${r*.1} ${r*1.5} ${r*.75} ${r*1.4} q${r*.65} ${r*.1} ${r*.75} -${r*1.4} l-${r*.38} ${r*.45} l-${r*.37} -${r*.6} l-${r*.37} ${r*.6} Z" fill="${C.g(c,.35)}" stroke="${c}" stroke-width=".8" stroke-linejoin="round"/>`;
+  else if(type===2)/* 小雛菊 */head=[0,1,2,3,4,5,6,7].map(k=>`<ellipse cx="${x}" cy="${(y-r*.62).toFixed(1)}" rx="${r*.24}" ry="${r*.5}" fill="${tint(c,.55)}" transform="rotate(${k*45} ${x} ${y})"/>`).join('')+`<circle cx="${x}" cy="${y}" r="${r*.4}" fill="${C.g('#FFD86B',.4)}"/>`;
+  else head=[0,1,2,3,4].map(k=>{const a=k*1.2566-1.57;return `<circle cx="${(x+Math.cos(a)*r*.62).toFixed(1)}" cy="${(y+Math.sin(a)*r*.62).toFixed(1)}" r="${r*.5}" fill="${C.g(c,.35)}"/>`}).join('')+`<circle cx="${x}" cy="${y}" r="${r*.36}" fill="${C.g('#FFE9A0',.5)}"/>`;
+  return `<g class="amb-sway" style="animation-delay:-${(x%7)*.6}s;animation-duration:${4+x%3}s">${stem}${head}</g>`}
+function clayFlowers(C,n,seed=0){let f='';for(let i=0;i<n;i++)f+=clayFlower(C,16+i*15,206-(i%2)*6-((i+seed)%3)*2,FLOWER_COL[(i+seed)%4],5,(i+seed)%3);return f}
 function clayCloud(C,x,y,s=1){return `<g transform="translate(${x} ${y}) scale(${s})" opacity=".95"><ellipse cx="0" cy="4" rx="26" ry="7" fill="#C9DDF0" opacity=".5" ${C.blur}/>
     <circle cx="-12" cy="0" r="9" fill="${C.g('#FFFFFF',0,-.06)}"/><circle cx="2" cy="-5" r="12" fill="${C.g('#FFFFFF',0,-.06)}"/><circle cx="15" cy="0" r="8" fill="${C.g('#FFFFFF',0,-.06)}"/>
     <rect x="-20" y="-1" width="42" height="9" rx="4.5" fill="#FBFDFF"/></g>`}
@@ -132,13 +137,23 @@ function clayCornerSign(C,x,y,col,ico){return `<g transform="translate(${x} ${y+
     <text x="0" y="-8.5" text-anchor="middle" font-size="14">${ico}</text></g>`}
 
 /* ---------- 暫代怪獸（還沒有 3D 圖的 8 隻）：黏土版 ---------- */
-function clayMon(c,x,y,w,mood){const cx=x+w/2,cy=y+w*.58,r=w*.36,C=Clay('pm'+c.slice(1));
+function clayMon(c,x,y,w,mood,kind){const cx=x+w/2,cy=y+w*.58,r=w*.36,C=Clay('pm'+c.slice(1));
   const ink='#4A3A33';
   const mouth=mood?`<path d="M${cx-r*.26} ${cy+r*.42} Q${cx} ${cy+r*.2} ${cx+r*.26} ${cy+r*.42}" stroke="${ink}" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/>`
     :`<path d="M${cx-r*.26} ${cy+r*.26} Q${cx} ${cy+r*.52} ${cx+r*.26} ${cy+r*.26}" stroke="${ink}" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/>`;
   const brow=mood?`<path d="M${cx-r*.5} ${cy-r*.32} l${r*.28} ${r*.1} M${cx+r*.5} ${cy-r*.32} l${-r*.28} ${r*.1}" stroke="${ink}" stroke-width="${r*.07}" stroke-linecap="round"/>`:'';
   const body=`<path d="M${cx-r} ${cy+r*.15} Q${cx-r} ${cy-r*1.1} ${cx} ${cy-r*1.08} Q${cx+r} ${cy-r*1.1} ${cx+r} ${cy+r*.15} Q${cx+r*1.02} ${cy+r} ${cx} ${cy+r*1.02} Q${cx-r*1.02} ${cy+r} ${cx-r} ${cy+r*.15} Z" fill="${C.g(c,.4,-.18)}" ${C.sh}/>`;
-  const out=`${body}
+  /* 每隻怪獸自己的特徵（v24）：back 畫在身體後面，front 畫在前面 */
+  let back='',front='';const dk=tint(c,-.14),lt=tint(c,.2);
+  if(kind==='reluctant')back=`<ellipse cx="${cx-r*.98}" cy="${cy-r*.3}" rx="${r*.22}" ry="${r*.58}" fill="${dk}" transform="rotate(14 ${cx-r*.98} ${cy-r*.3})"/><ellipse cx="${cx+r*.98}" cy="${cy-r*.3}" rx="${r*.22}" ry="${r*.58}" fill="${dk}" transform="rotate(-14 ${cx+r*.98} ${cy-r*.3})"/>`;
+  if(kind==='jealous')front=`<path d="M${cx} ${cy-r*1.05} v-${r*.3}" stroke="#5DAF62" stroke-width="${r*.08}" stroke-linecap="round"/><ellipse cx="${cx-r*.2}" cy="${cy-r*1.4}" rx="${r*.24}" ry="${r*.12}" fill="#6FBF6E" transform="rotate(-25 ${cx-r*.2} ${cy-r*1.4})"/><ellipse cx="${cx+r*.2}" cy="${cy-r*1.42}" rx="${r*.24}" ry="${r*.12}" fill="#86D283" transform="rotate(25 ${cx+r*.2} ${cy-r*1.42})"/>`;
+  if(kind==='shy')front=`<ellipse cx="${cx-r*.62}" cy="${cy+r*.22}" rx="${r*.24}" ry="${r*.16}" fill="#FF8FA8" opacity=".55"/><ellipse cx="${cx+r*.62}" cy="${cy+r*.22}" rx="${r*.24}" ry="${r*.16}" fill="#FF8FA8" opacity=".55"/><circle cx="${cx-r*.5}" cy="${cy+r*.5}" r="${r*.2}" fill="${lt}" stroke="${dk}" stroke-width="${r*.03}"/><circle cx="${cx+r*.5}" cy="${cy+r*.5}" r="${r*.2}" fill="${lt}" stroke="${dk}" stroke-width="${r*.03}"/>`;
+  if(kind==='hyper')back=`<path d="M${cx-r*.55} ${cy-r*.8} L${cx-r*.42} ${cy-r*1.5} L${cx-r*.15} ${cy-r*.95} L${cx} ${cy-r*1.65} L${cx+r*.15} ${cy-r*.95} L${cx+r*.42} ${cy-r*1.5} L${cx+r*.55} ${cy-r*.8} Z" fill="${lt}" stroke="${lt}" stroke-width="${r*.12}" stroke-linejoin="round"/>`;
+  if(kind==='embarrassed')front=`<ellipse cx="${cx-r*.6}" cy="${cy+r*.2}" rx="${r*.26}" ry="${r*.17}" fill="#FF7A9A" opacity=".6"/><ellipse cx="${cx+r*.6}" cy="${cy+r*.2}" rx="${r*.26}" ry="${r*.17}" fill="#FF7A9A" opacity=".6"/><path d="M${cx+r*.78} ${cy-r*.85} q${r*.16} ${r*.26} 0 ${r*.34} q-${r*.16} -${r*.08} 0 -${r*.34}Z" fill="#9FD8F5"/>`;
+  if(kind==='guilty')back=`<path d="M${cx-r*.3} ${cy-r*1} q-${r*.1} -${r*.5} -${r*.5} -${r*.3}" stroke="${dk}" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/><circle cx="${cx-r*.8}" cy="${cy-r*1.28}" r="${r*.11}" fill="${dk}"/><path d="M${cx+r*.3} ${cy-r*1} q${r*.1} -${r*.5} ${r*.5} -${r*.3}" stroke="${dk}" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/><circle cx="${cx+r*.8}" cy="${cy-r*1.28}" r="${r*.11}" fill="${dk}"/>`;
+  if(kind==='lonely')front=`<circle cx="${cx+r*1.02}" cy="${cy+r*.72}" r="${r*.42}" fill="#FFE9A0" opacity=".35"/><path d="M${cx+r*1.02} ${cy+r*.36} v${r*.16}" stroke="#8A6A4A" stroke-width="${r*.05}"/><rect x="${cx+r*.86}" y="${cy+r*.5}" width="${r*.32}" height="${r*.42}" rx="${r*.1}" fill="#FFD86B" stroke="#E0A93A" stroke-width="${r*.04}"/>`;
+  if(kind==='stress'){back=`<rect x="${cx-r*1.12}" y="${cy-r*.55}" width="${r*2.24}" height="${r*1.25}" rx="${r*.3}" fill="#C98F5A"/>`;front=`<path d="M${cx-r*.72} ${cy-r*.7} q-${r*.1} ${r*.7} ${r*.05} ${r*1.25} M${cx+r*.72} ${cy-r*.7} q${r*.1} ${r*.7} -${r*.05} ${r*1.25}" stroke="#A8703F" stroke-width="${r*.12}" fill="none" stroke-linecap="round"/>`}
+  const out=`${back}${body}
     <ellipse cx="${cx-r*.92}" cy="${cy+r*.2}" rx="${r*.18}" ry="${r*.3}" fill="${C.g(c,.3,-.2)}" transform="rotate(20 ${cx-r*.92} ${cy+r*.2})"/>
     <ellipse cx="${cx+r*.92}" cy="${cy+r*.2}" rx="${r*.18}" ry="${r*.3}" fill="${C.g(c,.3,-.2)}" transform="rotate(-20 ${cx+r*.92} ${cy+r*.2})"/>
     <ellipse cx="${cx-r*.42}" cy="${cy+r*1.0}" rx="${r*.24}" ry="${r*.12}" fill="${tint(c,-.12)}"/><ellipse cx="${cx+r*.42}" cy="${cy+r*1.0}" rx="${r*.24}" ry="${r*.12}" fill="${tint(c,-.12)}"/>
@@ -146,7 +161,7 @@ function clayMon(c,x,y,w,mood){const cx=x+w/2,cy=y+w*.58,r=w*.36,C=Clay('pm'+c.s
     ${shine(cx-r*.38,cy-r*.62,r*.3,r*.16,.45)}
     <ellipse cx="${cx-r*.32}" cy="${cy-r*.06}" rx="${r*.14}" ry="${r*.17}" fill="${ink}"/><ellipse cx="${cx+r*.32}" cy="${cy-r*.06}" rx="${r*.14}" ry="${r*.17}" fill="${ink}"/>
     <circle cx="${cx-r*.27}" cy="${cy-r*.12}" r="${r*.05}" fill="#fff"/><circle cx="${cx+r*.37}" cy="${cy-r*.12}" r="${r*.05}" fill="#fff"/>
-    <ellipse cx="${cx-r*.62}" cy="${cy+r*.22}" rx="${r*.14}" ry="${r*.09}" fill="#FF8FA8" opacity=".5"/><ellipse cx="${cx+r*.62}" cy="${cy+r*.22}" rx="${r*.14}" ry="${r*.09}" fill="#FF8FA8" opacity=".5"/>${brow}${mouth}`;
+    <ellipse cx="${cx-r*.62}" cy="${cy+r*.22}" rx="${r*.14}" ry="${r*.09}" fill="#FF8FA8" opacity=".5"/><ellipse cx="${cx+r*.62}" cy="${cy+r*.22}" rx="${r*.14}" ry="${r*.09}" fill="#FF8FA8" opacity=".5"/>${brow}${mouth}${front}`;
   return C.defs()+out}
 
 /* ---------- 環境小生命（v19）：白天蝴蝶、晚上螢火蟲；畫在最前面，不擋手指 ---------- */
@@ -154,3 +169,32 @@ function clayAmbient(C,night){
   const bf=(cls,c)=>`<g class="bfly ${cls}"><g class="flap"><ellipse cx="-3" cy="-1.5" rx="3.2" ry="4" fill="${c}"/><ellipse cx="3" cy="-1.5" rx="3.2" ry="4" fill="${c}"/><ellipse cx="-2.2" cy="3" rx="2.2" ry="2.6" fill="${tint(c,.25)}"/><ellipse cx="2.2" cy="3" rx="2.2" ry="2.6" fill="${tint(c,.25)}"/></g><rect x="-.6" y="-3" width="1.2" height="7" rx=".6" fill="#6B5A52"/></g>`;
   if(night)return `<g pointer-events="none">${[[40,150],[110,190],[170,140],[230,170],[300,200],[330,150],[80,225]].map(([x,y],i)=>`<g transform="translate(${x} ${y})"><g class="ffly" style="animation-delay:-${i*1.3}s;animation-duration:${7+i%4}s"><circle r="5" fill="${C.glow('ffglow','#FFF59A')}"/><circle r="1.3" fill="#FFFBD0"/></g></g>`).join('')}</g>`;
   return `<g pointer-events="none">${bf('b1','#FFB3D1')}${bf('b2','#B9A0F0')}${bf('b3','#FFD86B')}</g>`}
+
+/* ---------- 小配件（v24）：蘑菇、石頭、草叢、小灌木、小白花。位置由每個孩子的存檔決定，每次打開都一樣 ---------- */
+function seeded(n){let a=n>>>0;return ()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296}}
+function clayProps(C,seed){const R=seeded(seed||7),out=[];
+  for(let i=0;i<9;i++){const x=10+R()*340,y=182+R()*62,t=Math.floor(R()*5);let h='';
+    if(t===0){const col=R()<.5?'#FF9A8E':'#F5B46A';h=`<rect x="${x-1.6}" y="${y-5}" width="3.2" height="5.5" rx="1.4" fill="#FFF4E2"/><path d="M${x-5} ${y-4.5} q5 -8 10 0 Z" fill="${C.g(col,.35)}" stroke="${col}" stroke-width=".6" stroke-linejoin="round"/><circle cx="${x-1.6}" cy="${y-6.6}" r=".9" fill="#fff"/><circle cx="${x+2}" cy="${y-5.8}" r=".7" fill="#fff"/>`}
+    else if(t===1)h=`<ellipse cx="${x}" cy="${y-2}" rx="5" ry="3.2" fill="${C.g('#D8D0E6')}"/><ellipse cx="${x+5.5}" cy="${y-1.2}" rx="3" ry="2" fill="${C.g('#E8DFD2')}"/>`;
+    else if(t===2)h=`<g class="amb-sway" style="animation-delay:-${i}s"><path d="M${x-3} ${y} q-2 -6 -1 -9 M${x} ${y} q0 -8 1 -11 M${x+3} ${y} q2 -6 2 -8" stroke="#7FCB7A" stroke-width="2" fill="none" stroke-linecap="round"/></g>`;
+    else if(t===3)h=`<circle cx="${x-4}" cy="${y-4}" r="5" fill="${C.g('#8ACB7B',.3)}"/><circle cx="${x+3}" cy="${y-5}" r="6.5" fill="${C.g('#98D488',.3)}"/>`;
+    else h=[[-4,-2],[1,-4],[5,-1]].map(([dx,dy])=>`<circle cx="${x+dx}" cy="${y+dy}" r="1.7" fill="#fff"/><circle cx="${x+dx}" cy="${y+dy}" r=".7" fill="#FFD86B"/>`).join('');
+    out.push([y,`<g pointer-events="none">${h}</g>`])}
+  return out}
+
+/* ---------- 家園物件表（v24）----------
+   加一樣新家具只要三步：
+   1. js/data.js 的 SHOP 加一行（名字、價錢、圖示）
+   2. 在這張表加一行：id、base（腳踩在畫面多下面，決定前後）、draw（怎麼畫）
+   3. 想換成圖片：在最上面的 ART 加一行，並在 ART_BOX 給預設框
+   x 裡有：g（植物長多大）、night、crop、fish、seed */
+const HOME_ITEMS=[
+  {id:'house',base:150,draw:(C,x)=>clayHouse(C)},
+  {id:'tree',base:164,draw:(C,x)=>clayTree(C,x.g.tree||1,x.seed%2),k:x=>[.6,.8,1][(x.g.tree||1)-1]},
+  {id:'tent',base:158,draw:(C,x)=>clayTent(C)},
+  {id:'lamp',base:168,draw:(C,x)=>clayLamp(C,x.night)},
+  {id:'swing',base:212,draw:(C,x)=>claySwing(C)},
+  {id:'pond',base:214,draw:(C,x)=>clayPond(C,Math.max(1,x.fish||1))},
+  {id:'garden',base:246,draw:(C,x)=>clayGardenBed(C,x.crop)},
+  {id:'flowers',base:222,draw:(C,x)=>clayFlowers(C,(x.g.flowers||1)*2,x.seed)},
+];

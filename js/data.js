@@ -149,7 +149,7 @@ const S={step:0,age:null,emo:null,lv:0,lv2:0,act:null,cause:null,want:null,plan:
 let store={};
 try{store=JSON.parse(localStorage.getItem('calmMonster')||'{}')}catch(e){store={}}
 function save(){try{localStorage.setItem('calmMonster',JSON.stringify(store))}catch(e){}refreshHdr()}
-store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.repairs=store.repairs||[];store.log=store.log||[];store.moodLog=store.moodLog||[];store.pracLog=store.pracLog||[];store.vouchers=store.vouchers||[];store.week=store.week||{};store.playLog=store.playLog||[];store.gameDay=store.gameDay||{};store.wins=store.wins||[];store.tips=store.tips||{};store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;store.pos=store.pos||{};if(store.limit===undefined)store.limit=20;if(store.nightAt===undefined)store.nightAt=20;
+store.xp=store.xp||{};store.pxp=store.pxp||0;store.grow=store.grow||{};store.repairs=store.repairs||[];store.log=store.log||[];store.moodLog=store.moodLog||[];store.pracLog=store.pracLog||[];store.vouchers=store.vouchers||[];store.week=store.week||{};store.playLog=store.playLog||[];store.gameDay=store.gameDay||{};store.wins=store.wins||[];store.tips=store.tips||{};store.owned=store.owned||[];store.equip=store.equip||{};store.stars=store.stars||0;store.pos=store.pos||{};if(!store.seed)store.seed=1+Math.floor(Math.random()*1e6);if(store.limit===undefined)store.limit=20;if(store.nightAt===undefined)store.nightAt=20;
 const LEVELS=[0,30,80,150,250,400];
 const TITLES=['初次見面','認識你了','好朋友','好夥伴','默契搭檔','情緒小達人'];
 function lvOf(xp){let l=0;LEVELS.forEach((t,i)=>{if(xp>=t)l=i});return l+1}
