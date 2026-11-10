@@ -120,6 +120,8 @@ function bindScene(){
       const k=360/svg.getBoundingClientRect().width,sx=ev.clientX,sy=ev.clientY;let nx=x0,ny=y0;try{el.setPointerCapture(ev.pointerId)}catch(e){}el.classList.add('dragging');
       el.onpointermove=e=>{nx=Math.max(-330,Math.min(330,x0+(e.clientX-sx)*k));ny=Math.max(-180,Math.min(120,y0+(e.clientY-sy)*k));el.setAttribute('transform',`translate(${nx.toFixed(1)} ${ny.toFixed(1)})`)};
       el.onpointerup=el.onpointercancel=()=>{el.onpointermove=null;el.classList.remove('dragging');store.pos[id]={x:Math.round(nx),y:Math.round(ny)};save();tone(520,.06)}}})}
+  [['pond',24],['garden',25],['flowers',25]].forEach(([id,st])=>{const el=$(`#scene [data-it="${id}"]`);if(el)el.onclick=()=>{if(S.decor)return;
+    if(isNight()){toast('晚上了，大家都在睡覺，明天再來吧 🌙');return}go(st)}});
   $$('#scene [data-corner]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.corner,c=CORNERS[k];
     toast(`${c.ico} ${EMO[k].name}的${c.name}：一起練習${ACT_NAME[c.act]}`);startPractice(k,c.act)});
   $$('#scene [data-mon]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.mon,e=EMO[k],l=lvOf(store.xp[k]||0),b=BADGE[k];
@@ -170,26 +172,22 @@ function renderChores(){
   const o=store.owned,t=today(),box=$('#chores');const rows=[];
   if(isNight()){box.innerHTML=`<p class="choreh">🌙 晚上了</p><p class="hint" style="text-align:left;margin:4px 0">怪獸們和${store.hero?store.hero.name:'你'}都睡了，家園工作明天再做。<br>需要冷靜的時候，冷靜站和「🆘 馬上冷靜」都還可以用。晚安！</p>`;return}
   const plants=SHOP.filter(x=>x.plant&&o.includes(x.id));const hasG=o.includes('garden');
-  if(plants.length||hasG)rows.push(store.waterDay===t?['💧','澆水','今天澆過了 ✓',null]:['💧','澆水','花草和菜都會長大一點','water']);
-  if(o.includes('pond'))rows.push(store.fishDay===t?['🐟','餵魚',`吃飽了 ✓（${store.fish||1} 條魚）`,null]:['🐟','餵魚',`餵 3 天會多一條魚（${store.fish||1}/5）`,'feed']);
-  if(hasG){const c=store.crop;
-    if(!c)rows.push(['🌱','種菜','選一種種子種下去','seed']);
-    else if((c.st||0)>=3)rows.push([CROPS[c.k][0],'收成',`${CROPS[c.k][1]}長好了！`,'harvest']);
-    else rows.push([CROPS[c.k][0],CROPS[c.k][1],`再澆 ${3-(c.st||0)} 天水就能收成`,null]);}
+  /* 池塘、菜園是療癒小角落（v17）：隨時可以去，照顧過也還能去看看 */
+  if(o.includes('pond'))rows.push(['🐟','池塘',store.fishDay===t?'今天餵過了，也可以去看看魚 ✓':'去看看魚、碰碰水面','pond',store.fishDay===t]);
+  if(plants.length||hasG){const c=store.crop;
+    const sub=store.waterDay===t?(c&&(c.st||0)>=3?`${CROPS[c.k][1]}長好了，可以分給怪獸吃 ✓`:'今天澆過水了，可以去摸摸葉子 ✓')
+      :hasG&&!c?'選一種種子種下去':c&&(c.st||0)>=3?`${CROPS[c.k][1]}長好了！`:'慢慢澆水，看泥土變深';
+    rows.push([c?CROPS[c.k][0]:'🌱',hasG?'菜園':'花草',sub,'garden',store.waterDay===t&&!(c&&(c.st||0)>=3)])}
   const rt=REAL_TASKS[(new Date().getDate()+(store.rtOff||0))%REAL_TASKS.length];
   rows.push(store.realDay===t?['🏡','真實家事','今天做到了 ✓',null]:['🏡','真實家事',`今天試試：${rt}`,'real']);
-  const left=rows.filter(r=>r[3]).length;
-  box.innerHTML=`<p class="choreh">🧺 今天的家園小工作</p>`+rows.map(r=>`<div class="chore ${r[3]?'':'done'}"><span class="ci">${r[0]}</span><span class="ct"><b>${r[1]}</b><small>${r[2]}</small></span>${r[3]==='real'?'<span class="slot"></span>':r[3]?`<button class="btn small" data-ch="${r[3]}">${r[3]==='seed'?'種':r[3]==='harvest'?'收成':'做'}</button>`:''}</div>`).join('')
+  const left=rows.filter(r=>r[3]&&!r[4]).length;
+  box.innerHTML=`<p class="choreh">🧺 今天的家園小工作</p>`+rows.map(r=>`<div class="chore ${r[3]&&!r[4]?'':'done'}"><span class="ci">${r[0]}</span><span class="ct"><b>${r[1]}</b><small>${r[2]}</small></span>${r[3]==='real'?'<span class="slot"></span>':r[3]?`<button class="btn small ${r[4]?'ghost':''}" data-ch="${r[3]}">去看看</button>`:''}</div>`).join('')
     +(left===0?`<p class="hint choredone">🌞 今天的家園工作都完成了！怪獸們要去休息了，你也去玩真的遊戲、找家人說說話吧。</p>`:'')
     +(!plants.length&&!hasG&&!o.includes('pond')?`<p class="hint">在商店買小菜園、池塘或植物，就有更多家園工作可以做。</p>`:'');
   const slot=box.querySelector('.slot');if(slot){slot.appendChild(holdBtn('大人按住確認',1500,()=>{store.realDay=t;save();gain('在家裡幫忙',5);chime();renderHome()}))}
   box.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{const k=b.dataset.ch;
-    if(k==='water'){store.waterDay=t;plants.forEach(p=>store.grow[p.id]=Math.min(3,(store.grow[p.id]||1)+1));if(store.crop)store.crop.st=Math.min(3,(store.crop.st||0)+1);save();gain('照顧家園',2);tone(520,.15)}
-    if(k==='feed'){store.fishDay=t;store.fed=(store.fed||0)+1;if(store.fed>=3&&(store.fish||1)<5){store.fed=0;store.fish=(store.fish||1)+1;toast('🐟 池塘裡多了一條小魚！')}save();gain('照顧家園',2)}
-    if(k==='seed'){box.querySelector(`[data-ch="seed"]`).parentElement.insertAdjacentHTML('afterend',`<div class="chips" id="seedPick">${Object.entries(CROPS).map(([id,c])=>`<button class="chip" data-seed="${id}">${c[0]} ${c[1]}</button>`).join('')}</div>`);
-      b.remove();$$('[data-seed]').forEach(x=>x.onclick=()=>{store.crop={k:x.dataset.seed,st:0};save();tone(600,.12);toast(`種下${CROPS[x.dataset.seed][1]}了，每天澆水它會慢慢長大`);renderHome()});return}
-    if(k==='harvest'){const c=store.crop;store.basket=store.basket||{};store.basket[c.k]=(store.basket[c.k]||0)+1;store.crop=null;save();gain('收成',5);chime();
-      toast(`收成${CROPS[c.k][1]}！照顧需要耐心，就像陪情緒怪獸一樣 💛`,true)}
+    if(k==='pond'){go(24);return}
+    if(k==='garden'){go(25);return}
     renderHome()});
 }
 $('#hParent').onclick=()=>go(13);

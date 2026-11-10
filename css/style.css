@@ -294,3 +294,20 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
 .rv-days em{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;font-style:normal}
 .rv-days i{width:9px;height:9px;border-radius:50%;display:inline-block}
 .rv-key{color:var(--soft);font-size:.8rem;margin:6px 0 0}
+/* 療癒小角落（v17） */
+.cornerarea{display:flex;justify-content:center;margin:4px 0 10px}
+.pondcv{border-radius:18px;display:block;touch-action:none;max-width:100%}
+#fishPond{display:flex;justify-content:center;margin-bottom:8px}
+.cornermsg{text-align:center;min-height:1.4em;color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;margin:4px 0}
+.gardensvg{display:block;border-radius:18px;max-width:560px;touch-action:none}
+.gardensvg .leaf{transform-box:view-box;cursor:pointer}
+.gardensvg .leaf.sway{animation:gsway 2.6s ease-in-out 2}
+.gardensvg .leaf.touch{animation:gsway 1s ease-in-out 1}
+@keyframes gsway{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.gardensvg .drop{animation:gdrop .9s ease-in forwards}
+@keyframes gdrop{to{transform:translateY(80px);opacity:.2}}
+.btn.hold-water{user-select:none;-webkit-user-select:none;touch-action:none}
+.share{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 0}
+.sharemon{animation:hop .5s ease-out 3}
+.bubble{background:#fff;border:2px solid var(--line);border-radius:16px;padding:8px 14px;font-family:"Noto Sans TC",sans-serif}
+@media (prefers-reduced-motion: reduce){.gardensvg .leaf.sway,.gardensvg .leaf.touch,.sharemon{animation:none}}

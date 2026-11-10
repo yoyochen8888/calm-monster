@@ -44,7 +44,7 @@ S.hist=[];S.earned=[];
 function go(n,noPush){
   if(n!==10)clearInterval(wanderT);
   if(n!==23)stopWatch();
-  if(isNight()&&([11,17,18,19,20,21].includes(n)||(n===23&&S.wMode!=='album'))){toast('晚上了，遊戲和商店明天再開 🌙<br>需要冷靜時，冷靜站還是可以用');if(S.step===10)return;n=10}
+  if(isNight()&&([11,17,18,19,20,21,24,25].includes(n)||(n===23&&S.wMode!=='album'))){toast('晚上了，遊戲和商店明天再開 🌙<br>需要冷靜時，冷靜站還是可以用');if(S.step===10)return;n=10}
   stopAct();clearInterval(coInt);
   if(!noPush&&S.step!==undefined&&S.step!==n)S.hist.push(S.step);
   if(n===7||n===10)S.hist=[];
@@ -52,7 +52,7 @@ function go(n,noPush){
   $('#dots').style.display=(n>=1&&n<=7)?'':'none';
   $('#navrow').style.display=(n===0||n===7||n===10)?'none':'';
   $('#navBack').style.visibility=S.hist.length?'visible':'hidden';
-  const tab=(n>=1&&n<=8)?1:((n>=18&&n<=21)||n===23)?17:n===22?9:n;
+  const tab=(n>=1&&n<=8)?1:((n>=18&&n<=21)||n===23)?17:n===22?9:(n===24||n===25)?10:n;
   $$('[data-tab]').forEach(b=>b.classList.toggle('on',+b.dataset.tab===tab));
   $$('.step').forEach(s=>s.classList.toggle('on',+s.dataset.step===n));
   $('#dots').innerHTML=Array.from({length:8},(_,i)=>`<i class="${i===n?'on':''}"></i>`).join('');
@@ -79,5 +79,7 @@ function go(n,noPush){
   if(n===21)renderCB();
   if(n===22)renderMD();
   if(n===23)renderWatch();
+  if(n===24)renderPond();
+  if(n===25)renderGarden();
 }
 

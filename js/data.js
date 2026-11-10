@@ -7,19 +7,19 @@ const AGES=[
 ];
 const EMO={
   angry:{cname:'紅色',name:'生氣怪獸',color:'#F26B5B',feel:'好生氣',body:'臉熱熱、拳頭握緊緊',acts:['bubbles','light','breathe','squeeze'],face:'angry'},
-  sad:{cname:'藍色',name:'難過怪獸',color:'#5B8DEF',feel:'好難過',body:'眼睛酸酸、想哭',acts:['breathe','butterfly','senses'],face:'sad'},
+  sad:{cname:'藍色',name:'難過怪獸',color:'#5B8DEF',feel:'好難過',body:'眼睛酸酸、想哭',acts:['breathe','butterfly','senses','fish'],face:'sad'},
   defiant:{cname:'橘色',name:'不服氣怪獸',color:'#F5A524',feel:'好不服氣',body:'心裡悶悶、不甘心',acts:['light','squeeze','breathe','bubbles'],face:'defiant'},
-  stuck:{cname:'紫色',name:'做不到怪獸',color:'#9B7BE0',feel:'好挫折，覺得做不到',body:'想放棄、想丟掉',acts:['breathe','squeeze','bubbles'],face:'stuck'},
-  scared:{cname:'綠色',name:'擔心怪獸',color:'#3FB6A8',feel:'好擔心',body:'肚子怪怪、心跳很快',acts:['breathe','senses','butterfly'],face:'scared'},
-  wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses'],face:'wronged'},
+  stuck:{cname:'紫色',name:'做不到怪獸',color:'#9B7BE0',feel:'好挫折，覺得做不到',body:'想放棄、想丟掉',acts:['breathe','squeeze','bubbles','fish'],face:'stuck'},
+  scared:{cname:'綠色',name:'擔心怪獸',color:'#3FB6A8',feel:'好擔心',body:'肚子怪怪、心跳很快',acts:['breathe','senses','butterfly','fish'],face:'scared'},
+  wronged:{cname:'粉紅色',name:'委屈怪獸',color:'#EC7FB0',feel:'好委屈',body:'想哭又說不出來',acts:['butterfly','breathe','senses','fish'],face:'wronged'},
   reluctant:{cname:'蜂蜜色',name:'捨不得怪獸',color:'#E9B53C',feel:'好捨不得，還想玩、不想分開',body:'想黏著不放手、想哭、腳不想動',acts:['light','breathe','butterfly'],face:'sad'},
   jealous:{cname:'黃綠色',name:'嫉妒怪獸',color:'#9CC93B',feel:'好嫉妒，別人有我沒有',body:'心裡酸酸的、想搶過來',acts:['breathe','squeeze','senses'],face:'defiant'},
-  shy:{cname:'桃色',name:'害羞怪獸',color:'#F59A72',feel:'好害羞，不敢說',body:'臉熱熱、想躲到大人後面',acts:['breathe','butterfly','senses'],face:'scared'},
+  shy:{cname:'桃色',name:'害羞怪獸',color:'#F59A72',feel:'好害羞，不敢說',body:'臉熱熱、想躲到大人後面',acts:['breathe','butterfly','senses','fish'],face:'scared'},
   hyper:{cname:'天藍色',name:'興奮過頭怪獸',color:'#2EB8E0',feel:'好興奮，停不下來',body:'身體一直動、聲音越來越大',acts:['light','breathe','squeeze'],face:'angry'},
   embarrassed:{cname:'梅紅色',name:'尷尬怪獸',color:'#C766B8',feel:'好尷尬、好丟臉',body:'臉紅紅、想消失',acts:['breathe','butterfly','squeeze'],face:'wronged'},
-  guilty:{cname:'灰藍色',name:'內疚怪獸',color:'#7C93B5',feel:'好內疚，覺得自己做錯了',body:'心裡沉沉的、不敢看別人',acts:['breathe','butterfly','senses'],face:'sad'},
-  lonely:{cname:'靛藍色',name:'孤單怪獸',color:'#4F63B0',feel:'好孤單，好像沒人陪',body:'心裡空空的、提不起勁',acts:['butterfly','breathe','senses'],face:'sad'},
-  stress:{cname:'咖啡色',name:'壓力怪獸',color:'#A97B50',feel:'壓力好大，事情好多',body:'肩膀緊緊、頭脹脹、睡不好',acts:['breathe','squeeze','senses'],face:'stuck'}
+  guilty:{cname:'灰藍色',name:'內疚怪獸',color:'#7C93B5',feel:'好內疚，覺得自己做錯了',body:'心裡沉沉的、不敢看別人',acts:['breathe','butterfly','senses','fish'],face:'sad'},
+  lonely:{cname:'靛藍色',name:'孤單怪獸',color:'#4F63B0',feel:'好孤單，好像沒人陪',body:'心裡空空的、提不起勁',acts:['butterfly','breathe','senses','fish'],face:'sad'},
+  stress:{cname:'咖啡色',name:'壓力怪獸',color:'#A97B50',feel:'壓力好大，事情好多',body:'肩膀緊緊、頭脹脹、睡不好',acts:['breathe','squeeze','senses','fish'],face:'stuck'}
 };
 /* 依年齡顯示的怪獸（已經一起冷靜過的怪獸一定會顯示） */
 const AGE_EMO={young:['angry','sad','scared','wronged','reluctant'],
@@ -31,7 +31,7 @@ const HASART=new Set(['angry','sad','defiant','stuck','scared','wronged']);
 const LV=[
   {n:1,t:'小小的',h:'#6CCB70'},{n:2,t:'有一點',h:'#A8D86B'},{n:3,t:'中中的',h:'#F7D046'},{n:4,t:'很大',h:'#F5A524'},{n:5,t:'超級大',h:'#F26B5B'}
 ];
-const ACT_NAME={light:'紅綠燈',breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱'};
+const ACT_NAME={light:'紅綠燈',breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱',fish:'看魚呼吸'};
 const CAUSES=['我做不到 / 太難了','我輸了','跟我想的不一樣','我覺得不公平','我被說 / 被罵','不能再玩了','東西壞掉了','被別人誤會','我也不知道'];
 const WANTS=['抱抱','自己靜一下','再試一次','有人幫我','休息一下','說給別人聽'];
 const PLANS={
