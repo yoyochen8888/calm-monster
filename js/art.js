@@ -47,10 +47,11 @@ const shine=(cx,cy,rx,ry,o=.45)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="
 function clayTree(C,st){const sc=[.6,.8,1][st-1];
   return `<g transform="translate(52 162) scale(${sc})">${groundSh(C,0,2,30,6)}
     <path d="M-8 0 Q-6 -30 -6 -52 L6 -52 Q6 -30 8 0 Z" fill="${C.v('#B9855A')}" ${C.sh}/>
-    <circle cx="-20" cy="-58" r="21" fill="${C.g('#7FCB7A')}" ${C.sh}/><circle cx="20" cy="-60" r="21" fill="${C.g('#6FBF6E')}" ${C.sh}/>
+    <g class="amb-sway"><circle cx="-20" cy="-58" r="21" fill="${C.g('#7FCB7A')}" ${C.sh}/><circle cx="20" cy="-60" r="21" fill="${C.g('#6FBF6E')}" ${C.sh}/>
     <circle cx="0" cy="-78" r="30" fill="${C.g('#86D283')}" ${C.sh}/>${shine(-10,-92,10,6,.35)}
-    ${st>=3?`<circle cx="-12" cy="-80" r="5.5" fill="${C.g('#FF8A80')}"/><circle cx="14" cy="-66" r="5.5" fill="${C.g('#FF8A80')}"/><circle cx="-24" cy="-58" r="5" fill="${C.g('#FF8A80')}"/>`:''}</g>`}
+    ${st>=3?`<circle cx="-12" cy="-80" r="5.5" fill="${C.g('#FF8A80')}"/><circle cx="14" cy="-66" r="5.5" fill="${C.g('#FF8A80')}"/><circle cx="-24" cy="-58" r="5" fill="${C.g('#FF8A80')}"/>`:''}</g></g>`}
 function clayHouse(C){return `<g transform="translate(246 62)">${groundSh(C,43,88,48,6)}
+    ${[0,2,4].map(d=>`<circle class="amb-smoke" style="animation-delay:${d}s" cx="69.5" cy="12" r="4" fill="#fff"/>`).join('')}
     <rect x="64" y="16" width="11" height="16" rx="4" fill="${C.v('#E6A57E')}" ${C.sh}/>
     <rect x="8" y="32" width="70" height="56" rx="9" fill="${C.v('#FFF1DC',.4,-.08)}" ${C.sh}/>
     <path d="M3 40 Q0 38 4 34 L39 7 Q43 4 47 7 L82 34 Q86 38 83 40 Z" fill="${C.v('#F59B8E',.25,-.12)}" ${C.sh}/>${shine(30,20,12,4,.35)}
@@ -60,8 +61,8 @@ function clayHouse(C){return `<g transform="translate(246 62)">${groundSh(C,43,8
 function clayTent(C){return `<g transform="translate(96 112)">${groundSh(C,32,46,36,5)}
     <path d="M2 46 Q-1 46 1 42 L29 3 Q32 -1 35 3 L63 42 Q65 46 62 46 Z" fill="${C.v('#FFC870',.3,-.12)}" ${C.sh}/>
     <path d="M32 8 Q27 30 23 46 H41 Q37 30 32 8 Z" fill="${C.v('#E39A3B')}"/>${shine(22,22,5,9,.3)}
-    <path d="M32 2 V-8" stroke="#B9855A" stroke-width="2" stroke-linecap="round"/><path d="M32 -8 L41 -5 L32 -2 Z" fill="#FF9EC4"/></g>`}
-function clayLamp(C,night){return `<g transform="translate(226 98)"><circle cx="0" cy="8" r="${night?30:20}" fill="${C.glow('lampglow','#FFE9A0')}"/>
+    <path d="M32 2 V-8" stroke="#B9855A" stroke-width="2" stroke-linecap="round"/><path class="amb-flag" d="M32 -8 L41 -5 L32 -2 Z" fill="#FF9EC4"/></g>`}
+function clayLamp(C,night){return `<g transform="translate(226 98)"><circle class="${night?'amb-glow':''}" cx="0" cy="8" r="${night?30:20}" fill="${C.glow('lampglow','#FFE9A0')}"/>
     ${groundSh(C,0,68,10,3)}<rect x="-2.5" y="12" width="5" height="56" rx="2.5" fill="${C.v('#8E8AA8')}" ${C.sh}/>
     <rect x="-6" y="64" width="12" height="5" rx="2.5" fill="${C.v('#8E8AA8')}"/>
     <circle cx="0" cy="8" r="9" fill="${C.g('#FFE89A',.6)}" ${C.sh}/>${shine(-3,4,3,2,.7)}
@@ -78,6 +79,7 @@ function clayPond(C,n){let f='';for(let i=0;i<n;i++){const x=228+i*11,y=203+(i%2
   return `<ellipse cx="250" cy="207" rx="46" ry="15.5" fill="${C.v('#9C8FB5')}" opacity=".35"/>
     <ellipse cx="250" cy="206" rx="43" ry="13.5" fill="${C.lin('water',[[0,'#B5E6F5'],[1,'#6FB9DE']])}"/>
     <ellipse cx="236" cy="202" rx="13" ry="3" fill="#fff" opacity=".55"/>${f}
+    ${[[262,200],[244,211],[272,210]].map(([x,y],i)=>`<ellipse class="twinkle" style="animation-delay:${i*.9}s" cx="${x}" cy="${y}" rx="3" ry=".9" fill="#fff" opacity=".8"/>`).join('')}
     <path d="M275 205 a6 3 0 1 0 0.1 0 Z" fill="${C.g('#7FCB7A')}"/>
     ${peb.map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="${3.5+i%3}" ry="${2.4+i%2*.6}" fill="${C.g(i%2?'#D8D0E6':'#E8DFD2')}"/>`).join('')}`}
 /* 蔬菜：黏土版（取代 emoji） */
@@ -97,10 +99,10 @@ function clayGardenBed(C,crop){let pl='';
   return `${groundSh(C,52,244,40,4)}<rect x="16" y="226" width="72" height="18" rx="7" fill="${C.v('#C99467',.2)}" ${C.sh}/>
     <rect x="20" y="228.5" width="64" height="8" rx="4" fill="${C.v('#8A5E3F',.1)}"/>${pl}`}
 const FLOWER_COL=['#FF8A80','#FFB3D1','#FFD86B','#B9A0F0'];
-function clayFlower(C,x,y,c,r=5){return `<path d="M${x} ${y} q-1 ${r*1.6} 0 ${r*2.8}" stroke="#5DAF62" stroke-width="2" fill="none" stroke-linecap="round"/>
+function clayFlower(C,x,y,c,r=5){return `<g class="amb-sway" style="animation-delay:-${(x%7)*.6}s;animation-duration:${4+x%3}s"><path d="M${x} ${y} q-1 ${r*1.6} 0 ${r*2.8}" stroke="#5DAF62" stroke-width="2" fill="none" stroke-linecap="round"/>
     <ellipse cx="${x+r*.7}" cy="${y+r*2}" rx="${r*.55}" ry="${r*.28}" fill="#7FCB7A" transform="rotate(-30 ${x+r*.7} ${y+r*2})"/>
     ${[0,1,2,3,4].map(k=>{const a=k*1.2566-1.57;return `<circle cx="${(x+Math.cos(a)*r*.62).toFixed(1)}" cy="${(y+Math.sin(a)*r*.62).toFixed(1)}" r="${r*.5}" fill="${C.g(c,.35)}"/>`}).join('')}
-    <circle cx="${x}" cy="${y}" r="${r*.36}" fill="${C.g('#FFE9A0',.5)}"/>`}
+    <circle cx="${x}" cy="${y}" r="${r*.36}" fill="${C.g('#FFE9A0',.5)}"/></g>`}
 function clayFlowers(C,n){let f='';for(let i=0;i<n;i++)f+=clayFlower(C,16+i*15,206-(i%2)*6,FLOWER_COL[i%4]);return f}
 function clayCloud(C,x,y,s=1){return `<g transform="translate(${x} ${y}) scale(${s})" opacity=".95"><ellipse cx="0" cy="4" rx="26" ry="7" fill="#C9DDF0" opacity=".5" ${C.blur}/>
     <circle cx="-12" cy="0" r="9" fill="${C.g('#FFFFFF',0,-.06)}"/><circle cx="2" cy="-5" r="12" fill="${C.g('#FFFFFF',0,-.06)}"/><circle cx="15" cy="0" r="8" fill="${C.g('#FFFFFF',0,-.06)}"/>
@@ -111,15 +113,20 @@ function claySky(C,night,bg,rainbow){
   if(night)v+=[[30,30],[90,18],[150,40],[210,20],[260,50],[40,80],[120,70],[300,80],[340,24]].map(([x,y],i)=>`<circle class="twinkle" style="animation-delay:${i*.4}s" cx="${x}" cy="${y}" r="1.8" fill="#FFF8DC"/>`).join('')
     +`<circle cx="318" cy="38" r="20" fill="${C.glow('moonglow','#FFF3C4')}"/><circle cx="318" cy="38" r="15" fill="${C.g('#FFF3C4',.4)}"/><circle cx="326" cy="32" r="13" fill="#454A86"/>`;
   else if(bg==='night')v+=[[30,30],[90,18],[150,40],[210,20],[260,50],[40,80],[120,70]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="#fff"/>`).join('');
-  if(!night&&bg!=='night')v+=`<circle cx="322" cy="34" r="28" fill="${C.glow('sunglow','#FFE7A0')}"/><circle cx="322" cy="34" r="17" fill="${C.g('#FFD978',.5)}" ${C.sh}/>${shine(316,28,5,3,.55)}
+  if(!night&&bg!=='night')v+=`<circle class="amb-glow" cx="322" cy="34" r="30" fill="${C.glow('sunglow','#FFE7A0')}"/><circle cx="322" cy="34" r="17" fill="${C.g('#FFD978',.5)}" ${C.sh}/>
+    <g class="bird"><path class="flapy" d="M-5 0 q2.5 -4 5 0 q2.5 -4 5 0" stroke="#8C93B8" stroke-width="1.4" fill="none" stroke-linecap="round"/></g><g class="bird" style="animation-delay:-1.2s"><path class="flapy" d="M-16 7 q2 -3 4 0 q2 -3 4 0" stroke="#8C93B8" stroke-width="1.2" fill="none" stroke-linecap="round"/></g>${shine(316,28,5,3,.55)}
     <g class="cloud">${clayCloud(C,60,40)}</g><g class="cloud" style="animation-delay:-22s;animation-duration:55s">${clayCloud(C,160,62,.7)}</g>`;
   if(rainbow)v+=`<g fill="none" stroke-width="7" stroke-linecap="round" opacity=".8">${['#FF9A8E','#FFC27A','#FFE38A','#A6DC94','#9CC2F5','#C6AEF2'].map((c,i)=>`<path d="M${60+i*8} 130 A${120-i*8} ${100-i*8} 0 0 1 ${300-i*8} 130" stroke="${c}"/>`).join('')}</g>`;
+  /* 遠景：淡淡的遠山和小樹林，顏色越遠越淡 */
+  v+=`<path d="M0 138 Q50 96 110 124 Q170 84 240 122 Q300 98 360 126 V160 H0Z" fill="${night?'#5E659F':'#DDEBF3'}" opacity=".9"/>
+    <path d="M0 146 Q70 118 140 138 Q220 112 290 134 Q330 124 360 132 V170 H0Z" fill="${night?'#56709A':'#D3ECCB'}"/>
+    ${[[14,136,7],[30,132,9],[118,130,7],[132,133,5],[168,126,8],[184,130,6],[232,124,7],[340,128,8]].map(([x,y,r])=>`<rect x="${x-.8}" y="${y}" width="1.6" height="${r}" fill="${night?'#4B5F86':'#B9C9A8'}"/><circle cx="${x}" cy="${y}" r="${r}" fill="${night?'#4F6B90':'#BFE0B8'}"/>`).join('')}`;
   v+=`<path d="M0 150 Q90 128 180 146 T360 140 V250 H0Z" fill="${C.lin('hill1',[[0,'#CDEBB5'],[1,'#B5DE9B']])}"/>
     <path d="M0 176 Q120 160 240 172 T360 168 V250 H0Z" fill="${C.lin('hill2',[[0,'#B9E2A0'],[1,'#9FD488']])}"/>
     ${[[20,172,9],[338,166,8],[196,168,6]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${C.g('#98D488',.3)}"/><circle cx="${x+r*.9}" cy="${y+2}" r="${r*.7}" fill="${C.g('#8ACB7B',.3)}"/>`).join('')}
     ${[[70,200],[150,186],[300,230],[230,240],[120,230]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="5" ry="1.6" fill="#8ACB7B" opacity=".45"/>`).join('')}`;
   return v}
-function clayCornerSign(C,x,y,col,ico){return `<g transform="translate(${x} ${y})">${groundSh(C,0,14,13,3)}
+function clayCornerSign(C,x,y,col,ico){return `<g transform="translate(${x} ${y+3}) scale(.8)">${groundSh(C,0,14,13,3)}
     <rect x="-2.2" y="-6" width="4.4" height="20" rx="2.2" fill="${C.v('#C99467')}" ${C.sh}/>
     <rect x="-15" y="-25" width="30" height="23" rx="9" fill="${C.v('#FFFBF2',.3,-.06)}" stroke="${tint(col,.15)}" stroke-width="2.6" ${C.sh}/>
     <text x="0" y="-8.5" text-anchor="middle" font-size="14">${ico}</text></g>`}
@@ -141,3 +148,9 @@ function clayMon(c,x,y,w,mood){const cx=x+w/2,cy=y+w*.58,r=w*.36,C=Clay('pm'+c.s
     <circle cx="${cx-r*.27}" cy="${cy-r*.12}" r="${r*.05}" fill="#fff"/><circle cx="${cx+r*.37}" cy="${cy-r*.12}" r="${r*.05}" fill="#fff"/>
     <ellipse cx="${cx-r*.62}" cy="${cy+r*.22}" rx="${r*.14}" ry="${r*.09}" fill="#FF8FA8" opacity=".5"/><ellipse cx="${cx+r*.62}" cy="${cy+r*.22}" rx="${r*.14}" ry="${r*.09}" fill="#FF8FA8" opacity=".5"/>${brow}${mouth}`;
   return C.defs()+out}
+
+/* ---------- 環境小生命（v19）：白天蝴蝶、晚上螢火蟲；畫在最前面，不擋手指 ---------- */
+function clayAmbient(C,night){
+  const bf=(cls,c)=>`<g class="bfly ${cls}"><g class="flap"><ellipse cx="-3" cy="-1.5" rx="3.2" ry="4" fill="${c}"/><ellipse cx="3" cy="-1.5" rx="3.2" ry="4" fill="${c}"/><ellipse cx="-2.2" cy="3" rx="2.2" ry="2.6" fill="${tint(c,.25)}"/><ellipse cx="2.2" cy="3" rx="2.2" ry="2.6" fill="${tint(c,.25)}"/></g><rect x="-.6" y="-3" width="1.2" height="7" rx=".6" fill="#6B5A52"/></g>`;
+  if(night)return `<g pointer-events="none">${[[40,150],[110,190],[170,140],[230,170],[300,200],[330,150],[80,225]].map(([x,y],i)=>`<g transform="translate(${x} ${y})"><g class="ffly" style="animation-delay:-${i*1.3}s;animation-duration:${7+i%4}s"><circle r="5" fill="${C.glow('ffglow','#FFF59A')}"/><circle r="1.3" fill="#FFFBD0"/></g></g>`).join('')}</g>`;
+  return `<g pointer-events="none">${bf('b1','#FFB3D1')}${bf('b2','#B9A0F0')}${bf('b3','#FFD86B')}</g>`}

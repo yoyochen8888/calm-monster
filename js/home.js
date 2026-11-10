@@ -83,20 +83,23 @@ function scene(){
   const o=store.owned,g=store.grow;
   const night=isNight();const C=Clay('hs');
   let v=claySky(C,night,store.equip.bg,o.includes('rainbowsky'));
-  if(o.includes('house'))v+=wrapIt('house',artImg('house',clayHouse(C)));
-  if(o.includes('tree')){const st=g.tree||1;v+=wrapIt('tree',artImg('tree',clayTree(C,st),[.6,.8,1][st-1]))}
-  if(o.includes('tent'))v+=wrapIt('tent',artImg('tent',clayTent(C)));
-  if(o.includes('lamp'))v+=wrapIt('lamp',artImg('lamp',clayLamp(C,night)));
-  if(o.includes('swing'))v+=wrapIt('swing',artImg('swing',claySwing(C)));
-  if(o.includes('pond'))v+=wrapIt('pond',artImg('pond',clayPond(C,Math.max(1,store.fish||1))));
-  if(o.includes('garden'))v+=wrapIt('garden',artImg('garden',clayGardenBed(C,store.crop)));
-  if(o.includes('flowers'))v+=wrapIt('flowers',artImg('flowers',clayFlowers(C,(g.flowers||1)*2)));
-  cornersOpen().forEach(k=>{v+=wrapIt('c_'+k,`<g data-corner="${k}" class="corner">${cornerSvg(k,C)}</g>`)});
+  /* 前後層次（v19）：腳的位置越下面，畫在越前面 */
+  const L=[];const add=(y,h)=>L.push([y,h]);
+  if(o.includes('house'))add(150+posOf('house')[1],wrapIt('house',artImg('house',clayHouse(C))));
+  if(o.includes('tree')){const st=g.tree||1;add(164+posOf('tree')[1],wrapIt('tree',artImg('tree',clayTree(C,st),[.6,.8,1][st-1])))}
+  if(o.includes('tent'))add(158+posOf('tent')[1],wrapIt('tent',artImg('tent',clayTent(C))));
+  if(o.includes('lamp'))add(168+posOf('lamp')[1],wrapIt('lamp',artImg('lamp',clayLamp(C,night))));
+  if(o.includes('swing'))add(212+posOf('swing')[1],wrapIt('swing',artImg('swing',claySwing(C))));
+  if(o.includes('pond'))add(214+posOf('pond')[1],wrapIt('pond',artImg('pond',clayPond(C,Math.max(1,store.fish||1)))));
+  if(o.includes('garden'))add(246+posOf('garden')[1],wrapIt('garden',artImg('garden',clayGardenBed(C,store.crop))));
+  if(o.includes('flowers'))add(222+posOf('flowers')[1],wrapIt('flowers',artImg('flowers',clayFlowers(C,(g.flowers||1)*2))));
+  cornersOpen().forEach(k=>{add(CORNERS[k].y+12+posOf('c_'+k)[1],wrapIt('c_'+k,`<g data-corner="${k}" class="corner">${cornerSvg(k,C)}</g>`))});
   // 情緒怪獸入住：一起冷靜過（有經驗）就搬進來
   const fr=Object.keys(EMO).filter(k=>(store.xp[k]||0)>0);
   const pos=[[96,150],[216,152],[70,186],[244,190],[124,196],[182,200],[40,160],[290,170],[150,214],[260,214],[20,214],[310,150],[200,176],[100,222]];
-  fr.forEach((k,i)=>{const [px,py]=HOME_POS[k]||pos[i];v+=`<g data-mon="${k}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`});
-  if(store.hero){const [hx,hy]=HOME_POS.hero||[146,96];v+=`<g data-actor="h" class="actor" style="pointer-events:none;transform:translate(${hx}px,${hy}px)"><g class="flip"><g class="act ${night?'sleepy':'bob'}">${hero(store.hero.type,64)}</g></g></g>`;}
+  fr.forEach((k,i)=>{const [px,py]=HOME_POS[k]||pos[i];add(py+42,`<g data-mon="${k}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`)});
+  if(store.hero){const [hx,hy]=HOME_POS.hero||[150,102];add(hy+56,`<g data-actor="h" class="actor" style="pointer-events:none;transform:translate(${hx}px,${hy}px)"><g class="flip"><g class="act ${night?'sleepy':'bob'}">${hero(store.hero.type,56)}</g></g></g>`)}
+  v+=L.sort((a,b)=>a[0]-b[0]).map(x=>x[1]).join('')+clayAmbient(C,night);
   if(night)v+=`<rect width="360" height="250" fill="#1A1F45" opacity=".22" pointer-events="none"/>`;
   if(!fr.length)v+=`<text x="180" y="244" text-anchor="middle" font-size="11" fill="#5A7A50">去冷靜站陪一隻怪獸冷靜，牠就會搬進家園喔</text>`;
   return `<svg viewBox="0 0 360 250" width="100%" style="display:block;border-radius:18px">${C.defs()}`+v+`</svg>`;
