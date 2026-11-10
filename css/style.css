@@ -338,3 +338,14 @@ body.bg-night{background:radial-gradient(#fff 1.2px,transparent 1.6px) 0 0/34px 
 .rvgood{text-align:center;font-size:1.1rem;line-height:1.7;margin:8px 0 12px}
 .rvdone{background:#F3EEFB;border-radius:10px;padding:4px 10px;margin:4px 0;display:inline-block}
 .rvchip{font-size:.85rem;padding:5px 12px;margin:4px 0;display:block}
+/* 願望罐（v23） */
+.wishcard{display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;background:#FFF6DC;border-radius:16px;padding:10px 14px;margin-top:12px;font-family:"Noto Sans TC",sans-serif}
+.wishcard.full{background:#FFEFC2}
+.wishcard .wt{flex:1;min-width:190px}.wishcard .wt b{display:block}.wishcard .wt span{font-size:.92rem;color:var(--soft);line-height:1.6}.wishcard .wt span b{display:inline;color:var(--ink)}
+.wishcard .wb{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.jar.full{animation:jarglow 3s ease-in-out infinite}@keyframes jarglow{50%{filter:drop-shadow(0 0 6px #FFD86B)}}
+.wishset{font-size:.82rem;padding:4px 10px;margin-top:6px}.wishtag{display:inline-block;font-size:.82rem;margin-top:8px;background:#FFF6DC;border-radius:999px;padding:4px 10px}
+.wishov{position:fixed;inset:0;background:rgba(59,47,42,.45);display:flex;align-items:center;justify-content:center;z-index:60;padding:18px}
+.wishask{background:#fff;border-radius:22px;padding:20px 18px;max-width:420px;text-align:center;font-family:"Noto Sans TC",sans-serif;line-height:1.7}
+.wishask p{margin:6px 0}.wishask .wj{display:flex;justify-content:center}
+@media (prefers-reduced-motion:reduce){.jar.full{animation:none}}

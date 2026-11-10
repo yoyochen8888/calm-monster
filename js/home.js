@@ -127,7 +127,7 @@ function renderHome(){
   $('#scene').innerHTML=scene();bindScene();
   $('#decorBar').style.display=S.decor?'':'none';
   $('#hWaterSub').textContent=S.decor?'布置中…':'拖拉家具換位置';
-  renderChores();renderReviewCard();
+  renderChores();renderReviewCard();renderWishCard();
   $('#hGamesSub').textContent=store.gameDay.routine===today()?'今天玩過了，再玩也可以':'小遊戲和親子遊戲';
   const vb=$('#voucherBox');vb.innerHTML='';
   store.vouchers.forEach(v=>{const d=document.createElement('div');d.className='task';d.style.background='#EAF6F3';
@@ -208,10 +208,12 @@ function renderShop(){
   if(S.shopCat==='reward'){
     const cp=coupons();
     $('#shop').innerHTML=cp.map((c,i)=>`<div class="pick shopitem" style="cursor:default"><div class="shopicon">🎟</div><b style="font-size:1rem">${c.name}</b>
-      <button class="btn small" data-cpn="${i}" ${store.stars<c.cost?'disabled':''}>${c.cost} ⭐ 換</button></div>`).join('')+
+      <button class="btn small" data-cpn="${i}" ${store.stars<c.cost?'disabled':''}>${c.cost} ⭐ 換</button>
+      ${store.wish&&store.wish.name===c.name?`<span class="wishtag">🫙 我的願望</span>`:`<button class="chip wishset" data-wish="${i}">🫙 設為願望</button>`}</div>`).join('')+
       `<div class="pick" style="cursor:default;display:flex;align-items:center;justify-content:center"><span>兌換券由大人在「大人看這裡」設定</span></div>`;
     $$('[data-cpn]').forEach(b=>b.onclick=()=>{const c=cp[+b.dataset.cpn];if(store.stars<c.cost)return;
-      store.stars-=c.cost;store.vouchers.push({id:Date.now(),name:c.name});save();chime();toast(`換到「${c.name}」！拿給大人看，請大人兌現`,true);renderShop()});
+      wishGuard(c.name,c.cost,()=>{redeemCoupon(c);renderShop()})});
+    $$('[data-wish]').forEach(b=>b.onclick=()=>{setWish(cp[+b.dataset.wish]);renderShop()});
     return;
   }
   const ht=store.hero?store.hero.type:'fox';
@@ -226,8 +228,8 @@ function renderShop(){
       :`<button class="btn small" data-buy="${it.id}" ${store.stars<it.cost?'disabled':''}>${it.cost} ⭐ 買</button>`;
     return `<div class="pick shopitem" style="cursor:default">${prev}<b>${it.name}</b>${btn}</div>`}).join('');
   $$('[data-buy]').forEach(b=>b.onclick=()=>{const it=SHOP.find(x=>x.id===b.dataset.buy);if(store.stars<it.cost)return;
-    store.stars-=it.cost;store.owned.push(it.id);if(it.slot)store.equip[it.slot]=it.id;if(it.plant)store.grow[it.id]=1;save();chime();
-    toast(it.cat==='home'?`${it.name}放進家園了！`:`買到${it.name}了！`);renderShop()});
+    wishGuard(it.name,it.cost,()=>{store.stars-=it.cost;store.owned.push(it.id);if(it.slot)store.equip[it.slot]=it.id;if(it.plant)store.grow[it.id]=1;save();chime();
+    toast(it.cat==='home'?`${it.name}放進家園了！`:`買到${it.name}了！`);renderShop()})});
   $$('[data-eq]').forEach(b=>b.onclick=()=>{const it=SHOP.find(x=>x.id===b.dataset.eq);
     store.equip[it.slot]=store.equip[it.slot]===it.id?null:it.id;save();tone(620,.12);renderShop()});
 }

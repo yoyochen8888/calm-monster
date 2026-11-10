@@ -176,7 +176,7 @@ const PTITLES=['新手冒險家','情緒探險家','冷靜小勇士','情緒守�
 function lvIn(a,x){let l=0;a.forEach((t,i)=>{if(x>=t)l=i});return l+1}
 function nextIn(a,x){const l=lvIn(a,x);if(l>=a.length)return {pct:100,need:0};return {pct:Math.round((x-a[l-1])/(a[l]-a[l-1])*100),need:a[l]-x}}
 const SHOP_CATS=[['reward','兌換券'],['home','家園'],['hero','主角'],['monster','怪獸'],['bg','背景']];
-const SHOP_HINT={reward:'換真的活動和特權！買了之後請大人兌現',home:'買了會放進家園，植物要每天照顧才會長大',hero:'幫主角換裝扮',monster:'所有怪獸會一起穿上',bg:'整個畫面的背景'};
+const SHOP_HINT={reward:'換真的活動和特權！也可以選一個當願望，放進願望罐慢慢存',home:'買了會放進家園，植物要每天照顧才會長大',hero:'幫主角換裝扮',monster:'所有怪獸會一起穿上',bg:'整個畫面的背景'};
 const GOODS=['生氣時用說的，沒有動手','自己想到深呼吸','輸了也能說恭喜','做不到時請人幫忙','願意再試一次','主動道歉或修復','說出自己難過的感覺','等待、輪流很有耐心'];
 const REPAIRS={young:['說對不起','一起收拾','畫一張道歉卡','抱抱對方'],mid:['說對不起','一起收拾乾淨','幫忙修好','做一件事來彌補'],old:['好好道歉並說明','收拾或修好','用做家事或零用錢補償','跟對方討論怎麼彌補']};
 const MOODS=[['😊','開心',1],['😌','平靜',1],['😢','難過',0],['😠','生氣',0],['😟','擔心',0]];
