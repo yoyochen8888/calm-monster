@@ -105,13 +105,17 @@ function renderJoy(){const R=S.jy;if(!R){go(10,true);return}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
 /* ---------- 快樂寶盒（step 29）：存起來的好時刻，可以打開來再看一次 ---------- */
+/* 勇氣時刻（v30）用怪獸的圖；其他用夥伴 */
+function joyLabel(j){return j.k==='brave'?'勇氣':(JOY[j.k]||JOY.happy).short}
+function joyPic(j,size){return j.k==='brave'&&EMO[j.emo]?monster(j.emo,size):friend(JOY[j.k]?j.k:'happy',size)}
+function joyColor(j){return j.k==='brave'&&EMO[j.emo]?EMO[j.emo].color:(JOY[j.k]||JOY.happy).color}
 function joyLine(j){return [j.note||j.what,j.body&&j.body.length?`身體：${j.body.join('、')}`:''].filter(Boolean).join('｜')||'（沒有寫，但有好好記住）'}
 function renderJoyBox(){const L=joyLog().slice().reverse();
-  $('#jbSub').textContent=L.length?`裡面有 ${L.length} 個好時刻。難過或睡前的時候，也可以打開來看看。`:'還是空的。開心、驕傲、安心的時候，來把它存起來吧！';
-  $('#jbList').innerHTML=L.slice(0,60).map(j=>{const e=JOY[j.k]||JOY.happy;
-    return `<button class="jbitem" data-jt="${j.t}" style="--jc:${e.color}">${friend(j.k,46)}<span><b>${e.short}・${rvWhen(j.t)}</b>${esc(joyLine(j))}</span></button>`}).join('');
+  const nb=L.filter(j=>j.k==='brave').length;
+  $('#jbSub').textContent=L.length?`裡面有 ${L.length-nb} 個好時刻、${nb} 個勇氣時刻。難過或睡前的時候，也可以打開來看看。`:'還是空的。開心、驕傲、安心的時候，或陪怪獸冷靜之後，來把它存起來吧！';
+  $('#jbList').innerHTML=L.slice(0,60).map(j=>`<button class="jbitem" data-jt="${j.t}" style="--jc:${joyColor(j)}">${joyPic(j,46)}<span><b>${j.k==='brave'?'💪 ':''}${joyLabel(j)}・${rvWhen(j.t)}</b>${esc(joyLine(j))}</span></button>`).join('');
   $$('[data-jt]').forEach(b=>b.onclick=()=>{const j=joyLog().find(x=>x.t===+b.dataset.jt);if(!j)return;
-    speak(`${rvWhen(j.t)}，${JOY[j.k].short}夥伴來過。${j.note||j.what||''}`);b.classList.remove('hop');void b.offsetWidth;b.classList.add('hop')});
+    speak(j.k==='brave'?`${rvWhen(j.t)}，你很勇敢。${j.what}`:`${rvWhen(j.t)}，${joyLabel(j)}夥伴來過。${j.note||j.what||''}`);b.classList.remove('hop');void b.offsetWidth;b.classList.add('hop')});
 }
 $('#jbNew').onclick=()=>startJoy();
 /* 冷靜站第一頁的入口：不算一次冷靜站 */

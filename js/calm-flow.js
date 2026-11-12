@@ -247,7 +247,9 @@ function actButterfly(){
 
 /* step 4 */
 /* 3–5 歲（v26）：再看一次大小就完成，「發生什麼、下次怎麼做」留給事後的一起回顧 */
-function toTalk(){if(S.age==='young')$('#finish').onclick();else{S.talkPh=0;go(5)}}
+function toTalk(){if(S.age==='young'){/* 3–5 歲：生氣、做錯事時還是溫和地問一下要不要修復（v30） */
+    if(['hot','repair'].includes(EMO_FAM[S.emo])){S.talkPh=1;go(5)}else $('#finish').onclick()}
+  else{S.talkPh=0;go(5)}}
 function renderRe(){
   const f=famOf(S.emo),cf=EMO_FAM[S.emo]==='comfort';
   $('#reQ').textContent=f.reQ;$('#reHint').textContent=f.reHint;
@@ -288,7 +290,8 @@ function renderTalk(){
 }
 $('#speakSent').onclick=()=>speak(S.talkPh?'最後一個問題。剛剛有沒有東西壞掉，或有人被弄痛、弄難過？不管答案是什麼都沒關係。':$('#sentence').textContent);
 $('#toNext').onclick=()=>{if(S.cause&&!S.talkRewarded){S.talkRewarded=true;gain('把感覺說出來',5,{flow:1,quiet:1})}
-  if(!S.talkPh){S.talkPh=1;renderTalk();window.scrollTo({top:0,behavior:'smooth'});return}go(6)};
+  if(!S.talkPh){S.talkPh=1;renderTalk();window.scrollTo({top:0,behavior:'smooth'});return}
+  if(S.age==='young'){$('#finish').onclick();return}go(6)};
 
 /* step 6 */
 function renderPlans(){
@@ -316,7 +319,7 @@ function gain(label,n,opt={}){
   tone(880,.12,'triangle',.1);if(up)setTimeout(()=>{tone(784,.2);setTimeout(()=>tone(1046,.5),180)},350);
   return n;
 }
-function resetFlow(){Object.assign(S,{sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,sizeSpoke:null,need:null,fam:null,pickAll:false,talkPh:0,cueDone:false,dmg:null,repair:null,actsDone:[],monUp:null,heroUp:null,capToasted:false});
+function resetFlow(){Object.assign(S,{sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,sizeSpoke:null,need:null,fam:null,pickAll:false,talkPh:0,cueDone:false,dmg:null,repair:null,actsDone:[],monUp:null,heroUp:null,braveSaved:false,capToasted:false});
   const d=today();if(!store.day||store.day.d!==d)store.day={d,n:0};S.capped=store.day.n>=5;store.day.n++;save()}
 function startFlow(){if(!S.age){go(0);return}resetFlow();S.hist=[10];go(1,true)}
 function holdBtn(label,ms,cb){const b=document.createElement('button');b.className='hold';b.innerHTML=`<i></i><span>${label}</span>`;
@@ -351,7 +354,14 @@ $('#finish').onclick=()=>{
   $('#levelUp').innerHTML=S.monUp?`${S.monUp.from<CORNER_LV&&S.monUp.to>=CORNER_LV?`<div class="levelup">⭐ ${EMO[S.emo].name}教你牠的拿手方法：${CORNERS[S.emo].ico} ${CORNERS[S.emo].name}！到圖鑑就可以一起練習</div>`:''}<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 長大成「${STAGES[stageOf(S.monUp.to)-1].n}」，學會了${BADGE[S.emo][1]}：${BADGE[S.emo][2]}！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{level:S.monUp.from})}<b>➜</b>${monster(S.emo,96,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
   if(S.heroUp)$('#levelUp').insertAdjacentHTML('beforeend',`<div class="levelup">🎉 ${store.hero?store.hero.name:'主角'}升到 Lv.${S.heroUp}「${PTITLES[S.heroUp-1]}」！</div>`);
   const total=S.earned.reduce((a,b)=>a+b[1],0);
-  $('#connect').innerHTML=`<b>🤗 跟陪你的人抱一下，或擊個掌</b><span>${S.usedCo?'謝謝大人陪你一起度過':'你剛剛做了一件很不容易的事'}</span>`;
+  $('#connect').innerHTML=`<b>🤗 跟陪你的人抱一下，或擊個掌</b><span>${S.usedCo?'謝謝大人陪你一起度過':'你剛剛做了一件很不容易的事'}</span>
+    <button class="btn small" id="braveSave" style="margin-top:10px">💪 存成勇氣時刻</button>`;
+  /* 勇氣時刻（v30）：存的不是壞事，是「我怎麼度過的」，以後打開快樂寶盒可以再看到 */
+  $('#braveSave').onclick=()=>{if(S.braveSaved)return;S.braveSaved=true;
+    const acts=(S.actsDone||[]).map(a=>ACT_NAME[a]);const cf=EMO_FAM[S.emo]==='comfort';
+    const what=`${e.name}來了，`+(acts.length?`我用了「${acts.join('、')}」`:S.usedCo?'我讓大人陪我':'我願意面對')+(lv2<lv0?(cf?'，心裡好多了':`，從 ${lv0} 變成 ${lv2}`):'')+(S.plan?`。下次我要${S.plan}`:'');
+    joyLog().push({t:Date.now(),k:'brave',emo:S.emo,what,note:'',body:[],how:'box'});store.joyLog=joyLog().slice(-200);save();
+    chime();toast('💪 存進快樂寶盒了');$('#braveSave').textContent='✓ 存好了';$('#braveSave').disabled=true};
   $('#rewardSum').textContent=S.capped?'今天的星星拿滿了':`這次拿到 ${total} ⭐`;$('#rewardBox').open=false;
   $('#rewardList').innerHTML=S.capped?`<li>今天已經練習 5 次以上了，星星明天再來拿。你還是很棒！</li>`
     :S.earned.map(([t,n])=>`<li><span>${t}</span><b>+${n} ⭐</b></li>`).join('')+`<li class="total"><span>這次一共拿到</span><b>${total} ⭐</b></li>`;

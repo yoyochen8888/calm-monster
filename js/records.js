@@ -53,7 +53,7 @@ function reviewHtml(off){
   if(w.W.length)kid.push(`做到了：${w.W.slice(0,4).map(x=>`<b>${x.text}</b>`).join('、')}`);
   if(w.prac)kid.push(`平時練習了 <b>${w.prac}</b> 天`);
   const mdays=Object.keys(w.moods).length;if(mdays)kid.push(`說出自己的心情 <b>${mdays}</b> 天`);
-  const jw=joyWeek(w.a);if(jw.length)kid.push(`存了 <b>${jw.length}</b> 個好時刻：${jw.slice(-3).map(j=>`<b>${esc(j.note||j.what||JOY[j.k].short)}</b>`).join('、')}`);
+  const jw=joyWeek(w.a);if(jw.length)kid.push(`存了 <b>${jw.length}</b> 個好時刻：${jw.slice(-3).map(j=>`<b>${esc(j.note||j.what||joyLabel(j))}</b>`).join('、')}`);
   const kidHtml=kid.length?`<ul class="rv-list">${kid.map(x=>`<li>${x}</li>`).join('')}</ul>`
     :`<p>${off?'上週':'這週'}還沒有用冷靜站。想練習的時候，隨時都可以來。</p>`;
   /* 七天一覽：心情＋冷靜次數 */
@@ -82,7 +82,7 @@ function reviewText(off){const w=weekData(off),p=weekData(off+1);const wd=['一'
   t+=`冷靜站 ${w.L.length} 次（${cmp(w.L.length,p.L.length,'次')}）`+(w.L.length?`，平均變小 ${w.avg.toFixed(1)} 級`:'')+(w.big?`，開始時 4–5 級 ${w.big} 次`:'')+'\n';
   if(w.topP&&w.topP[1]>=2)t+=`比較常發生在${w.topP[0]}\n`;
   t+=`平時練習 ${w.prac} 天、遊戲時間 ${w.play} 天、心情打卡 ${mdays} 天\n`;
-  const jw=joyWeek(w.a);if(jw.length)t+=`好時刻 ${jw.length} 個：`+jw.map(j=>`${JOY[j.k].short}${j.note||j.what?`（${j.note||j.what}）`:''}`).join('、')+'\n';
+  const jw=joyWeek(w.a);if(jw.length)t+=`好時刻 ${jw.length} 個：`+jw.map(j=>`${joyLabel(j)}${j.note||j.what?`（${j.note||j.what}）`:''}`).join('、')+'\n';
   t+='每天：'+w.days.map((d,i)=>`${wd[i]}${w.moods[d]?w.moods[d]:''}${w.perDay[i].length?`（冷靜站${w.perDay[i].length}次）`:''}`).join('、')+'\n\n';
   return t}
 function renderLog(){
