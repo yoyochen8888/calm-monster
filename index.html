@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>情緒怪獸冷靜站</title>
+<title>情緒怪獸家園</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#FDFBF7">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,15 +15,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Huninn&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/acnh.css">
+<link rel="stylesheet" href="css/clay.css">
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>情緒怪獸冷靜站<small>陪孩子把大大的情緒，慢慢變小</small></h1>
+    <h1>情緒怪獸家園<small>認識情緒，和怪獸一起慢慢長大</small></h1>
     <div class="hdr-btns">
       <button class="btn ghost small starbtn" id="openDex">⭐ <span id="hdrStars">0</span> 商店</button>
-      <button class="btn ghost small" id="openParent">大人看這裡</button>
+      <button class="btn ghost small" id="openParent">👀 給大人</button>
     </div>
   </header>
 
@@ -52,11 +52,11 @@
   <!-- 2 size -->
   <section class="step card" data-step="2">
     <p class="q" id="sizeQ">怪獸有多大？</p>
-    <p class="hint" id="sizeKey" style="margin:-4px 0 4px;font-size:.85rem">🟢 平靜　🟡 有點煩　🔴 快爆炸</p>
     <div id="sizeMsg"></div>
-    <p class="hint" id="sizeHint">點點看，你的怪獸現在有多大</p>
     <div class="stage" id="sizeStage"></div>
+    <p class="hint" id="sizeHint">點點看，你的怪獸現在有多大</p>
     <div class="thermo" id="thermo"></div>
+    <p class="hint" id="sizeKey" style="margin:6px 0 0;font-size:.85rem">🟢 平靜　🟡 有點煩　🔴 快爆炸</p>
     <div class="row">
       <button class="btn ghost" id="selfTry" style="display:none">我想自己試試</button>
       <button class="btn" id="toCalm" disabled>我們來讓它變小</button>
@@ -519,6 +519,7 @@
 <script src="js/data.js"></script>
 <script src="js/family.js"></script>
 <script src="js/art.js"></script>
+<script src="js/icons.js"></script>
 <script src="js/core.js"></script>
 <script src="js/calm-flow.js"></script>
 <script src="js/home.js"></script>

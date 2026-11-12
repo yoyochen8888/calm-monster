@@ -1,5 +1,5 @@
 :root{
-  --bg:#FFF8EE; --card:#FFFFFF; --ink:#3B2F2A; --soft:#8A7A70; --line:#EFE3D3;
+  --bg:#FFF8EE; --card:#FFFFFF; --ink:#3B2F2A; --soft:#75655B; --line:#EFE3D3;
   --accent:#2F8F83; --accent-2:#E9F5F2; --warn:#F26B5B;
   --r:22px;
 }
@@ -428,3 +428,14 @@ body.focus .wrap{padding-bottom:30px}
 .todaybox{margin-top:10px}
 .homelinks{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0 70px}
 .homelinks .chip{font-size:.92rem;padding:7px 13px}
+
+/* 視覺語言統一（v29）：給大人的東西都長一樣（👀＋淡藍），孩子的東西用暖色 */
+.gdetail,.adultbox,.adultcue{background:#EEF3FB;border-left:4px solid #9DB4E3;border-radius:14px}
+.gdetail>b:first-child::before{content:'👀 '}
+.cdot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;font-style:normal}
+
+.realchk{background:#fff;border-radius:12px;padding:10px 12px;margin:8px 0;font-size:.92rem;line-height:1.8}
+.realchk label{display:block;cursor:pointer}.realchk input{width:18px;height:18px;vertical-align:middle;margin-right:4px}
+.realchk small{display:block;color:var(--soft);line-height:1.5;margin-top:4px}
+.jbitem>svg{flex:0 0 46px;width:46px;height:46px}
+.jbitem>svg.mon{margin:0}.jbitem>span{flex:1}

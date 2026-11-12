@@ -39,6 +39,8 @@ function weekData(off){/* off=0 本週，1 上週，2 上上週 */
 function cmp(now,before,unit){/* 跟上週比的一句話，用中性的說法 */
   const d=Math.round((now-before)*10)/10;if(!d)return '跟上週一樣';
   return `比上週${d>0?'多':'少'} ${Math.abs(d)} ${unit}`}
+const REAL_CHK=[['say','孩子自己說出了情緒（例如「我好生氣」）','自己說出了情緒'],['self','孩子沒有用工具，也自己冷靜下來','不用工具也自己冷靜下來'],['ask','孩子主動請大人幫忙或抱抱','需要的時候會主動找人幫忙']];
+function bindReal(){$$('[data-real]').forEach(c=>c.onchange=()=>{store.realWk=store.realWk||{};const w=store.realWk[c.dataset.wk]=store.realWk[c.dataset.wk]||{};w[c.dataset.real]=c.checked;save();if(c.checked){tone(660,.15);toast('記下來了，這是真正的進步 ✨')}renderLog()})}
 function reviewHtml(off){
   const w=weekData(off),p=weekData(off+1);
   const who=(store.hero&&store.hero.name)||'你';const wd=['一','二','三','四','五','六','日'];
@@ -51,9 +53,10 @@ function reviewHtml(off){
     if(w.L.some(l=>l.co))kid.push('需要的時候會請大人幫忙，這也是勇氣');
     if(w.L.some(l=>l.repair))kid.push('做錯事會想辦法彌補');}
   if(w.W.length)kid.push(`做到了：${w.W.slice(0,4).map(x=>`<b>${x.text}</b>`).join('、')}`);
+  {const rw=(store.realWk||{})[dkey(new Date(w.a))]||{};REAL_CHK.forEach(([id,t,k])=>{if(rw[id])kid.push(`<b>${k}</b> ✨`)})}
   if(w.prac)kid.push(`平時練習了 <b>${w.prac}</b> 天`);
   const mdays=Object.keys(w.moods).length;if(mdays)kid.push(`說出自己的心情 <b>${mdays}</b> 天`);
-  const jw=joyWeek(w.a);if(jw.length)kid.push(`存了 <b>${jw.length}</b> 個好時刻：${jw.slice(-3).map(j=>`<b>${esc(j.note||j.what||JOY[j.k].short)}</b>`).join('、')}`);
+  const jw=joyWeek(w.a);if(jw.length)kid.push(`快樂寶盒存了 <b>${jw.length}</b> 個：${jw.slice(-3).map(j=>`<b>${esc(j.note||j.what||joyLabel(j))}</b>`).join('、')}`);
   const kidHtml=kid.length?`<ul class="rv-list">${kid.map(x=>`<li>${x}</li>`).join('')}</ul>`
     :`<p>${off?'上週':'這週'}還沒有用冷靜站。想練習的時候，隨時都可以來。</p>`;
   /* 七天一覽：心情＋冷靜次數 */
@@ -72,7 +75,10 @@ function reviewHtml(off){
   if(w.topPlan)ad.push(`孩子選的「下次可以」：${w.topPlan[0]}`);
   ad.push(`平時練習 ${w.prac} 天、遊戲時間 ${w.play} 天、心情打卡 ${mdays} 天`);
   {const jw=joyWeek(w.a),jp=joyWeek(p.a);if(jw.length||jp.length)ad.push(`存進快樂寶盒的好時刻 <b>${jw.length}</b> 個（上週 ${jp.length} 個）`)}
-  const adHtml=`<ul class="rv-list">${ad.map(x=>`<li>${x}</li>`).join('')}</ul>`+
+  /* 現實生活的指標（v31）：工具的目標是孩子越來越不需要它 */
+  const rk=dkey(new Date(w.a)),rw=(store.realWk||{})[rk]||{};
+  const realHtml=`<div class="realchk"><b>這週在生活裡，有沒有看到：</b>${REAL_CHK.map(([id,t])=>`<label><input type="checkbox" data-real="${id}" data-wk="${rk}" ${rw[id]?'checked':''}> ${t}</label>`).join('')}<small>不用工具也做到，才是真正的進步。勾了會出現在孩子的「做到的事」。</small></div>`;
+  const adHtml=realHtml+`<ul class="rv-list">${ad.map(x=>`<li>${x}</li>`).join('')}</ul>`+
     (w.L.length&&p.L.length&&w.L.length>p.L.length?'<p class="rv-key">次數變多不一定是變差，也可能是孩子更願意用冷靜站了；可以一起看看「平均變小」和「4–5 級」的次數。</p>':'');
   return `<div class="rv-kid"><b>🌟 ${who}${off?'上週':'這週'}做到的事</b>${kidHtml}</div>${strip}
     <div class="rv-adult"><b>📊 給大人看的重點</b>${adHtml}</div>`}
@@ -82,7 +88,7 @@ function reviewText(off){const w=weekData(off),p=weekData(off+1);const wd=['一'
   t+=`冷靜站 ${w.L.length} 次（${cmp(w.L.length,p.L.length,'次')}）`+(w.L.length?`，平均變小 ${w.avg.toFixed(1)} 級`:'')+(w.big?`，開始時 4–5 級 ${w.big} 次`:'')+'\n';
   if(w.topP&&w.topP[1]>=2)t+=`比較常發生在${w.topP[0]}\n`;
   t+=`平時練習 ${w.prac} 天、遊戲時間 ${w.play} 天、心情打卡 ${mdays} 天\n`;
-  const jw=joyWeek(w.a);if(jw.length)t+=`好時刻 ${jw.length} 個：`+jw.map(j=>`${JOY[j.k].short}${j.note||j.what?`（${j.note||j.what}）`:''}`).join('、')+'\n';
+  const jw=joyWeek(w.a);if(jw.length)t+=`好時刻 ${jw.length} 個：`+jw.map(j=>`${joyLabel(j)}${j.note||j.what?`（${j.note||j.what}）`:''}`).join('、')+'\n';
   t+='每天：'+w.days.map((d,i)=>`${wd[i]}${w.moods[d]?w.moods[d]:''}${w.perDay[i].length?`（冷靜站${w.perDay[i].length}次）`:''}`).join('、')+'\n\n';
   return t}
 function renderLog(){
@@ -91,7 +97,7 @@ function renderLog(){
   $$('[data-lr]').forEach(b=>b.onclick=()=>{S.logRange=b.dataset.lr;$('#logText').style.display='none';renderLog()});
   const L=logRange(),sm=summarize(L);
   const off={week:0,lastweek:1}[S.logRange];const rv=off===undefined?'':`<div class="review">${reviewHtml(off)}</div>`;
-  $('#logRv').innerHTML=rv;$('#logRv').style.display=rv?'':'none';
+  $('#logRv').innerHTML=rv;$('#logRv').style.display=rv?'':'none';bindReal();
   $('#logSum').style.display='';
   if(!sm){if(rv)$('#logSum').style.display='none';$('#logSum').innerHTML='這段時間還沒有冷靜站紀錄。用完冷靜站後會自動記錄。'+winsHtml();$('#logList').innerHTML='';return}
   const mx=Math.max(...Object.values(sm.byE));
@@ -104,7 +110,7 @@ function renderLog(){
     ${sm.best?`<div>效果最好的方法：<b>${sm.best[0]}</b>（平均變小 ${(sm.best[1][0]/sm.best[1][1]).toFixed(1)} 級）</div>`:''}
     ${sm.co?`<div>請大人陪伴：${sm.co} 次</div>`:''}${sm.rep?`<div>修復任務：${sm.rep} 次</div>`:''}`+winsHtml();
   $('#logList').innerHTML=L.map(l=>{const e=EMO[l.emo];return `<div class="logitem">
-    <div class="top"><b><span class="cname" style="background:${e.color};margin:0 6px 0 0">${e.cname}</span>${e.name}</b><span style="color:var(--soft)">${fmtT(l.t)}</span></div>
+    <div class="top"><b><i class="cdot" style="background:${e.color}"></i>${e.name}</b><span style="color:var(--soft)">${fmtT(l.t)}</span></div>
     <div>大小：${l.lv0} → ${l.lv2}${l.co?'（大人陪伴）':''}</div>
     ${l.cause?`<div>原因：${l.cause}${l.want?`；想要：${l.want}`:''}</div>`:''}
     ${l.acts.length?`<div>用了：${l.acts.join('、')}</div>`:''}
