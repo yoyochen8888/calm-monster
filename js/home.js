@@ -128,33 +128,38 @@ function renderHome(){
   $('#heroXp').style.width=pn.pct+'%';$('#homeStars').textContent=store.stars||0;
   $('#quietScene').innerHTML='';$('#scene').innerHTML=scene();bindScene();
   $('#decorBar').style.display=S.decor?'':'none';
-  $('#hWaterSub').textContent=S.decor?'布置中…':'拖拉家具換位置';
+  $('#hWater').textContent=S.decor?'🪄 布置中…':'🪄 布置';
   renderChores();renderReviewCard();renderWishCard();
-  $('#hGamesSub').textContent=store.gameDay.routine===today()?'今天玩過了，再玩也可以':'小遊戲和親子遊戲';
   const vb=$('#voucherBox');vb.innerHTML='';
   store.vouchers.forEach(v=>{const d=document.createElement('div');d.className='task';d.style.background='#EAF6F3';
     d.innerHTML=`<span>🎟 兌換券：<b>${v.name}</b></span>`;
     d.appendChild(holdBtn('大人按住確認已兌現',2000,()=>{store.vouchers=store.vouchers.filter(x=>x.id!==v.id);save();chime();toast(`兌現了：${v.name}！`);renderHome()}));
     vb.appendChild(d)});
-  const wk=weekInfo();$('#hWeekSub').textContent=`本週完成 ${wk.doneCells} 格`;
+
   const rb=$('#repairBox');rb.innerHTML='';
   store.repairs.forEach(r=>{const d=document.createElement('div');d.className='task';
     d.innerHTML=`<span>🔧 修復任務：<b>${r.text}</b></span>`;
     d.appendChild(holdBtn('大人按住確認完成',2000,()=>{store.repairs=store.repairs.filter(x=>x.id!==r.id);save();gain('負起責任，完成修復',15);renderHome()}));
     rb.appendChild(d)});
+  /* 心情打卡（v28）：每天第一次打開時的問候，打卡後就收起來 */
+  $('#moodCard').style.display=(store.moodDay!==today()||S.moodShow)&&!S.decor?'':'none';if(!S.moodShow)$('#moodMsg').innerHTML='';
+  renderToday();
   const md=store.moodDay===today()?store.mood:null;
   $('#moods').innerHTML=MOODS.map(([f,t])=>`<button class="${md===t?'sel':''}" data-mood="${t}">${f}<span>${t}</span></button>`).join('');
   $$('[data-mood]').forEach(b=>b.onclick=()=>{const m=MOODS.find(x=>x[1]===b.dataset.mood);
     if(store.moodDay!==today()){store.moodDay=today();store.mood=m[1];store.moodLog.push({d:today(),m:m[1]});store.moodLog=store.moodLog.slice(-90);save();gain('心情打卡',3)}else{store.mood=m[1];save()}
     renderHome();
-    $('#moodMsg').innerHTML=m[2]?`太好了！要不要把這個好心情存進快樂寶盒？<br><button class="btn small" id="moodJoy" style="margin-top:8px">✨ 存起來</button>`:`謝謝你說出來。要不要去冷靜站，讓${m[1]}的怪獸變小？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`;
+    S.moodShow=true;$('#moodCard').style.display='';
+    $('#moodMsg').innerHTML=(m[2]?`太好了！要不要把這個好心情存進快樂寶盒？<br><button class="btn small" id="moodJoy" style="margin-top:8px">✨ 存起來</button>`:`謝謝你說出來。要不要去冷靜站，讓${m[1]}的怪獸變小？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`)+` <button class="chip" id="moodOk" style="margin-top:8px">好</button>`;
+    $('#moodOk').onclick=()=>{S.moodShow=false;$('#moodCard').style.display='none'};
     const g=$('#moodGo');if(g)g.onclick=startFlow;const mj=$('#moodJoy');if(mj)mj.onclick=()=>startJoy(m[1]==='平靜'?'safe':'happy');});
 }
 $('#hStart').onclick=startFlow;
 $('#hJoy').onclick=()=>startJoy();
 $('#hQuiet').onclick=()=>go(27);
 function startPractice(emo,act){resetFlow();store.day.n--;save();S.practice=true;S.emo=emo||'scared';S.act=act||'breathe';go(3)}
-$('#hGames').onclick=()=>go(17);
+/* 家園減法（v28）：今天的小事收進「今天」，需要時再打開 */
+$('#hToday').onclick=()=>{S.todayOpen=!S.todayOpen;tone(520,.08);renderToday()};
 $('#hWater').onclick=()=>{const has=SHOP.some(x=>x.cat==='home'&&SPOTS[x.id]&&store.owned.includes(x.id));
   if(!has){toast('先去商店買家具，才能布置喔');S.shopCat='home';go(11);return}
   if(isNight()){toast('晚上了，大家都在睡覺，明天再布置吧 🌙');return}
@@ -289,3 +294,10 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
   $$('[data-mdact]').forEach(b=>b.onclick=()=>startPractice(k,b.dataset.mdact));
 }
 
+
+/* 「今天」抽屜（v28）：一起回顧、願望罐、家園小工作、修復任務、兌換券 */
+function renderToday(){const box=$('#todayBox');if(!box)return;
+  const n=($('#reviewBox').innerHTML?1:0)+$$('#chores .chore:not(.done)').length+$$('#repairBox .task').length+$$('#voucherBox .task').length+($('#wishBox .wishcard.full')?1:0);
+  $('#hTodaySub').textContent=S.todayOpen?'收起來':n?`${n} 件小事`:'都完成了 🌞';
+  $('#hToday').classList.toggle('has',!!n&&!S.todayOpen);$('#hToday').classList.toggle('on',!!S.todayOpen);
+  box.style.display=S.todayOpen&&!S.decor?'':'none'}
