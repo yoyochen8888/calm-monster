@@ -104,7 +104,7 @@ function renderLog(){
     ${sm.best?`<div>效果最好的方法：<b>${sm.best[0]}</b>（平均變小 ${(sm.best[1][0]/sm.best[1][1]).toFixed(1)} 級）</div>`:''}
     ${sm.co?`<div>請大人陪伴：${sm.co} 次</div>`:''}${sm.rep?`<div>修復任務：${sm.rep} 次</div>`:''}`+winsHtml();
   $('#logList').innerHTML=L.map(l=>{const e=EMO[l.emo];return `<div class="logitem">
-    <div class="top"><b><span class="cname" style="background:${e.color};margin:0 6px 0 0">${e.cname}</span>${e.name}</b><span style="color:var(--soft)">${fmtT(l.t)}</span></div>
+    <div class="top"><b><i class="cdot" style="background:${e.color}"></i>${e.name}</b><span style="color:var(--soft)">${fmtT(l.t)}</span></div>
     <div>大小：${l.lv0} → ${l.lv2}${l.co?'（大人陪伴）':''}</div>
     ${l.cause?`<div>原因：${l.cause}${l.want?`；想要：${l.want}`:''}</div>`:''}
     ${l.acts.length?`<div>用了：${l.acts.join('、')}</div>`:''}

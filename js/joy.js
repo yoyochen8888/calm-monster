@@ -120,7 +120,7 @@ $('#toJoy').onclick=()=>{if(store.day&&store.day.n>0)store.day.n--;save();startJ
 /* ---------- 圖鑑裡的情緒夥伴 ---------- */
 function renderJoyDex(){const box=$('#jdex');if(!box)return;
   box.innerHTML=visibleJoy().map(k=>{const e=JOY[k],xp=jxpOf(k),l=lvOf(xp),nx=nextOf(xp);
-    return `<button class="pick" data-jd="${k}">${friend(k,80)}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span>
+    return `<button class="pick" data-jd="${k}">${friend(k,80)}<b>${e.name}</b>
       <span class="lvtag">Lv.${l} ${TITLES[l-1]}</span><div class="xpbar"><i style="width:${nx.pct}%"></i></div><span class="lvtag">${e.feel}</span></button>`}).join('');
   $$('[data-jd]').forEach(b=>b.onclick=()=>startJoy(b.dataset.jd));
   $('#jbOpen').querySelector('span').textContent=`存起來的好時刻：${joyLog().length} 個`;

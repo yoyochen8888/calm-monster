@@ -1,5 +1,5 @@
 :root{
-  --bg:#FFF8EE; --card:#FFFFFF; --ink:#3B2F2A; --soft:#8A7A70; --line:#EFE3D3;
+  --bg:#FFF8EE; --card:#FFFFFF; --ink:#3B2F2A; --soft:#75655B; --line:#EFE3D3;
   --accent:#2F8F83; --accent-2:#E9F5F2; --warn:#F26B5B;
   --r:22px;
 }
@@ -428,3 +428,8 @@ body.focus .wrap{padding-bottom:30px}
 .todaybox{margin-top:10px}
 .homelinks{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:16px 0 70px}
 .homelinks .chip{font-size:.92rem;padding:7px 13px}
+
+/* 視覺語言統一（v29）：給大人的東西都長一樣（👀＋淡藍），孩子的東西用暖色 */
+.gdetail,.adultbox,.adultcue{background:#EEF3FB;border-left:4px solid #9DB4E3;border-radius:14px}
+.gdetail>b:first-child::before{content:'👀 '}
+.cdot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;font-style:normal}

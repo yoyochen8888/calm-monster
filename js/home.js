@@ -2,7 +2,7 @@
 /* ---------- monster dex ---------- */
 function renderDex(){
   $('#dex').innerHTML=visibleEmo().map(k=>[k,EMO[k]]).map(([k,e])=>{const xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);
-    return `<button class="pick" data-md="${k}">${monster(k,80)}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span>
+    return `<button class="pick" data-md="${k}">${monster(k,80)}<b>${e.name}</b>
       <span class="lvtag">Lv.${l} ${TITLES[l-1]}</span><div class="xpbar"><i style="width:${nx.pct}%"></i></div><span class="lvtag">點我認識牠 ›</span></button>`}).join('');
   $$('[data-md]').forEach(b=>b.onclick=()=>{S.mdK=b.dataset.md;go(22)});
   const hid=Object.keys(EMO).length-visibleEmo().length;
@@ -268,7 +268,7 @@ Object.assign(INTRO,{
 });
 function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);const [when,body,why,how]=INTRO[k];
   $('#mdMon').innerHTML=monster(k,140,'wobble');
-  $('#mdName').innerHTML=`<span class="cname" style="background:${e.color};font-size:.9rem;vertical-align:middle">${e.cname}</span> ${e.name}`;
+  $('#mdName').innerHTML=`<i class="cdot" style="background:${e.color}"></i>${e.name}`;
   $('#mdLv').textContent=`Lv.${l} ${TITLES[l-1]}・${STAGES[stageOf(l)-1].n}`+(nx.need?`・再 ${nx.need} 經驗升級`:'');
   const cur=stageOf(l);
   const L=store.log.filter(x=>x.emo===k);const ae={};L.forEach(x=>x.acts.forEach(a=>{ae[a]=ae[a]||[0,0];ae[a][0]+=x.lv0-x.lv2;ae[a][1]++}));
