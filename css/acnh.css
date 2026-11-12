@@ -6,7 +6,7 @@
 :root{
   /* 色彩：奶油米底、深咖啡字，不用純黑純白 */
   --bg:#FDFBF7; --card:#FFFCF4; --paper:#FFFDF8;
-  --ink:#5C4A3D; --soft:#9A8574; --line:#EEE3CF; --line-2:#E3D3B8;
+  --ink:#5C4A3D; --soft:#7D6A5B; --line:#EEE3CF; --line-2:#E3D3B8;
   /* 低飽和按鈕色＋各自的「厚度」顏色（陰影＝同色系深一階） */
   --mint:#A8DCC5;   --mint-d:#7DBFA3;   --mint-l:#E6F5EE;
   --butter:#FBE3A0; --butter-d:#E3C266; --butter-l:#FFF6DA;
@@ -60,11 +60,11 @@ h1 small{color:var(--soft)}
   transform:translateY(0);
   transition:transform .18s var(--boing),box-shadow .18s var(--boing),filter .2s;
 }
-.btn:hover{transform:translateY(-2px);box-shadow:0 calc(var(--thick) + 2px) 0 var(--mint-d);filter:brightness(1.03)}
+@media (hover:hover) and (pointer:fine){.btn:hover{transform:translateY(-2px);box-shadow:0 calc(var(--thick) + 2px) 0 var(--mint-d);filter:brightness(1.03)}}
 .btn:active{transform:translateY(var(--thick));box-shadow:0 0 0 var(--mint-d);transition-duration:.06s}
 .btn.small{padding:10px 18px;font-size:.95rem;--thick:4px}
 .btn.ghost{background:var(--paper);color:var(--ink);border:0;box-shadow:0 var(--thick) 0 var(--line-2)}
-.btn.ghost:hover{box-shadow:0 calc(var(--thick) + 2px) 0 var(--line-2)}
+@media (hover:hover) and (pointer:fine){.btn.ghost:hover{box-shadow:0 calc(var(--thick) + 2px) 0 var(--line-2)}}
 .btn.ghost:active{box-shadow:0 0 0 var(--line-2)}
 .starbtn{background:var(--butter)!important;box-shadow:0 var(--thick) 0 var(--butter-d)!important}
 .starbtn:active{box-shadow:0 0 0 var(--butter-d)!important}
@@ -79,8 +79,8 @@ h1 small{color:var(--soft)}
   box-shadow:0 var(--thick) 0 var(--line-2);
   transition:transform .35s var(--boing),box-shadow .35s var(--boing),border-color .2s,background .2s;
 }
-.pick:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 calc(var(--thick) + 6px) 0 var(--line-2),0 18px 22px rgba(150,115,75,.10)}
-.pick:nth-child(even):hover{transform:translateY(-6px) rotate(1deg)}
+@media (hover:hover) and (pointer:fine){.pick:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 calc(var(--thick) + 6px) 0 var(--line-2),0 18px 22px rgba(150,115,75,.10)}}
+@media (hover:hover) and (pointer:fine){.pick:nth-child(even):hover{transform:translateY(-6px) rotate(1deg)}}
 .pick:active{transform:translateY(var(--thick)) scale(.98);box-shadow:0 0 0 var(--line-2);transition-duration:.08s}
 .pick.sel{border-color:var(--mint-d);background:var(--mint-l);box-shadow:0 var(--thick) 0 var(--mint-d)}
 .pick b{font-size:1.18rem;color:var(--ink)}
@@ -102,7 +102,7 @@ h1 small{color:var(--soft)}
 }
 /* 卡片裡的怪獸：滑過時跳一下 */
 #dex .pick svg,#jdex .pick svg{transition:transform .45s var(--squish);transform-origin:50% 100%}
-#dex .pick:hover svg,#jdex .pick:hover svg{transform:translateY(-4px) scale(1.06)}
+@media (hover:hover) and (pointer:fine){#dex .pick:hover svg,#jdex .pick:hover svg{transform:translateY(-4px) scale(1.06)}}
 
 /* 名牌像木頭小標籤 */
 .cname{border-radius:999px;padding:3px 12px;font-weight:700;font-size:.8rem;color:var(--paper);
@@ -121,9 +121,9 @@ h1 small{color:var(--soft)}
 .hm-calm{background:var(--coral-l);box-shadow:0 var(--thick) 0 var(--coral)}
 .hm-joy{background:var(--butter-l);box-shadow:0 var(--thick) 0 var(--butter)}
 .hm-today{background:var(--mint-l);box-shadow:0 var(--thick) 0 var(--mint)}
-.hm:hover,.wx:hover{transform:translateY(-4px)}
+@media (hover:hover) and (pointer:fine){.hm:hover,.wx:hover{transform:translateY(-4px)}}
 .hm i,.wx i{transition:transform .45s var(--squish)}
-.hm:hover i,.wx:hover i{transform:scale(1.15) rotate(-6deg)}
+@media (hover:hover) and (pointer:fine){.hm:hover i,.wx:hover i{transform:scale(1.15) rotate(-6deg)}}
 .hm-calm:active{transform:translateY(var(--thick));box-shadow:0 0 0 var(--coral)}
 .hm-joy:active{transform:translateY(var(--thick));box-shadow:0 0 0 var(--butter)}
 .hm-today:active{transform:translateY(var(--thick));box-shadow:0 0 0 var(--mint)}
@@ -155,13 +155,13 @@ h1 small{color:var(--soft)}
   transition:transform .3s var(--boing),box-shadow .3s var(--boing),background .2s,border-color .2s;
 }
 .lv,.need,.moods button{border-radius:24px}
-.lv:hover,.need:hover,.moods button:hover{transform:translateY(-3px)}
+@media (hover:hover) and (pointer:fine){.lv:hover,.need:hover,.moods button:hover{transform:translateY(-3px)}}
 .lv:active,.need:active,.moods button:active,.tap:active{transform:translateY(5px);box-shadow:0 0 0 var(--line-2)}
 .lv.sel{border-color:var(--mc,var(--mint-d));box-shadow:0 5px 0 var(--mc,var(--mint-d));animation:acJelly .5s var(--boing)}
 .need.sel,.moods button.sel{border-color:var(--mint-d);background:var(--mint-l);box-shadow:0 5px 0 var(--mint-d);animation:acJelly .5s var(--boing)}
 .tap{border-style:solid;border-color:var(--line)}
 .tap.done{background:var(--mint);border-color:var(--mint-d);color:var(--ink);box-shadow:0 5px 0 var(--mint-d);animation:acJelly .5s var(--boing)}
-.cell{border-radius:12px;box-shadow:0 3px 0 var(--line-2)}
+.cell{border-radius:12px;border:2px solid var(--line-2);box-shadow:0 3px 0 var(--line-2)}
 .cell.done{background:var(--mint);border-color:var(--mint-d);color:var(--ink);box-shadow:0 3px 0 var(--mint-d)}
 .cell.today{border-color:var(--butter-d)}
 @keyframes acJelly{
@@ -171,7 +171,7 @@ h1 small{color:var(--soft)}
 /* 小標籤按鈕 */
 .chip{background:var(--paper);border:3px solid transparent;border-radius:999px;font-weight:500;
   box-shadow:0 4px 0 var(--line-2);transition:transform .25s var(--boing),box-shadow .25s var(--boing)}
-.chip:hover{transform:translateY(-2px)}
+@media (hover:hover) and (pointer:fine){.chip:hover{transform:translateY(-2px)}}
 .chip:active{transform:translateY(4px);box-shadow:0 0 0 var(--line-2)}
 .chip.sel{background:var(--mint-l);border-color:var(--mint-d);box-shadow:0 4px 0 var(--mint-d)}
 .speak{border:0;background:var(--paper);box-shadow:0 3px 0 var(--line-2);color:var(--soft)}
@@ -205,7 +205,7 @@ h1 small{color:var(--soft)}
 /* ---------- 對話框／抽屜／提示泡泡 ---------- */
 .drawer-bg{background:rgba(92,74,61,.38)}
 .drawer{background:var(--card);border-radius:34px 34px 0 0;color:var(--ink);
-  transition:transform .45s var(--boing)}
+  transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 .drawer::before{content:'';display:block;width:56px;height:7px;border-radius:999px;background:var(--line-2);margin:-6px auto 14px}
 .drawer h3,.adult h4,.intro h4{color:#4E9479}
 .say{background:var(--mint-l);border-radius:18px}
