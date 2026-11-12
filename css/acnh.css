@@ -1,0 +1,245 @@
+/* =========================================================
+   動森風格外觀（v29）
+   放在 style.css 後面載入，只「蓋掉」外觀，不動任何功能。
+   想退回舊樣子：把 index.html 裡 acnh.css 那一行拿掉就好。
+   ========================================================= */
+:root{
+  /* 色彩：奶油米底、深咖啡字，不用純黑純白 */
+  --bg:#FDFBF7; --card:#FFFCF4; --paper:#FFFDF8;
+  --ink:#5C4A3D; --soft:#9A8574; --line:#EEE3CF; --line-2:#E3D3B8;
+  /* 低飽和按鈕色＋各自的「厚度」顏色（陰影＝同色系深一階） */
+  --mint:#A8DCC5;   --mint-d:#7DBFA3;   --mint-l:#E6F5EE;
+  --butter:#FBE3A0; --butter-d:#E3C266; --butter-l:#FFF6DA;
+  --coral:#F8B9AE;  --coral-d:#E29486;  --coral-l:#FFEDE8;
+  --sky:#B9DDF2;    --sky-d:#8DBFDD;    --sky-l:#EAF5FC;
+  --lilac:#D9CCEF;  --lilac-d:#B6A3D9;
+  --wood:#E8D2AE;   --wood-d:#C9AD82;
+  --accent:#5FAF8F; --accent-2:var(--mint-l); --warn:#E88A7C;
+  --r:26px;
+  /* 彈跳曲線：超過 1 的那一段就是「Q 彈」的來源 */
+  --boing:cubic-bezier(.34,1.56,.64,1);
+  --squish:cubic-bezier(.5,1.8,.5,.8);
+  --thick:6px;
+}
+
+/* ---------- 底色與字 ---------- */
+html,body{background-color:var(--bg);color:var(--ink)}
+body{
+  /* 很淡的圓點地墊，像動森的 NookPhone 背景 */
+  background-image:radial-gradient(rgba(214,190,150,.20) 2.2px,transparent 2.6px);
+  background-size:26px 26px;
+  letter-spacing:.02em;
+}
+h1{color:var(--ink);font-size:1.6rem}
+h1 small{color:var(--soft)}
+.q{color:var(--ink);font-size:1.5rem;font-weight:700}
+.hint,.count,.note{color:var(--soft)}
+
+/* ---------- 卡片：厚厚的、軟軟的、會彈出來 ---------- */
+.card{
+  background:var(--card);
+  border:0;border-radius:32px;
+  padding:28px 22px;
+  box-shadow:0 var(--thick) 0 var(--line-2),0 14px 24px rgba(150,115,75,.08);
+}
+.step{animation:acPop .55s var(--boing)}
+@keyframes acPop{
+  0%{opacity:0;transform:translateY(14px) scale(.96)}
+  60%{opacity:1}
+  100%{opacity:1;transform:none}
+}
+
+/* ---------- 按鈕：藥丸形＋硬邊厚度陰影＋按下去會沉 ---------- */
+.btn{
+  background:var(--mint);
+  color:var(--ink);
+  font-weight:700;
+  border:0;border-radius:999px;
+  padding:14px 26px;
+  box-shadow:0 var(--thick) 0 var(--mint-d);
+  transform:translateY(0);
+  transition:transform .18s var(--boing),box-shadow .18s var(--boing),filter .2s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 calc(var(--thick) + 2px) 0 var(--mint-d);filter:brightness(1.03)}
+.btn:active{transform:translateY(var(--thick));box-shadow:0 0 0 var(--mint-d);transition-duration:.06s}
+.btn.small{padding:10px 18px;font-size:.95rem;--thick:4px}
+.btn.ghost{background:var(--paper);color:var(--ink);border:0;box-shadow:0 var(--thick) 0 var(--line-2)}
+.btn.ghost:hover{box-shadow:0 calc(var(--thick) + 2px) 0 var(--line-2)}
+.btn.ghost:active{box-shadow:0 0 0 var(--line-2)}
+.starbtn{background:var(--butter)!important;box-shadow:0 var(--thick) 0 var(--butter-d)!important}
+.starbtn:active{box-shadow:0 0 0 var(--butter-d)!important}
+.btn[disabled]{opacity:.45;filter:saturate(.4)}
+
+/* ---------- 怪獸圖鑑卡片 ---------- */
+.pick{
+  background:var(--paper);
+  border:3px solid transparent;
+  border-radius:28px;
+  padding:16px 10px 14px;
+  box-shadow:0 var(--thick) 0 var(--line-2);
+  transition:transform .35s var(--boing),box-shadow .35s var(--boing),border-color .2s,background .2s;
+}
+.pick:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 calc(var(--thick) + 6px) 0 var(--line-2),0 18px 22px rgba(150,115,75,.10)}
+.pick:nth-child(even):hover{transform:translateY(-6px) rotate(1deg)}
+.pick:active{transform:translateY(var(--thick)) scale(.98);box-shadow:0 0 0 var(--line-2);transition-duration:.08s}
+.pick.sel{border-color:var(--mint-d);background:var(--mint-l);box-shadow:0 var(--thick) 0 var(--mint-d)}
+.pick b{font-size:1.18rem;color:var(--ink)}
+.pick span{color:var(--soft)}
+
+/* 圖鑑卡一張一張「啵」出來 */
+#dex .pick,#jdex .pick,#heroes .pick{animation:acCardIn .6s var(--boing) backwards}
+#dex .pick:nth-child(1),#jdex .pick:nth-child(1){animation-delay:.03s}
+#dex .pick:nth-child(2),#jdex .pick:nth-child(2){animation-delay:.09s}
+#dex .pick:nth-child(3),#jdex .pick:nth-child(3){animation-delay:.15s}
+#dex .pick:nth-child(4),#jdex .pick:nth-child(4){animation-delay:.21s}
+#dex .pick:nth-child(5),#jdex .pick:nth-child(5){animation-delay:.27s}
+#dex .pick:nth-child(6),#jdex .pick:nth-child(6){animation-delay:.33s}
+#dex .pick:nth-child(n+7),#jdex .pick:nth-child(n+7){animation-delay:.39s}
+@keyframes acCardIn{
+  0%{opacity:0;transform:translateY(24px) scale(.82)}
+  70%{opacity:1}
+  100%{opacity:1;transform:none}
+}
+/* 卡片裡的怪獸：滑過時跳一下 */
+#dex .pick svg,#jdex .pick svg{transition:transform .45s var(--squish);transform-origin:50% 100%}
+#dex .pick:hover svg,#jdex .pick:hover svg{transform:translateY(-4px) scale(1.06)}
+
+/* 名牌像木頭小標籤 */
+.cname{border-radius:999px;padding:3px 12px;font-weight:700;font-size:.8rem;color:var(--paper);
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.10)}
+.lvtag{color:var(--soft)}
+/* 經驗值條：圓胖、有凹槽感 */
+.xpbar{height:14px;border-radius:999px;background:#F2E8D6;box-shadow:inset 0 2px 0 rgba(150,115,75,.12);margin:8px 10px 2px}
+.xpbar i{background:var(--butter-d);border-radius:999px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.08),inset 0 3px 0 rgba(255,255,255,.4)}
+
+/* ---------- 冷靜相關的大按鈕 ---------- */
+/* 家園首頁三顆主按鈕 */
+.hm,.wx{
+  border-radius:30px;
+  transition:transform .3s var(--boing),box-shadow .3s var(--boing);
+}
+.hm-calm{background:var(--coral-l);box-shadow:0 var(--thick) 0 var(--coral)}
+.hm-joy{background:var(--butter-l);box-shadow:0 var(--thick) 0 var(--butter)}
+.hm-today{background:var(--mint-l);box-shadow:0 var(--thick) 0 var(--mint)}
+.hm:hover,.wx:hover{transform:translateY(-4px)}
+.hm i,.wx i{transition:transform .45s var(--squish)}
+.hm:hover i,.wx:hover i{transform:scale(1.15) rotate(-6deg)}
+.hm-calm:active{transform:translateY(var(--thick));box-shadow:0 0 0 var(--coral)}
+.hm-joy:active{transform:translateY(var(--thick));box-shadow:0 0 0 var(--butter)}
+.hm-today:active{transform:translateY(var(--thick));box-shadow:0 0 0 var(--mint)}
+.hm-today.on{outline:3px solid var(--mint-d);outline-offset:2px}
+.hm-today.has::after{background:var(--coral-d);box-shadow:0 2px 0 rgba(0,0,0,.1)}
+
+/* 冷靜流程的「天氣」四選一 */
+.wx-hot{background:var(--coral-l);box-shadow:0 var(--thick) 0 var(--coral)}
+.wx-comfort{background:var(--sky-l);box-shadow:0 var(--thick) 0 var(--sky)}
+.wx-safe{background:var(--mint-l);box-shadow:0 var(--thick) 0 var(--mint)}
+.wx-repair{background:#F4EEFA;box-shadow:0 var(--thick) 0 var(--lilac)}
+.wx:active{transform:translateY(var(--thick));box-shadow:none}
+
+/* 馬上冷靜（SOS）：珊瑚色大藥丸，輕輕呼吸 */
+.sos{
+  background:var(--coral);color:var(--ink);font-weight:700;
+  border-radius:999px;padding:16px 24px;
+  box-shadow:0 var(--thick) 0 var(--coral-d),0 12px 20px rgba(226,148,134,.30);
+  transition:transform .2s var(--boing),box-shadow .2s var(--boing);
+  animation:acBreathe 4s ease-in-out infinite;
+}
+.sos:active{animation:none;transform:translateY(var(--thick));box-shadow:0 0 0 var(--coral-d)}
+@keyframes acBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+/* 情緒大小、需要什麼、心情：都改成一顆顆厚實的小積木 */
+.lv,.need,.moods button,.tap,.cell{
+  background:var(--paper);border:3px solid transparent;
+  box-shadow:0 5px 0 var(--line-2);
+  transition:transform .3s var(--boing),box-shadow .3s var(--boing),background .2s,border-color .2s;
+}
+.lv,.need,.moods button{border-radius:24px}
+.lv:hover,.need:hover,.moods button:hover{transform:translateY(-3px)}
+.lv:active,.need:active,.moods button:active,.tap:active{transform:translateY(5px);box-shadow:0 0 0 var(--line-2)}
+.lv.sel{border-color:var(--mc,var(--mint-d));box-shadow:0 5px 0 var(--mc,var(--mint-d));animation:acJelly .5s var(--boing)}
+.need.sel,.moods button.sel{border-color:var(--mint-d);background:var(--mint-l);box-shadow:0 5px 0 var(--mint-d);animation:acJelly .5s var(--boing)}
+.tap{border-style:solid;border-color:var(--line)}
+.tap.done{background:var(--mint);border-color:var(--mint-d);color:var(--ink);box-shadow:0 5px 0 var(--mint-d);animation:acJelly .5s var(--boing)}
+.cell{border-radius:12px;box-shadow:0 3px 0 var(--line-2)}
+.cell.done{background:var(--mint);border-color:var(--mint-d);color:var(--ink);box-shadow:0 3px 0 var(--mint-d)}
+.cell.today{border-color:var(--butter-d)}
+@keyframes acJelly{
+  0%{transform:scale(1)}30%{transform:scale(1.08,.92)}50%{transform:scale(.95,1.05)}70%{transform:scale(1.03,.98)}100%{transform:scale(1)}
+}
+
+/* 小標籤按鈕 */
+.chip{background:var(--paper);border:3px solid transparent;border-radius:999px;font-weight:500;
+  box-shadow:0 4px 0 var(--line-2);transition:transform .25s var(--boing),box-shadow .25s var(--boing)}
+.chip:hover{transform:translateY(-2px)}
+.chip:active{transform:translateY(4px);box-shadow:0 0 0 var(--line-2)}
+.chip.sel{background:var(--mint-l);border-color:var(--mint-d);box-shadow:0 4px 0 var(--mint-d)}
+.speak{border:0;background:var(--paper);box-shadow:0 3px 0 var(--line-2);color:var(--soft)}
+.speak:active{transform:translateY(3px);box-shadow:none}
+
+/* 大拍手鈕、捏檸檬 */
+.bigtap{background:var(--butter);color:var(--ink);font-weight:700;box-shadow:0 8px 0 var(--butter-d);transition:transform .15s var(--boing),box-shadow .15s var(--boing)}
+.bigtap:active{transform:translateY(8px);box-shadow:0 0 0 var(--butter-d)}
+.lemon{box-shadow:0 8px 0 var(--butter-d);color:var(--ink)}
+.lemon.hold{transform:translateY(6px) scale(.92);box-shadow:0 2px 0 var(--butter-d)}
+.hold{background:var(--ink);color:var(--paper)}
+.hold i{background:var(--butter)}
+
+/* 呼吸球、紅綠燈：柔一點的顏色 */
+.ball{box-shadow:inset 0 -10px 0 rgba(0,0,0,.08),0 10px 0 rgba(150,115,75,.12)}
+.tlight{background:var(--ink);border-radius:32px;box-shadow:0 6px 0 #45362C}
+
+/* ---------- 底部導覽列：像 NookPhone 的圓角 Dock ---------- */
+.tabbar{
+  left:12px;right:12px;bottom:10px;
+  background:var(--paper);
+  border:0;border-radius:30px;
+  padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  box-shadow:0 6px 0 var(--line-2),0 12px 26px rgba(150,115,75,.16);
+}
+.tabbar button{border-radius:22px;color:var(--soft);transition:transform .3s var(--boing),background .2s}
+.tabbar button:active{transform:scale(.9)}
+.tabbar button.on{color:var(--ink);background:var(--butter);box-shadow:0 4px 0 var(--butter-d);transform:translateY(-3px)}
+.tabbar button span{font-weight:700}
+
+/* ---------- 對話框／抽屜／提示泡泡 ---------- */
+.drawer-bg{background:rgba(92,74,61,.38)}
+.drawer{background:var(--card);border-radius:34px 34px 0 0;color:var(--ink);
+  transition:transform .45s var(--boing)}
+.drawer::before{content:'';display:block;width:56px;height:7px;border-radius:999px;background:var(--line-2);margin:-6px auto 14px}
+.drawer h3,.adult h4,.intro h4{color:#4E9479}
+.say{background:var(--mint-l);border-radius:18px}
+.avoid{background:var(--coral-l);border-radius:18px}
+.toast{background:var(--paper);color:var(--ink);font-weight:700;border-radius:24px;
+  box-shadow:0 5px 0 var(--line-2),0 10px 20px rgba(150,115,75,.18);
+  animation:acToastIn .5s var(--boing),tout .4s ease 2.6s forwards}
+.toast.big{background:var(--butter);color:var(--ink);box-shadow:0 5px 0 var(--butter-d),0 10px 20px rgba(150,115,75,.18)}
+@keyframes acToastIn{from{opacity:0;transform:translateY(-16px) scale(.7)}}
+.restov,.introov,.wishov{background:rgba(92,74,61,.42)}
+.introcard,.wishask{background:var(--card);border-radius:32px;box-shadow:0 6px 0 var(--line-2)}
+.bubble,.monmsg{background:var(--paper);border-radius:22px}
+
+/* ---------- 其他用到純白的地方，全部換成暖白 ---------- */
+.jbitem,.logitem,.review,.need,.namein,.lines div,.mcard.up,.gdetail{background:var(--paper)}
+.jbitem,.logitem,.review{border:0;box-shadow:0 4px 0 var(--line-2);border-radius:22px}
+.jbitem{border-left:8px solid var(--jc)}
+.namein,.cpn input,.logitem textarea{border:3px solid var(--line);border-radius:18px;color:var(--ink);background:var(--paper)}
+.namein:focus,.cpn input:focus,.logitem textarea:focus{outline:none;border-color:var(--mint-d)}
+.dots i{background:var(--line-2);transition:width .4s var(--boing)}
+.dots i.on{background:var(--mint-d)}
+.pbar{height:10px;border-radius:999px;background:var(--line)}
+.pbar i{background:var(--mint-d);border-radius:999px}
+.rstage span.on{background:var(--mint);color:var(--ink)}
+.rstage span.done{background:var(--mint-l);color:#4E9479}
+.check li.done .bx{background:var(--mint-d);border-color:var(--mint-d)}
+.levelup,.badge{animation-timing-function:var(--boing)}
+.testtag{background:var(--lilac-d);color:var(--paper)}
+
+/* ---------- 動作要溫和：有開「減少動態」就不彈 ---------- */
+@media (prefers-reduced-motion:reduce){
+  .step,#dex .pick,#jdex .pick,#heroes .pick,.sos,.toast,.lv.sel,.need.sel,.moods button.sel,.tap.done{animation:none!important}
+  .btn,.pick,.hm,.wx,.chip,.lv,.need,.tabbar button{transition-duration:.01s!important}
+}
+
+/* 名牌是小藥丸，不要撐滿整張卡 */
+.pick .cname{display:inline-block;width:auto;color:#FFFDF8;margin-top:6px;text-shadow:0 1px 0 rgba(92,74,61,.25)}
