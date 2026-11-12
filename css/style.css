@@ -371,3 +371,12 @@ body.quietmode header,body.quietmode .tabbar,body.quietmode #navrow,body.quietmo
 .chip{box-shadow:0 2px 0 var(--line)}.chip.sel{box-shadow:0 2px 0 #BFE3DC}
 .tabbar{border-top:0;border-radius:22px 22px 0 0;box-shadow:0 -4px 18px rgba(150,110,70,.12)}
 .navico{display:block;margin:0 auto}.tabbar button.on .navico{transform:scale(1.08)}
+
+/* 情緒夥伴（v25） */
+.jysavor{position:relative;display:flex;justify-content:center;align-items:center;height:190px;margin:4px 0 6px}
+.jyglow{position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,var(--jc) 0%,transparent 70%);opacity:.55;animation:jyb 8s ease-in-out 3}
+@keyframes jyb{0%,100%{transform:scale(.75)}50%{transform:scale(1.25)}}
+.jymon{position:relative}
+.jbitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-left:6px solid var(--jc);border-radius:16px;padding:6px 12px 6px 6px;margin:0 0 8px;font:inherit;color:inherit;cursor:pointer}
+.jbitem span{font-size:.92rem;line-height:1.45}.jbitem b{display:block;font-size:.8rem;color:var(--soft)}
+@media (prefers-reduced-motion:reduce){.jyglow{animation:none}}

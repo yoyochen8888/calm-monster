@@ -44,6 +44,7 @@
     <p class="q" id="monQ">現在，你心裡住著哪一隻怪獸？</p>
     <p class="hint" id="monHint">點一隻最像你的</p>
     <div class="grid g3" id="monsters"></div>
+    <div class="row" id="monJoy"><button class="chip" id="toJoy">✨ 不是怪獸，是開心、驕傲、安心的感覺</button></div>
   </section>
 
   <!-- 2 size -->
@@ -129,6 +130,10 @@
     <p class="q">怪獸圖鑑</p>
     <p class="hint">點一隻怪獸，認識牠、學會跟牠相處。每次面對牠，牠就跟你更熟一點</p>
     <div class="grid g3" id="dex"></div>
+    <p class="q" style="font-size:1.25rem;margin-top:22px">情緒夥伴</p>
+    <p class="hint">開心、驕傲、安心……好的感覺也值得被看見。點一個夥伴，把好感覺存起來</p>
+    <div class="grid g3" id="jdex"></div>
+    <button class="pick" id="jbOpen" style="width:100%;margin-top:14px;border-color:#FFD98A;background:#FFF9EA"><b>🎁 快樂寶盒</b><span></span></button>
     <button class="pick" id="toCritDex" style="width:100%;margin-top:14px;border-color:#B9DDAA;background:#F4FAF0"><b>🐾 生物圖鑑</b><span id="critDexSub"></span></button>
   </section>
 
@@ -147,7 +152,8 @@
     <div id="chores"></div>
     <div id="repairBox"></div>
     <div id="voucherBox"></div>
-    <div class="grid g2" style="margin-top:14px">
+    <button class="pick" id="hJoy" style="width:100%;margin-top:14px;border-color:#FFD98A;background:#FFF9EA"><b>✨ 開心的事</b><span>開心、驕傲、安心的時候，把好感覺存起來</span></button>
+    <div class="grid g2" style="margin-top:12px">
       <button class="pick" id="hStart" style="border-color:#F7B8AE;background:#FFF1EE"><b>💛 冷靜站</b><span>一步一步讓怪獸變小</span></button>
       <button class="pick" id="hWater"><b>🪄 布置家園</b><span id="hWaterSub"></span></button>
       <button class="pick" id="hGames"><b>🎮 遊戲時間</b><span id="hGamesSub"></span></button>
@@ -320,6 +326,24 @@
     <div class="row" id="rvNav"></div>
   </section>
 
+  <!-- 28 savor positive feelings (v25) -->
+  <section class="step card" data-step="28">
+    <p class="q" id="jyTitle"></p>
+    <p class="hint" id="jyHint"></p>
+    <div class="dots" id="jyDots" style="margin-bottom:12px"></div>
+    <div id="jyArea"></div>
+    <div class="row" id="jyNav"></div>
+  </section>
+
+  <!-- 29 joy box (v25) -->
+  <section class="step card" data-step="29">
+    <p class="q">🎁 快樂寶盒</p>
+    <p class="hint" id="jbSub"></p>
+    <div id="jbList"></div>
+    <div class="row"><button class="btn" id="jbNew">✨ 再存一個</button></div>
+    <p class="note">點一下，會唸給你聽。紀錄只存在這台裝置裡。</p>
+  </section>
+
   <section class="step card" data-step="13">
     <p class="q">大人給星星</p>
     <p class="hint">孩子平時情緒處理得好，大人可以在這裡給獎勵（每天最多 3 次）</p>
@@ -489,6 +513,7 @@
 <script src="js/intro.js"></script>
 <script src="js/wish.js"></script>
 <script src="js/review.js"></script>
+<script src="js/joy.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/main.js"></script>
 </body>

@@ -137,7 +137,9 @@ function clayCornerSign(C,x,y,col,ico){return `<g transform="translate(${x} ${y+
     <text x="0" y="-8.5" text-anchor="middle" font-size="14">${ico}</text></g>`}
 
 /* ---------- 暫代怪獸（還沒有 3D 圖的 8 隻）：黏土版 ---------- */
-function clayMon(c,x,y,w,mood,kind){const cx=x+w/2,cy=y+w*.58,r=w*.36,C=Clay('pm'+c.slice(1));
+/* 每張圖用自己的漸層 id：同樣的 id 如果先出現在隱藏的頁面，Chrome／Safari 會畫不出顏色 */
+let clayN=0;
+function clayMon(c,x,y,w,mood,kind){const cx=x+w/2,cy=y+w*.58,r=w*.36,C=Clay('pm'+c.slice(1)+'_'+(++clayN));
   const ink='#4A3A33';
   const mouth=mood?`<path d="M${cx-r*.26} ${cy+r*.42} Q${cx} ${cy+r*.2} ${cx+r*.26} ${cy+r*.42}" stroke="${ink}" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/>`
     :`<path d="M${cx-r*.26} ${cy+r*.26} Q${cx} ${cy+r*.52} ${cx+r*.26} ${cy+r*.26}" stroke="${ink}" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/>`;
@@ -153,6 +155,15 @@ function clayMon(c,x,y,w,mood,kind){const cx=x+w/2,cy=y+w*.58,r=w*.36,C=Clay('pm
   if(kind==='guilty')back=`<path d="M${cx-r*.3} ${cy-r*1} q-${r*.1} -${r*.5} -${r*.5} -${r*.3}" stroke="${dk}" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/><circle cx="${cx-r*.8}" cy="${cy-r*1.28}" r="${r*.11}" fill="${dk}"/><path d="M${cx+r*.3} ${cy-r*1} q${r*.1} -${r*.5} ${r*.5} -${r*.3}" stroke="${dk}" stroke-width="${r*.08}" fill="none" stroke-linecap="round"/><circle cx="${cx+r*.8}" cy="${cy-r*1.28}" r="${r*.11}" fill="${dk}"/>`;
   if(kind==='lonely')front=`<circle cx="${cx+r*1.02}" cy="${cy+r*.72}" r="${r*.42}" fill="#FFE9A0" opacity=".35"/><path d="M${cx+r*1.02} ${cy+r*.36} v${r*.16}" stroke="#8A6A4A" stroke-width="${r*.05}"/><rect x="${cx+r*.86}" y="${cy+r*.5}" width="${r*.32}" height="${r*.42}" rx="${r*.1}" fill="#FFD86B" stroke="#E0A93A" stroke-width="${r*.04}"/>`;
   if(kind==='stress'){back=`<rect x="${cx-r*1.12}" y="${cy-r*.55}" width="${r*2.24}" height="${r*1.25}" rx="${r*.3}" fill="#C98F5A"/>`;front=`<path d="M${cx-r*.72} ${cy-r*.7} q-${r*.1} ${r*.7} ${r*.05} ${r*1.25} M${cx+r*.72} ${cy-r*.7} q${r*.1} ${r*.7} -${r*.05} ${r*1.25}" stroke="#A8703F" stroke-width="${r*.12}" fill="none" stroke-linecap="round"/>`}
+  /* 正向情緒夥伴（v25）的特徵 */
+  if(kind==='happy')back=[0,1,2,3,4,5,6].map(i=>{const a=-Math.PI*.95+i*Math.PI*.9/6;return `<path d="M${(cx+Math.cos(a)*r*1.2).toFixed(1)} ${(cy-r*.15+Math.sin(a)*r*1.2).toFixed(1)} L${(cx+Math.cos(a)*r*1.5).toFixed(1)} ${(cy-r*.15+Math.sin(a)*r*1.5).toFixed(1)}" stroke="${lt}" stroke-width="${r*.16}" stroke-linecap="round"/>`}).join('');
+  if(kind==='proud'){const sx=cx,sy=cy+r*.5,sr=r*.24;let d='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?sr*.48:sr;d+=(i?'L':'M')+(sx+Math.cos(a)*rr).toFixed(1)+' '+(sy+Math.sin(a)*rr).toFixed(1)}
+    back=`<path d="M${cx-r*.5} ${cy-r*.95} L${cx-r*.42} ${cy-r*1.35} L${cx-r*.18} ${cy-r*1.05} L${cx} ${cy-r*1.42} L${cx+r*.18} ${cy-r*1.05} L${cx+r*.42} ${cy-r*1.35} L${cx+r*.5} ${cy-r*.95} Z" fill="#FFD86B" stroke="#E8B53A" stroke-width="${r*.04}" stroke-linejoin="round"/>`;
+    front=`<path d="${d}Z" fill="#FFE38A" stroke="#E8B53A" stroke-width="${r*.04}" stroke-linejoin="round"/>`}
+  if(kind==='safe'){back=`<circle cx="${cx-r*.62}" cy="${cy-r*.9}" r="${r*.28}" fill="${dk}"/><circle cx="${cx+r*.62}" cy="${cy-r*.9}" r="${r*.28}" fill="${dk}"/><circle cx="${cx-r*.62}" cy="${cy-r*.9}" r="${r*.14}" fill="${lt}"/><circle cx="${cx+r*.62}" cy="${cy-r*.9}" r="${r*.14}" fill="${lt}"/>`;
+    front=`<path d="M${cx} ${cy+r*.78} C${cx-r*.36} ${cy+r*.55} ${cx-r*.3} ${cy+r*.28} ${cx} ${cy+r*.42} C${cx+r*.3} ${cy+r*.28} ${cx+r*.36} ${cy+r*.55} ${cx} ${cy+r*.78} Z" fill="#fff" opacity=".75"/>`}
+  if(kind==='curious')back=`<path d="M${cx-r*.3} ${cy-r*1} q-${r*.15} -${r*.45} -${r*.45} -${r*.55} M${cx+r*.3} ${cy-r*1} q${r*.15} -${r*.45} ${r*.45} -${r*.55}" stroke="${dk}" stroke-width="${r*.07}" fill="none" stroke-linecap="round"/><circle cx="${cx-r*.75}" cy="${cy-r*1.55}" r="${r*.14}" fill="#FFD86B"/><circle cx="${cx+r*.75}" cy="${cy-r*1.55}" r="${r*.14}" fill="#FFD86B"/>`;
+  if(kind==='grateful')front=`<g>${[0,1,2,3,4].map(i=>{const a=i*1.2566-1.57;return `<circle cx="${(cx+r*.58+Math.cos(a)*r*.17).toFixed(1)}" cy="${(cy-r*.88+Math.sin(a)*r*.17).toFixed(1)}" r="${r*.13}" fill="#fff"/>`}).join('')}<circle cx="${cx+r*.58}" cy="${cy-r*.88}" r="${r*.1}" fill="#FFD86B"/></g><path d="M${cx} ${cy+r*.74} C${cx-r*.3} ${cy+r*.55} ${cx-r*.25} ${cy+r*.32} ${cx} ${cy+r*.45} C${cx+r*.25} ${cy+r*.32} ${cx+r*.3} ${cy+r*.55} ${cx} ${cy+r*.74} Z" fill="#FF8FB0" opacity=".8"/>`;
   const out=`${back}${body}
     <ellipse cx="${cx-r*.92}" cy="${cy+r*.2}" rx="${r*.18}" ry="${r*.3}" fill="${C.g(c,.3,-.2)}" transform="rotate(20 ${cx-r*.92} ${cy+r*.2})"/>
     <ellipse cx="${cx+r*.92}" cy="${cy+r*.2}" rx="${r*.18}" ry="${r*.3}" fill="${C.g(c,.3,-.2)}" transform="rotate(-20 ${cx+r*.92} ${cy+r*.2})"/>
