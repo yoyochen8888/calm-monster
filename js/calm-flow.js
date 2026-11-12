@@ -37,12 +37,12 @@ function renderAges(){
 /* step 1 */
 function renderMonsters(){
   $('#monQ').textContent=S.sos?'你好一點了！剛剛是哪一隻怪獸來找你？':'現在，你心裡住著哪一隻怪獸？';
-  $('#monJoy').style.display=S.sos?'none':'';
+  $('#monJoy').style.display=S.sos?'none':'';renderAdultCue();
   $('#monHint').textContent=S.sos?'點一隻最像剛剛的感覺，我們再看看牠現在多大':'點一隻最像你的';
   $('#monsters').innerHTML=visibleEmo().map(k=>[k,EMO[k]]).map(([k,e])=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">
     ${monster(k,84,'',{mood:2})}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span><span class="lvtag">Lv.${lvOf(store.xp[k]||0)} ${TITLES[lvOf(store.xp[k]||0)-1]}</span></button>`).join('');
   $$('[data-emo]').forEach(b=>b.onclick=()=>{S.emo=b.dataset.emo;tone(500,.12);speak('我是'+EMO[S.emo].name);
-    if(S.sos){S.sos=false;S.lv0=4;S.lv=4;S.lv2=0;if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}S.sosDone=0;go(4)}else go(2)});
+    if(S.sos){S.sos=false;S.lv0=4;S.lv=4;S.lv2=0;if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1,quiet:1})}S.sosDone=0;go(4)}else go(2)});
 }
 /* thermometer */
 function thermo(el,stage,key,onPick){
@@ -57,13 +57,16 @@ function thermo(el,stage,key,onPick){
     el.querySelectorAll('.lv').forEach(x=>x.classList.toggle('sel',x===b));draw();onPick&&onPick()});
 }
 function renderSize(){
-  const e=EMO[S.emo];
-  $('#sizeQ').textContent=`${e.name}有多大？`;
+  const e=EMO[S.emo],f=famOf(S.emo);
+  $('#sizeQ').textContent=f.sizeQ(e.name);
+  $('#sizeKey').textContent=EMO_FAM[S.emo]==='hot'?'🟢 平靜　🟡 有點煩　🔴 快爆炸':'🟢 一點點　🟡 中中的　🔴 好強烈';
   $('#sizeHint').textContent=`你${e.feel}。身體可能會${e.body}。`;
+  $('#sizeMsg').innerHTML=`<div class="monmsg" style="--mc:${e.color}"><small>${e.name}想告訴你</small><b>「${EMO_MSG[S.emo]}」</b><span>${f.ok}</span></div>`;
+  if(S.sizeSpoke!==S.emo){S.sizeSpoke=S.emo;setTimeout(()=>{if(S.step===2)speak(`${e.name}想告訴你：${EMO_MSG[S.emo]}。${f.ok}。`)},700)}
   const upd=()=>{
     $('#toCalm').disabled=!S.lv;
     const big=S.lv===5;
-    $('#toCalm').textContent=big?'請大人來陪我':'我們來讓它變小';
+    $('#toCalm').textContent=big?'請大人來陪我':f.go;
     $('#selfTry').style.display=big?'':'none';
     if(big)$('#sizeHint').textContent='怪獸超級大！先請大人來陪你。';
     else $('#sizeHint').textContent=`你${e.feel}。身體可能會${e.body}。`;
@@ -82,13 +85,15 @@ function stopAct(){timers.forEach(clearTimeout);timers=[];if(raf)cancelAnimation
 let actSpeech='';
 function renderAct(){
   const e=EMO[S.emo];
-  const list=S.sos?['breathe','butterfly','squeeze']:S.practice?['breathe','light','bubbles','squeeze','senses','butterfly','fish']:e.acts.slice();
-  if(S.lv>=4 && list[0]!=='breathe' && S.emo!=='angry'){list.splice(list.indexOf('breathe'),1);list.unshift('breathe')}
-  if(!S.act)S.act=list[0];
+  /* 4–5 級（v26）：只給身體的方法，選項少、不用想 */
+  const big=!S.sos&&!S.practice&&S.lv>=4;
+  const list=S.sos?['breathe','butterfly','squeeze']:S.practice?['breathe','light','bubbles','squeeze','senses','butterfly','fish','rain','kind']:big?famOf(S.emo).body.slice():e.acts.slice();
+  if(!S.act||!list.includes(S.act))S.act=list[0];
   $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${ACT_NAME[a]}</button>`).join('');
   $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct();ambSync()});
-  $('#actTitle').textContent=S.sos?'🆘 先一起呼吸，不用想是哪隻怪獸':S.practice?'平時練習：心情好的時候先練起來':S.lv>=4?'先讓身體冷靜下來':'冷靜時間';
-  ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly,fish:actFish})[S.act]();
+  $('#actTitle').textContent=S.sos?'🆘 先一起呼吸，不用想是哪隻怪獸':S.practice?'平時練習：心情好的時候先練起來':big?(EMO_FAM[S.emo]==='comfort'?'先讓人陪著你':'先照顧身體'):'冷靜時間';
+  $('#actAdult').innerHTML=S.sos||S.practice?'':adultBox(S.emo);
+  ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly,fish:actFish,comfort:actComfort,rain:actRain,kind:actKind})[S.act]();
 }
 $('#speakAct').onclick=()=>speak(actSpeech);
 $('#actDone').onclick=()=>{
@@ -97,7 +102,7 @@ $('#actDone').onclick=()=>{
     S.practice=false;const bk=S.hist.pop();go(bk!==undefined?bk:17,true);return}
   S.actsDone=S.actsDone||[];if(!S.actsDone.includes(S.act))S.actsDone.push(S.act);
   if(S.sos){S.sosDone=1;go(1);return}
-  if(S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1})}
+  if(S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1,quiet:1})}
   S.lv2=0;go(4)};
 
 function actBreathe(){
@@ -225,21 +230,26 @@ function actButterfly(){
 }
 
 /* step 4 */
+/* 3–5 歲（v26）：再看一次大小就完成，「發生什麼、下次怎麼做」留給事後的一起回顧 */
+function toTalk(){if(S.age==='young')$('#finish').onclick();else go(5)}
 function renderRe(){
+  const f=famOf(S.emo),cf=EMO_FAM[S.emo]==='comfort';
+  $('#reQ').textContent=f.reQ;$('#reHint').textContent=f.reHint;
   $('#reMsg').textContent='';$('#reBtns').innerHTML='';
+  const talk=S.age==='young'?'完成':'好，說說看';
   thermo($('#thermo2'),$('#reStage'),'lv2',()=>{
     const d=S.lv-S.lv2;const msg=$('#reMsg');
-    if(S.lv2<=2){msg.textContent=d>0?`哇！怪獸從 ${S.lv} 變成 ${S.lv2} 了，你好厲害。`:'怪獸已經小小的了，我們來說說發生什麼事。';
-      $('#reBtns').innerHTML=`<button class="btn" id="goTalk">好，說說看</button>`;$('#goTalk').onclick=()=>go(5);}
+    if(S.lv2<=2){msg.textContent=cf?(d>0?'心裡的雨變小了，你把自己照顧得很好。':'好一點點了，你很棒。'):d>0?`哇！怪獸從 ${S.lv} 變成 ${S.lv2} 了，你好厲害。`:'怪獸已經小小的了。';
+      $('#reBtns').innerHTML=`<button class="btn" id="goTalk">${talk}</button>`;$('#goTalk').onclick=toTalk;}
     else if(S.lv2>=4 || S.tries>=1){
-      msg.textContent=S.lv2>=4?'怪獸還很大，沒關係，先請大人來陪你。':'試了好幾種方法，怪獸還在。我們請大人來陪你。';
+      msg.textContent=cf?'還是好難過，沒關係。請大人來陪你、抱抱你。':S.lv2>=4?'怪獸還很大，沒關係，先請大人來陪你。':'試了好幾種方法，怪獸還在。我們請大人來陪你。';
       $('#reBtns').innerHTML=`<button class="btn ghost" id="again">再試一個方法</button><button class="btn" id="needAdult">請大人來陪我</button>`;
       $('#again').onclick=()=>{nextAct();go(3)};
       $('#needAdult').onclick=()=>{coStart=0;go(8)};}
-    else{msg.textContent='怪獸還有點大，沒關係，我們再試一個方法，或請大人陪你。';
-      $('#reBtns').innerHTML=`<button class="btn ghost" id="again">換一個方法</button><button class="btn" id="goTalk">我想說說看</button>`;
+    else{msg.textContent=cf?'心裡還有一點雨，沒關係。可以再試一個方法，或請大人陪你。':'怪獸還有點大，沒關係，我們再試一個方法，或請大人陪你。';
+      $('#reBtns').innerHTML=`<button class="btn ghost" id="again">換一個方法</button><button class="btn" id="goTalk">${S.age==='young'?'完成':'我想說說看'}</button>`;
       $('#again').onclick=()=>{nextAct();go(3)};
-      $('#goTalk').onclick=()=>go(5);}
+      $('#goTalk').onclick=toTalk;}
   });
 }
 
@@ -249,7 +259,7 @@ function nextAct(){const l=EMO[S.emo].acts;S.act=l[(l.indexOf(S.act)+1)%l.length
 function renderTalk(){
   const mk=(id,arr,key)=>{$(id).innerHTML=arr.map(x=>`<button class="chip ${S[key]===x?'sel':''}">${x}</button>`).join('');
     $(id).querySelectorAll('.chip').forEach(b=>b.onclick=()=>{S[key]=b.textContent;tone(560,.1);renderTalk()})};
-  mk('#causes',CAUSES,'cause');mk('#wants',WANTS,'want');mk('#dmg',['沒有','有'],'dmg');
+  const F=famOf(S.emo);mk('#causes',F.causes,'cause');mk('#wants',F.wants,'want');mk('#dmg',['沒有','有'],'dmg');
   if(S.dmg==='有'){$('#repairOpts').innerHTML=`<p style="margin:10px 0 6px">沒關係，我們可以想辦法修補。你願意做哪一件事？</p><div class="chips" id="repList" style="justify-content:flex-start"></div>`;
     mk('#repList',REPAIRS[S.age||'mid'],'repair');}
   else {$('#repairOpts').innerHTML='';S.repair=null;}
@@ -259,11 +269,11 @@ function renderTalk(){
   $('#sentence').innerHTML=`我覺得<u>${e.feel}</u>，<br>因為<u>${c}</u>。<br>我現在想要<u>${w}</u>。`;
 }
 $('#speakSent').onclick=()=>speak($('#sentence').textContent);
-$('#toNext').onclick=()=>{if(S.cause&&!S.talkRewarded){S.talkRewarded=true;gain('把感覺說出來',5,{flow:1})}go(6)};
+$('#toNext').onclick=()=>{if(S.cause&&!S.talkRewarded){S.talkRewarded=true;gain('把感覺說出來',5,{flow:1,quiet:1})}go(6)};
 
 /* step 6 */
 function renderPlans(){
-  const list=PLANS[S.age||'mid'];
+  const list=famOf(S.emo).plans[S.age||'mid'];
   $('#plans').innerHTML=list.map(([t,s])=>`<button class="pick ${S.plan===t?'sel':''}" data-plan="${t}"><b>${t}</b><span>${s}</span></button>`).join('');
   $$('[data-plan]').forEach(b=>b.onclick=()=>{S.plan=b.dataset.plan;tone(620,.12);speak(b.textContent);renderPlans();$('#finish').disabled=false});
   $('#finish').disabled=!S.plan;
@@ -281,11 +291,13 @@ function gain(label,n,opt={}){
   let up='';
   if(mon&&m1>m0){up=`${EMO[mon].name}升到 Lv.${m1}「${TITLES[m1-1]}」`;S.monUp={from:m0,to:m1}}
   const p1=lvIn(PLV,store.pxp);if(p1>p0)up+=(up?'<br>':'')+`主角升到 Lv.${p1}「${PTITLES[p1-1]}」`;
+  /* 冷靜流程中（v26）：不跳星星和升級通知，結束頁再一起看 */
+  if(opt.flow){if(p1>p0)S.heroUp=p1;return n}
   if(!opt.quiet||up)toast(opt.quiet?`<b>🎉 ${up}！</b>`:`+${n} ⭐ ${label}<br><small>經驗值 +${n}</small>`+(up?`<br><b>🎉 ${up}！</b>`:''),!!up);
   tone(880,.12,'triangle',.1);if(up)setTimeout(()=>{tone(784,.2);setTimeout(()=>tone(1046,.5),180)},350);
   return n;
 }
-function resetFlow(){Object.assign(S,{sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,dmg:null,repair:null,actsDone:[],monUp:null,capToasted:false});
+function resetFlow(){Object.assign(S,{sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,sizeSpoke:null,need:null,cueDone:false,dmg:null,repair:null,actsDone:[],monUp:null,heroUp:null,capToasted:false});
   const d=today();if(!store.day||store.day.d!==d)store.day={d,n:0};S.capped=store.day.n>=5;store.day.n++;save()}
 function startFlow(){if(!S.age){go(0);return}resetFlow();S.hist=[10];go(1,true)}
 function holdBtn(label,ms,cb){const b=document.createElement('button');b.className='hold';b.innerHTML=`<i></i><span>${label}</span>`;
@@ -299,7 +311,7 @@ $('#finish').onclick=()=>{
   const e=EMO[S.emo];
   const lv0=S.lv0||S.lv||3, lv2=S.lv2||lv0, shrink=lv0-lv2;
   gain('勇敢面對怪獸',10,{flow:1,quiet:1});
-  if(shrink>0)gain(`怪獸變小了 ${shrink} 級`,shrink*5,{flow:1,quiet:1});
+  if(shrink>0)gain(EMO_FAM[S.emo]==='comfort'?`心裡好了 ${shrink} 級`:`怪獸變小了 ${shrink} 級`,shrink*5,{flow:1,quiet:1});
   if(S.plan)gain('想好下次的方法',5,{flow:1,quiet:1});
   let tough='';
   if(shrink<=0){store.tough=(store.tough||0)+1;
@@ -313,16 +325,17 @@ $('#finish').onclick=()=>{
   store.badges=(store.badges||0)+1;save();
   const xp=store.xp[S.emo]||0,lv=lvOf(xp),nx=nextOf(xp);
   go(7);
-  $('#winQ').textContent=`你陪${e.name}冷靜下來了！`;
+  $('#winQ').textContent={hot:`你陪${e.name}冷靜下來了！`,comfort:`你好好照顧了${e.name}！`,safe:`你陪${e.name}找回安全感了！`,repair:`你好好照顧了自己！`}[EMO_FAM[S.emo]||'hot'];
   $('#winMon').innerHTML=`<div class="morph"><div class="m-a">${monster(S.emo,150,'',{mood:moodOf(S.lv0||3)})}</div><div class="m-b">${monster(S.emo,150,'wobble')}</div></div>`;
   $('#winLv').textContent=`${e.name} Lv.${lv} ${TITLES[lv-1]}`+(nx.need?`（再 ${nx.need} 經驗升級）`:'（最高等級！）');
   setTimeout(()=>$('#winXp').style.width=nx.pct+'%',100);
   $('#levelUp').innerHTML=S.monUp?`${S.monUp.from<CORNER_LV&&S.monUp.to>=CORNER_LV?`<div class="levelup">⭐ ${EMO[S.emo].name}教你牠的拿手方法：${CORNERS[S.emo].ico} ${CORNERS[S.emo].name}！到圖鑑就可以一起練習</div>`:''}<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 長大成「${STAGES[stageOf(S.monUp.to)-1].n}」，學會了${BADGE[S.emo][1]}：${BADGE[S.emo][2]}！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{level:S.monUp.from})}<b>➜</b>${monster(S.emo,96,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
+  if(S.heroUp)$('#levelUp').insertAdjacentHTML('beforeend',`<div class="levelup">🎉 ${store.hero?store.hero.name:'主角'}升到 Lv.${S.heroUp}「${PTITLES[S.heroUp-1]}」！</div>`);
   const total=S.earned.reduce((a,b)=>a+b[1],0);
   $('#rewardList').innerHTML=S.capped?`<li>今天已經練習 5 次以上了，星星明天再來拿。你還是很棒！</li>`
     :S.earned.map(([t,n])=>`<li><span>${t}</span><b>+${n} ⭐</b></li>`).join('')+`<li class="total"><span>這次一共拿到</span><b>${total} ⭐</b></li>`;
   $('#toughMsg').style.display=tough?'':'none';$('#toughMsg').textContent=tough;
-  $('#planShow').innerHTML=`下次怪獸來的時候，<br>我要試試：<u>${S.plan}</u>`+(S.repair?`<br><br>🔧 修復任務：<u>${S.repair}</u><br><small>做完後請大人在家園確認，可以拿到 15 顆星星</small>`:'');
+  $('#planShow').style.display=S.plan||S.repair?'':'none';$('#planShow').innerHTML=(S.plan?`下次${e.name}來的時候，<br>我要試試：<u>${S.plan}</u>`:'')+(S.repair?`<br><br>🔧 修復任務：<u>${S.repair}</u><br><small>做完後請大人在家園確認，可以拿到 15 顆星星</small>`:'');
   chime();
 };
 $('#restart').onclick=()=>go(10);

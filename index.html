@@ -41,6 +41,7 @@
 
   <!-- 1 monster -->
   <section class="step card" data-step="1">
+    <div id="adultCue"></div>
     <p class="q" id="monQ">現在，你心裡住著哪一隻怪獸？</p>
     <p class="hint" id="monHint">點一隻最像你的</p>
     <div class="grid g3" id="monsters"></div>
@@ -50,7 +51,8 @@
   <!-- 2 size -->
   <section class="step card" data-step="2">
     <p class="q" id="sizeQ">怪獸有多大？</p>
-    <p class="hint" style="margin:-4px 0 4px;font-size:.85rem">🟢 平靜　🟡 有點煩　🔴 快爆炸</p>
+    <p class="hint" id="sizeKey" style="margin:-4px 0 4px;font-size:.85rem">🟢 平靜　🟡 有點煩　🔴 快爆炸</p>
+    <div id="sizeMsg"></div>
     <p class="hint" id="sizeHint">點點看，你的怪獸現在有多大</p>
     <div class="stage" id="sizeStage"></div>
     <div class="thermo" id="thermo"></div>
@@ -70,12 +72,13 @@
       <button class="speak" id="speakAct">🔊 唸給我聽</button>
       <button class="btn" id="actDone">我好一點了</button>
     </div>
+    <div id="actAdult"></div>
   </section>
 
   <!-- 4 re-check -->
   <section class="step card" data-step="4">
-    <p class="q">怪獸現在變多大了？</p>
-    <p class="hint">再看看你的心裡</p>
+    <p class="q" id="reQ">怪獸現在變多大了？</p>
+    <p class="hint" id="reHint">再看看你的心裡</p>
     <div class="stage" id="reStage"></div>
     <div class="thermo" id="thermo2"></div>
     <p class="hint" id="reMsg" style="margin-top:10px"></p>
@@ -501,6 +504,7 @@
 </aside>
 
 <script src="js/data.js"></script>
+<script src="js/family.js"></script>
 <script src="js/art.js"></script>
 <script src="js/core.js"></script>
 <script src="js/calm-flow.js"></script>
