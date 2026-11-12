@@ -36,6 +36,9 @@ function renderAges(){
 }
 /* step 1（v27）：先選「心裡的天氣」，再從 2–4 隻裡選；不顯示等級和顏色，減少選擇負擔 */
 const WEATHER={hot:['🌋','像火山','好熱、好想爆炸'],comfort:['🌧️','像下雨','想哭、心裡重重的'],safe:['🌀','像颳大風','心跳快、怕怕的、亂亂的'],repair:['🩹','像受傷了','覺得做錯了、好丟臉']};
+/* v32：天氣用黏土圖示（js/icons.js），畫不出來時退回 emoji */
+const WX_ICO={hot:'volcano',comfort:'rain',safe:'wind',repair:'mend'};
+function wxIco(f){return (typeof clayIcon==='function'&&clayIcon(WX_ICO[f],76))||WEATHER[f][0]}
 function renderMonsters(){
   $('#monJoy').style.display=S.sos?'none':'';renderAdultCue();
   const vis=visibleEmo();const last={};store.log.forEach(l=>{if(!last[l.emo]||l.t>last[l.emo])last[l.emo]=l.t});
@@ -45,7 +48,7 @@ function renderMonsters(){
     $('#monQ').textContent=S.sos?'你好一點了！剛剛心裡的天氣像什麼？':'現在，心裡的天氣像什麼？';
     $('#monHint').textContent='點一個最像的';
     $('#monsters').className='weather';
-    $('#monsters').innerHTML=fams.map(f=>{const w=WEATHER[f];return `<button class="wx wx-${f}" data-wx="${f}"><i>${w[0]}</i><b>${w[1]}</b><span>${w[2]}</span></button>`}).join('')
+    $('#monsters').innerHTML=fams.map(f=>{const w=WEATHER[f];return `<button class="wx wx-${f}" data-wx="${f}"><i>${wxIco(f)}</i><b>${w[1]}</b><span>${phr(w[2])}</span></button>`}).join('')
       +`<button class="chip wxall" id="wxAll">不知道，看全部怪獸</button>`;
     $$('[data-wx]').forEach(b=>b.onclick=()=>{S.fam=b.dataset.wx;tone(520,.12);speak('心裡'+WEATHER[S.fam][1]);renderMonsters()});
     $('#wxAll').onclick=()=>{S.pickAll=true;renderMonsters()};
@@ -79,7 +82,7 @@ function renderSize(){
   const mySig=store.bodySig&&store.bodySig[S.emo];
   const sigTxt=mySig&&mySig.length?`你${e.feel}。你說過牠來的時候，你會${mySig.join('、')}。`:`你${e.feel}。身體可能會${e.body}。`;
   $('#sizeHint').textContent=sigTxt;
-  $('#sizeMsg').innerHTML=`<div class="monmsg" style="--mc:${e.color}"><small>${e.name}想告訴你</small><b>「${EMO_MSG[S.emo]}」</b><span>${f.ok}</span></div>`;
+  $('#sizeMsg').innerHTML=`<div class="monmsg" style="--mc:${e.color}"><small>${e.name}想告訴你</small><b>${phr('「'+EMO_MSG[S.emo]+'」')}</b><span>${phr(f.ok)}</span></div>`;
   if(S.sizeSpoke!==S.emo){S.sizeSpoke=S.emo;setTimeout(()=>{if(S.step===2)speak(`${e.name}想告訴你：${EMO_MSG[S.emo]}。${f.ok}。`)},700)}
   const upd=()=>{
     $('#toCalm').disabled=!S.lv;
@@ -145,7 +148,7 @@ function actBreathe(){
 function ballRun(i,young){
   const ball=$('#ball'),bw=$('#bw'),bc=$('#bc');if(!ball)return;
   const total=5,inT=3000+(young?0:1000),outT=5000;
-  if(i>=total){bw.textContent='好棒！你做完了 5 次';bc.textContent='';chime();ball.style.transform='scale(1)';return}
+  if(i>=total){bw.textContent='做完 5 次了。感覺看看，身體有沒有慢下來？';bc.textContent='';chime();ball.style.transform='scale(1)';return}
   bc.textContent=`第 ${i+1} / ${total} 次`;
   ball.style.transitionDuration=inT+'ms';ball.style.transform='scale(2.1)';
   bw.textContent=young?'聞聞花香～吸～':'鼻子吸氣～氣球變大';
@@ -204,7 +207,7 @@ function actSqueeze(){
   const L=$('#lemon');let start=0,holding=false;
   const loop=()=>{if(!holding)return;const p=Math.min(100,(performance.now()-start)/40);L.style.setProperty('--p',p+'%');
     if(p>=100){holding=false;L.classList.remove('hold');done++;chime();
-      $('#bw').textContent=done>=rounds?'好棒！手手軟軟的，好放鬆～':`放鬆～手變軟軟的（${done} / ${rounds}）`;
+      $('#bw').textContent=done>=rounds?'做完了。手手軟軟的，好放鬆～':`放鬆～手變軟軟的（${done} / ${rounds}）`;
       L.innerHTML=done>=rounds?'完成！':'放開<br>休息一下';
       later(()=>{L.style.setProperty('--p','0%');if(done<rounds)L.innerHTML='再擠<br>一次！'},1800);return}
     raf=requestAnimationFrame(loop)};
@@ -259,7 +262,9 @@ function renderRe(){
   const talk=S.age==='young'?'完成':'好，說說看';
   thermo($('#thermo2'),$('#reStage'),'lv2',()=>{
     const d=S.lv-S.lv2;const msg=$('#reMsg');
-    if(S.lv2<=2){msg.textContent=cf?(d>0?'心裡的雨變小了，你把自己照顧得很好。':'好一點點了，你很棒。'):d>0?`哇！怪獸從 ${S.lv} 變成 ${S.lv2} 了，你好厲害。`:'怪獸已經小小的了。';
+    /* v32 描述式鼓勵：不說「你好棒」，說出孩子做了什麼、哪個方法有用，孩子才知道下次可以再做一次 */
+    const used=(S.actsDone||[]).map(a=>ACT_NAME[a]);const how=used.length?`你用了「${used[used.length-1]}」，`:S.usedCo?'你讓大人陪著你，':'';
+    if(S.lv2<=2){msg.textContent=cf?(d>0?'心裡的雨變小了，你把自己照顧得很好。':'心裡的雨小小的。你有好好陪著自己。'):d>0?`${how}怪獸從 ${S.lv} 變成 ${S.lv2} 了。${how?'這個方法對你有用。':''}`:'怪獸已經小小的了。';
       $('#reBtns').innerHTML=`<button class="btn" id="goTalk">${talk}</button>`;$('#goTalk').onclick=toTalk;}
     else if(S.lv2>=4 || S.tries>=1){
       msg.textContent=cf?'還是好難過，沒關係。請大人來陪你、抱抱你。':S.lv2>=4?'怪獸還很大，沒關係，先請大人來陪你。':'試了好幾種方法，怪獸還在。我們請大人來陪你。';
@@ -305,7 +310,7 @@ function renderPlans(){
 function today(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
 function toast(html,big){const t=document.createElement('div');t.className='toast'+(big?' big':'');t.innerHTML=html;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3100)}
 function gain(label,n,opt={}){
-  if(opt.flow&&S.capped){if(!S.capToasted){S.capToasted=true;toast('今天的星星拿滿了，明天再來拿！你還是很棒')}return 0}
+  if(opt.flow&&S.capped){if(!S.capToasted){S.capToasted=true;toast('今天的星星拿滿了，明天再來拿。練習一樣算數喔！')}return 0}
   const mon=opt.flow?S.emo:null;
   const p0=lvIn(PLV,store.pxp||0);let m0=0,m1=0;
   store.stars=(store.stars||0)+n;store.pxp=(store.pxp||0)+n;
@@ -356,7 +361,7 @@ $('#finish').onclick=()=>{
   $('#levelUp').innerHTML=S.monUp?`${S.monUp.from<CORNER_LV&&S.monUp.to>=CORNER_LV?`<div class="levelup">⭐ ${EMO[S.emo].name}教你牠的拿手方法：${CORNERS[S.emo].ico} ${CORNERS[S.emo].name}！到圖鑑就可以一起練習</div>`:''}<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 長大成「${STAGES[stageOf(S.monUp.to)-1].n}」，學會了${BADGE[S.emo][1]}：${BADGE[S.emo][2]}！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{level:S.monUp.from})}<b>➜</b>${monster(S.emo,96,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
   if(S.heroUp)$('#levelUp').insertAdjacentHTML('beforeend',`<div class="levelup">🎉 ${store.hero?store.hero.name:'主角'}升到 Lv.${S.heroUp}「${PTITLES[S.heroUp-1]}」！</div>`);
   const total=S.earned.reduce((a,b)=>a+b[1],0);
-  $('#connect').innerHTML=`<b>🤗 跟陪你的人抱一下，或擊個掌</b><span>${S.usedCo?'謝謝大人陪你一起度過':'你剛剛做了一件很不容易的事'}</span>
+  $('#connect').innerHTML=`<b>${phr('🤗 跟陪你的人抱一下，或擊個掌')}</b><span>${S.usedCo?'謝謝大人陪你一起度過':'你剛剛做了一件很不容易的事'}</span>
     <button class="btn small" id="braveSave" style="margin-top:10px">💪 存成勇氣時刻</button>`;
   /* 勇氣時刻（v30）：存的不是壞事，是「我怎麼度過的」，以後打開快樂寶盒可以再看到 */
   $('#braveSave').onclick=()=>{if(S.braveSaved)return;S.braveSaved=true;
@@ -365,7 +370,7 @@ $('#finish').onclick=()=>{
     joyLog().push({t:Date.now(),k:'brave',emo:S.emo,what,note:'',body:[],how:'box'});store.joyLog=joyLog().slice(-200);save();
     chime();toast('💪 存進快樂寶盒了');$('#braveSave').textContent='✓ 存好了';$('#braveSave').disabled=true};
   $('#rewardSum').textContent=S.capped?'今天的星星拿滿了':`這次拿到 ${total} ⭐`;$('#rewardBox').open=false;
-  $('#rewardList').innerHTML=S.capped?`<li>今天已經練習 5 次以上了，星星明天再來拿。你還是很棒！</li>`
+  $('#rewardList').innerHTML=S.capped?`<li>今天已經練習 5 次以上了，星星明天再來拿。每一次練習都算數！</li>`
     :S.earned.map(([t,n])=>`<li><span>${t}</span><b>+${n} ⭐</b></li>`).join('')+`<li class="total"><span>這次一共拿到</span><b>${total} ⭐</b></li>`;
   $('#toughMsg').style.display=tough?'':'none';$('#toughMsg').textContent=tough;
   $('#planShow').style.display=S.plan||S.repair?'':'none';$('#planShow').innerHTML=(S.plan?`下次${e.name}來的時候，<br>我要試試：<u>${S.plan}</u>`:'')+(S.repair?`<br><br>🔧 修復任務：<u>${S.repair}</u><br><small>做完後請大人在家園確認，可以拿到 15 顆星星</small>`:'');

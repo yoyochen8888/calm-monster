@@ -171,7 +171,7 @@ function actFish(){
   $('#bStart').onclick=()=>{$('#bStart').style.display='none';ac();run(0)};
   function anim(from,to,ms){const s=performance.now();const f=now=>{if(!P.cv.isConnected||!P.ring)return;const k=Math.min(1,(now-s)/ms),e=.5-Math.cos(k*Math.PI)/2;P.ring.r=from+(to-from)*e;if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
   function run(i){const bw=$('#bw'),bc=$('#bc');if(!bw)return;
-    if(i>=total){bw.textContent='好棒！你陪魚兒呼吸了 5 次';bc.textContent='';chime();P.speed=.8;return}
+    if(i>=total){bw.textContent='你陪魚兒呼吸了 5 次。身體有沒有慢下來？';bc.textContent='';chime();P.speed=.8;return}
     bc.textContent=`第 ${i+1} / ${total} 次`;
     bw.textContent='吸～ 圈圈變大，魚兒游過來';P.speed=1.3;P.fish.forEach(f=>{f.tx=P.W/2+(Math.random()-.5)*P.W*.2;f.ty=P.H/2+(Math.random()-.5)*P.H*.2;f.pick=performance.now()+inT});
     anim(r0,r1,inT);tone(392,.3,'sine',.05);

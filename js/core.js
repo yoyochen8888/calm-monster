@@ -9,6 +9,9 @@ function tone(f=520,d=.15,type='sine',vol=.15){const a=ac();if(!a)return;try{
 function chime(){tone(660,.6);setTimeout(()=>tone(880,.8),250);setTimeout(()=>tone(990,1),500)}
 function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='zh-TW';u.rate=.85;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
 
+/* 句子只在標點後面換行（v32）：中文沒有空格，瀏覽器會把「怕怕的」這種詞切成兩行；包成一段一段就不會 */
+function phr(t){return (String(t).match(/[^，、。！？]+[，、。！？]*/g)||[String(t)]).map(x=>`<em class="ph">${x}</em>`).join('')}
+
 /* ---------- monster svg ---------- */
 /* 新怪獸還沒有 3D 圖前的暫代圖：圓圓的身體＋表情（情緒時皺眉，平常微笑） */
 function placeholderMon(c,x,y,w,mood){const cx=x+w/2,cy=y+w*.58,r=w*.36;

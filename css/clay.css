@@ -1,0 +1,388 @@
+/* =========================================================
+   黏土小島外觀（v32）
+   放在 style.css 後面載入，只「蓋掉」外觀，不動任何功能。
+   想退回舊樣子：把 index.html 裡 clay.css 那一行拿掉就好。
+
+   三個原則
+   1. 每個可以按的東西都是一塊有厚度的黏土：上緣有亮邊、下面有硬邊厚度，
+      按下去會沉到底；被選中的會「留在按下去的位置」。
+   2. 兩種動態：平常（家園、圖鑑、遊戲）可以 Q 彈；
+      冷靜流程（body.focus）一律慢、柔、不彈，情緒大的時候畫面越安靜越好。
+   3. 為手指設計：按鈕至少 44px 高、點過不會卡在浮起來的樣子、
+      長按不會跳出選字、輸入時畫面不會自己放大。
+   ========================================================= */
+:root{
+  /* 色彩：奶油米底、深咖啡字，不用純黑純白 */
+  --bg:#FDFBF7; --card:#FFFCF4; --paper:#FFFDF8;
+  --ink:#5C4A3D; --soft:#756353; --line:#EEE3CF; --line-2:#E3D3B8;
+  /* 低飽和的面色＋各自的「厚度」顏色（同色系深一階） */
+  --mint:#A8DCC5;   --mint-d:#7DBFA3;   --mint-l:#E6F5EE;
+  --butter:#FBE3A0; --butter-d:#E3C266; --butter-l:#FFF6DA;
+  --coral:#F8B9AE;  --coral-d:#E29486;  --coral-l:#FFEDE8;
+  --sky:#B9DDF2;    --sky-d:#8DBFDD;    --sky-l:#EAF5FC;
+  --lilac:#D9CCEF;  --lilac-d:#B6A3D9;  --lilac-l:#F4EEFA;
+  --accent:#3F7F68; --accent-2:var(--mint-l); --warn:#E88A7C;
+  --r:26px;
+  /* 黏土的光影 */
+  --rim:rgba(255,255,255,.78);          /* 上緣亮邊 */
+  --drop:rgba(140,105,70,.20);          /* 落在桌面的柔影 */
+  /* 動態曲線 */
+  --boing:cubic-bezier(.34,1.56,.64,1); /* 平常：Q 彈 */
+  --soften:cubic-bezier(.25,.8,.3,1);   /* 冷靜流程：慢慢停下來，不彈 */
+}
+
+/* ---------- 底色與字 ---------- */
+html{-webkit-text-size-adjust:100%}
+html,body{background-color:var(--bg);color:var(--ink)}
+body{
+  background-image:radial-gradient(rgba(214,190,150,.20) 2.2px,transparent 2.6px);
+  background-size:26px 26px;
+  letter-spacing:.02em;
+}
+h1{color:var(--ink);font-size:1.6rem}
+h1 small{color:var(--soft)}
+.q{color:var(--ink);font-size:1.5rem;font-weight:700}
+.hint,.count,.note{color:var(--soft)}
+/* 置中的短句：換行時兩行長度接近，句尾不會孤零零掉一個字 */
+.q,.hint,.monmsg b,.monmsg span,.wx span,.hm span,.connect b,.breath-word,.cornermsg,.sense{text-wrap:balance}
+.t,.rtimer,#elapsed,#hdrStars,#homeStars,#shopStars{font-variant-numeric:tabular-nums}
+
+/* ---------- 為手指設計 ---------- */
+button{touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+/* iPad／iPhone 在字小於 16px 的輸入框會自動放大畫面，這裡統一擋掉 */
+input,textarea,select{font-size:16px!important}
+:focus-visible{outline:3px solid var(--sky-d);outline-offset:3px}
+button:focus:not(:focus-visible){outline:none}
+
+/* =========================================================
+   黏土塊：所有可以按的東西共用同一套光影
+   --face 面色、--edge 厚度色、--thick 厚度、--sink 沉下去多少
+   ========================================================= */
+.btn,.pick,.hm,.wx,.lv,.need,.moods button,.chip,.speak,.sos,.bigtap,.lemon,.tap,.hold{
+  --thick:6px; --sink:0px; --face:var(--paper); --edge:var(--line-2);
+  --clay:inset 0 2px 0 var(--rim),
+         0 calc(var(--thick) - var(--sink)) 0 var(--edge),
+         0 calc(var(--thick) - var(--sink) + 8px) 14px -6px var(--drop);
+  background-color:var(--face);
+  box-shadow:var(--clay);
+  transform:translateY(var(--sink));
+  transition:transform .16s var(--boing),box-shadow .16s var(--boing),background-color .2s,border-color .2s;
+}
+/* 按下去：沉到底 */
+.btn:active,.btn.ghost:active,.pick:active,.hm:active,.wx:active,.lv:active,.need:active,
+.moods button:active,.chip:active,.speak:active,.sos:active,.bigtap:active,.tap:active{
+  --sink:var(--thick)!important;   /* 不管是浮起來還是被選中，按下去都會沉到底 */
+  transform:translateY(var(--sink));box-shadow:var(--clay);
+  transition-duration:.05s;
+}
+/* 被選中：留在按下去一半的位置 */
+.pick.sel,.lv.sel,.need.sel,.moods button.sel,.chip.sel,.hm-today.on{
+  --sink:3px;
+  transform:translateY(var(--sink));box-shadow:var(--clay);
+}
+/* 舊樣式裡比較「強」的規則，這裡用同樣的強度再套一次黏土面色 */
+.btn.ghost,.btn.starbtn,.pick.sel,.lv.sel,.need.sel,.moods button.sel,.chip.sel,.tap.done,.hm-today.on{background-color:var(--face)}
+/* 有滑鼠的裝置才有「浮起來」；觸控裝置點過之後不會卡住 */
+@media (hover:hover) and (pointer:fine){
+  .btn:hover,.pick:hover,.hm:hover,.wx:hover,.lv:hover,.need:hover,.moods button:hover,.chip:hover,.sos:hover{
+    --sink:-2px;transform:translateY(var(--sink));box-shadow:var(--clay)}
+  .pick.sel:hover,.lv.sel:hover,.need.sel:hover,.chip.sel:hover{--sink:2px}
+}
+
+/* ---------- 卡片：一大塊厚厚的底板 ---------- */
+.card{
+  background:var(--card);
+  border:0;border-radius:32px;
+  padding:28px 22px;
+  box-shadow:inset 0 2px 0 var(--rim),0 6px 0 var(--line-2),0 18px 26px -10px var(--drop);
+}
+.step{animation:clayPop .45s var(--boing)}
+@keyframes clayPop{
+  0%{opacity:0;transform:translateY(12px) scale(.97)}
+  60%{opacity:1}
+  100%{opacity:1;transform:none}
+}
+
+/* ---------- 按鈕 ---------- */
+.btn{
+  --face:var(--mint); --edge:var(--mint-d);
+  background-image:none;
+  color:var(--ink);font-weight:700;
+  border:0;border-radius:999px;
+  min-height:48px;padding:13px 26px;
+  white-space:nowrap;
+}
+.btn.small{--thick:4px;min-height:44px;padding:9px 18px;font-size:.95rem}
+.btn.ghost{--face:var(--paper);--edge:var(--line-2);background-image:none;color:var(--ink);border:0;box-shadow:var(--clay)}
+.btn.starbtn{--face:var(--butter);--edge:var(--butter-d)}
+.btn[disabled]{opacity:.5;filter:saturate(.35)}
+.adult-btn{min-height:52px}
+
+/* ---------- 選擇卡（圖鑑、怪獸、主角、遊戲） ---------- */
+.pick{
+  border:3px solid transparent;border-radius:28px;
+  padding:16px 10px 14px;
+}
+.pick.sel{--face:var(--mint-l);--edge:var(--mint-d);border-color:var(--mint-d)}
+.pick b{font-size:1.18rem;color:var(--ink)}
+.pick span{color:var(--soft)}
+.pick:disabled{opacity:.55}
+.alb .pick{padding:12px 6px}
+
+/* 圖鑑卡一張一張「啵」出來（整個工具只有這裡會自己動） */
+#dex .pick,#jdex .pick{animation:clayCardIn .55s var(--boing) backwards}
+#dex .pick:nth-child(2),#jdex .pick:nth-child(2){animation-delay:.05s}
+#dex .pick:nth-child(3),#jdex .pick:nth-child(3){animation-delay:.10s}
+#dex .pick:nth-child(4),#jdex .pick:nth-child(4){animation-delay:.15s}
+#dex .pick:nth-child(5),#jdex .pick:nth-child(5){animation-delay:.20s}
+#dex .pick:nth-child(6),#jdex .pick:nth-child(6){animation-delay:.25s}
+#dex .pick:nth-child(n+7),#jdex .pick:nth-child(n+7){animation-delay:.30s}
+@keyframes clayCardIn{
+  0%{opacity:0;transform:translateY(22px) scale(.85)}
+  70%{opacity:1}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+.cname{border-radius:999px;padding:3px 12px;font-weight:700;font-size:.8rem;color:var(--paper);box-shadow:inset 0 -3px 0 rgba(0,0,0,.10)}
+.pick .cname{display:inline-block;width:auto;margin-top:6px}
+.lvtag{color:var(--soft)}
+/* 經驗值條：一條凹槽，裡面裝著鵝黃色的黏土 */
+.xpbar{height:14px;border-radius:999px;background:#F2E8D6;box-shadow:inset 0 2px 0 rgba(150,115,75,.14);margin:8px 10px 2px}
+.xpbar i{background:var(--butter-d);border-radius:999px;box-shadow:inset 0 3px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.07)}
+
+/* ---------- 家園三個入口、心裡的天氣 ---------- */
+.hm,.wx{border:0;border-radius:30px}
+.hm-calm{--face:var(--coral-l);--edge:var(--coral)}
+.hm-joy{--face:var(--butter-l);--edge:var(--butter)}
+.hm-today{--face:var(--mint-l);--edge:var(--mint)}
+.hm-today.on{outline:0;--face:#D9EFE5;--edge:var(--mint-d)}
+.hm-today.has::after{background:var(--coral-d);box-shadow:0 0 0 3px var(--mint-l)}
+.wx-hot{--face:var(--coral-l);--edge:var(--coral)}
+.wx-comfort{--face:var(--sky-l);--edge:var(--sky)}
+.wx-safe{--face:var(--mint-l);--edge:var(--mint)}
+.wx-repair{--face:var(--lilac-l);--edge:var(--lilac)}
+/* 黏土圖示（js/icons.js 畫的） */
+.hm i,.wx i{display:block;line-height:1}
+.hm i svg,.wx i svg{display:block;margin:0 auto}
+.cico{display:inline-block;vertical-align:-.28em}
+
+/* ---------- 馬上冷靜：安靜地待在角落，不閃不跳 ---------- */
+.sos{
+  --face:var(--coral);--edge:var(--coral-d);
+  color:var(--ink);font-weight:700;
+  border-radius:999px;min-height:52px;padding:12px 22px 12px 14px;
+  bottom:calc(98px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:8px;
+}
+
+/* ---------- 情緒大小、需要什麼、心情：一顆顆小積木 ---------- */
+.lv,.need,.moods button{--thick:5px;border:3px solid transparent;border-radius:24px}
+.lv.sel{--face:color-mix(in srgb,var(--mc,#7DBFA3) 12%,#FFFDF8);--edge:var(--mc,var(--mint-d));border-color:var(--mc,var(--mint-d))}
+.need.sel,.moods button.sel{--face:var(--mint-l);--edge:var(--mint-d);border-color:var(--mint-d)}
+.lv.sel,.need.sel,.moods button.sel,.tap.done{animation:clayJelly .45s var(--boing)}
+@keyframes clayJelly{
+  0%{transform:translateY(var(--sink)) scale(1)}
+  35%{transform:translateY(var(--sink)) scale(1.07,.93)}
+  65%{transform:translateY(var(--sink)) scale(.97,1.03)}
+  100%{transform:translateY(var(--sink)) scale(1)}
+}
+.tap{--thick:5px;border:3px solid var(--line)}
+.tap.done{--face:var(--mint);--edge:var(--mint-d);border-color:var(--mint-d);color:var(--ink)}
+/* 練習表的格子不是按鈕，是可以打勾的小框 */
+.cell{background:var(--paper);border:2px solid var(--line-2);border-radius:12px;box-shadow:0 3px 0 var(--line-2)}
+.cell.done{background:var(--mint);border-color:var(--mint-d);color:var(--ink);box-shadow:0 3px 0 var(--mint-d)}
+.cell.today{border-color:var(--butter-d)}
+
+/* ---------- 小標籤按鈕 ---------- */
+.chip{--thick:4px;border:3px solid transparent;border-radius:999px;font-weight:500;min-height:44px;padding:8px 16px;color:var(--ink)}
+.chip.sel{--face:var(--mint-l);--edge:var(--mint-d);border-color:var(--mint-d)}
+.homelinks .chip{min-height:42px}
+.rvchip,.wishset{min-height:0}
+.speak{--thick:3px;border:0;color:var(--soft);min-height:44px;padding:8px 16px}
+
+/* ---------- 大拍手鈕、捏檸檬、按住確認 ---------- */
+.bigtap{--thick:8px;--face:var(--butter);--edge:var(--butter-d);color:var(--ink);font-weight:700}
+.lemon{--thick:8px;--edge:var(--butter-d);display:block;background-color:transparent;color:var(--ink)}
+.lemon.hold{--sink:6px;transform:translateY(var(--sink)) scale(.93);box-shadow:var(--clay)}
+.hold{--thick:4px;--face:var(--ink);--edge:#45362C;--rim:rgba(255,255,255,.12);color:var(--paper);min-height:48px}
+.hold i{background:var(--butter)}
+
+/* 一個畫面只有一顆主要按鈕：活動還沒按「開始」之前，「我好一點了」先退到後面 */
+[data-step="3"]:has(#bStart:not([style*="none"])) #actDone{--face:var(--paper);--edge:var(--line-2)}
+
+/* 呼吸球、紅綠燈 */
+.ball{box-shadow:inset 0 -10px 0 rgba(0,0,0,.07),inset 0 6px 0 rgba(255,255,255,.25),0 10px 0 rgba(150,115,75,.10)}
+.tlight{background:var(--ink);border-radius:32px;box-shadow:inset 0 2px 0 rgba(255,255,255,.12),0 6px 0 #45362C}
+
+/* =========================================================
+   怪獸的對話泡泡：上面一張名牌，泡泡的小尾巴指向怪獸
+   ========================================================= */
+.monmsg{
+  position:relative;
+  background:var(--paper);border:0;border-radius:26px;
+  padding:24px 20px 16px;margin:20px auto 18px;max-width:440px;
+  box-shadow:inset 0 2px 0 var(--rim),0 5px 0 var(--line-2),0 16px 20px -10px var(--drop);
+}
+.monmsg small{
+  position:absolute;top:-14px;left:18px;
+  display:inline-flex;align-items:center;gap:6px;
+  background:#FFF3DC;
+  background:color-mix(in srgb,var(--mc,#E3C266) 26%,#FFFDF8);
+  color:var(--ink);font-size:.82rem;font-weight:700;
+  padding:5px 14px 5px 10px;border-radius:999px;
+  transform:rotate(-2.5deg);
+  box-shadow:inset 0 2px 0 var(--rim),0 3px 0 color-mix(in srgb,var(--mc,#E3C266) 55%,#E3D3B8);
+}
+.monmsg small::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--mc,#E3C266);box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)}
+.monmsg b{font-size:1.3rem;line-height:1.45;margin:2px 0 4px;color:var(--ink)}
+.monmsg span{color:var(--soft);font-size:.92rem}
+.monmsg::after{
+  content:'';position:absolute;left:50%;bottom:-9px;width:22px;height:22px;
+  background:var(--paper);border-radius:0 0 7px 0;
+  transform:translateX(-50%) rotate(45deg);
+  box-shadow:3.6px 3.6px 0 var(--line-2);
+}
+/* 怪獸在泡泡上面的時候（怪獸介紹頁），尾巴朝上 */
+.monmsg.up{margin-top:26px}
+.monmsg.up::after{bottom:auto;top:-9px;border-radius:7px 0 0 0;box-shadow:none}
+.monmsg.up small{left:auto;right:18px;transform:rotate(2.5deg)}
+.bubble{background:var(--paper);border:0;border-radius:22px;box-shadow:inset 0 2px 0 var(--rim),0 4px 0 var(--line-2)}
+
+/* =========================================================
+   底部導覽列：浮在畫面上的一塊圓角底板，現在所在的那格是按下去的
+   ========================================================= */
+.tabbar{
+  left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
+  max-width:760px;margin:0 auto;
+  background:var(--paper);
+  border:0;border-radius:30px;
+  padding:7px;gap:4px;
+  box-shadow:inset 0 2px 0 var(--rim),0 6px 0 var(--line-2),0 16px 28px -8px rgba(140,105,70,.28);
+}
+.tabbar button{
+  border-radius:23px;color:var(--soft);min-height:56px;padding:5px 0 4px;
+  transition:background-color .2s,box-shadow .2s,transform .2s var(--boing);
+}
+.tabbar button span{font-weight:700;font-size:.78rem;letter-spacing:.04em}
+.tabbar button:active{transform:scale(.94)}
+.tabbar button.on{color:var(--ink);background:var(--butter-l);box-shadow:inset 0 3px 0 rgba(170,130,60,.16),inset 0 0 0 2px var(--butter)}
+.tabbar button.on .navico{transform:scale(1.1);transition:transform .3s var(--boing)}
+
+/* =========================================================
+   從下面升上來的那一頁（給大人）、提醒、彈出的小卡
+   ========================================================= */
+.drawer-bg{background:rgba(92,74,61,.34);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.drawer{
+  background:var(--card);color:var(--ink);
+  max-width:760px;margin:0 auto;
+  border-radius:34px 34px 0 0;
+  padding:14px 22px calc(34px + env(safe-area-inset-bottom));
+  box-shadow:inset 0 2px 0 var(--rim);
+  overscroll-behavior:contain;
+  transition:transform .42s var(--soften);
+}
+.drawer.on{box-shadow:inset 0 2px 0 var(--rim),0 -12px 40px rgba(92,74,61,.20)}
+.drawer::before{content:'';display:block;width:48px;height:6px;border-radius:999px;background:var(--line-2);margin:0 auto 12px}
+.drawer h2{font-size:1.35rem}
+.drawer h3,.adult h4,.intro h4{color:var(--accent)}
+.drawer h3{font-size:1.02rem;margin:22px 0 6px}
+.drawer p,.drawer li{max-width:40em}
+.say{background:var(--mint-l);border-radius:18px;padding:12px 14px}
+.avoid{background:var(--coral-l);border-radius:18px;padding:12px 14px}
+.timer{background:var(--butter-l);border-radius:22px;padding:14px 16px}
+.agetbl td:first-child{color:var(--accent)}
+
+.toasts{top:calc(14px + env(safe-area-inset-top))}
+.toast{
+  background:var(--paper);color:var(--ink);font-weight:700;border-radius:24px;padding:12px 20px;
+  box-shadow:inset 0 2px 0 var(--rim),0 5px 0 var(--line-2),0 14px 22px -6px rgba(140,105,70,.3);
+  animation:clayToastIn .45s var(--boing),tout .4s ease 2.6s forwards;
+}
+.toast.big{background:var(--butter);color:var(--ink);box-shadow:inset 0 2px 0 var(--rim),0 5px 0 var(--butter-d),0 14px 22px -6px rgba(140,105,70,.3)}
+@keyframes clayToastIn{from{opacity:0;transform:translateY(-14px) scale(.8)}}
+
+.restov,.introov,.wishov{background:rgba(92,74,61,.42);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.introcard,.wishask{background:var(--card);border-radius:32px;box-shadow:inset 0 2px 0 var(--rim),0 6px 0 var(--line-2),0 24px 40px -12px rgba(92,74,61,.35);animation:clayPop .45s var(--boing)}
+
+/* ---------- 給大人的區塊：維持 v29 的「👀＋淡藍」，只把形狀統一 ---------- */
+.gdetail,.adultbox,.adultcue{border-radius:18px;color:var(--ink)}
+.adultcue{padding:10px 12px 10px 14px}
+.adultbox{padding:10px 14px}
+.adultbox summary{min-height:28px}
+.adult{background:#F2F8F6;border:0;border-radius:24px;box-shadow:inset 0 0 0 2px #D6ECE8}
+
+/* ---------- 其他用到純白的地方，全部換成暖白 ---------- */
+.jbitem,.logitem,.review,.lines div,.mcard.up,.realchk,.namein,.cpn input,.logitem textarea,.moodcard{background-color:var(--paper)}
+.moodcard{background-color:var(--butter-l);border-radius:24px;padding:14px}
+.jbitem,.logitem,.review{border:0;box-shadow:inset 0 2px 0 var(--rim),0 4px 0 var(--line-2);border-radius:22px}
+.jbitem{border-left:8px solid var(--jc);min-height:56px}
+.namein,.cpn input,.logitem textarea,#pNotes,#logText{border:3px solid var(--line)!important;border-radius:18px!important;color:var(--ink);background:var(--paper)}
+.namein:focus,.cpn input:focus,.logitem textarea:focus,#pNotes:focus{outline:none;border-color:var(--mint-d)!important}
+.sentence{background:var(--butter-l);border-radius:22px}
+.sentence u{border-bottom-color:var(--butter-d)}
+.connect{background:var(--butter-l);border-radius:24px}
+.soft{border-radius:20px}
+.starbar{background:var(--butter-l);box-shadow:inset 0 0 0 2px var(--butter)}
+.dots i{background:var(--line-2)}
+.dots i.on{background:var(--mint-d)}
+.pbar{height:10px;border-radius:999px;background:var(--line);box-shadow:inset 0 2px 0 rgba(150,115,75,.10)}
+.pbar i{background:var(--mint-d);border-radius:999px;transition:width .8s var(--soften)}
+.rstage span.on{background:var(--mint);color:var(--ink)}
+.rstage span.done{background:var(--mint-l);color:var(--accent)}
+.check li{min-height:44px}
+.check li.done .bx{background:var(--mint-d);border-color:var(--mint-d)}
+.levelup,.badge{animation-timing-function:var(--boing)}
+.testtag{background:var(--lilac-d);color:var(--paper)}
+.mcard{border-radius:20px;box-shadow:inset 0 2px 0 var(--rim),0 4px 0 #E8CF9A}
+
+/* =========================================================
+   冷靜流程（body.focus，step 1–8）：畫面要比孩子安靜
+   沒有彈跳、沒有果凍，換頁只是慢慢浮出來；按鈕照樣按得下去。
+   ========================================================= */
+body.focus .step{animation:claySettle .5s var(--soften)}
+@keyframes claySettle{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+body.focus .btn,body.focus .pick,body.focus .wx,body.focus .lv,body.focus .need,body.focus .chip,body.focus .speak,body.focus .tap{
+  transition:transform .14s var(--soften),box-shadow .14s var(--soften),background-color .25s,border-color .25s}
+body.focus .lv.sel,body.focus .need.sel,body.focus .tap.done{animation:none}
+body.focus .navrow .btn{--face:transparent;--edge:transparent;--rim:transparent;--drop:transparent;color:var(--soft);font-weight:500}
+body.focus #dots{margin-top:4px}
+
+/* =========================================================
+   手機寬度：字和按鈕收一點，標籤不折行
+   ========================================================= */
+.ph{display:inline-block;font-style:normal}  /* 句子只在標點後面換行，不會把一個詞切成兩半 */
+.adultcue .chip{flex:none;white-space:nowrap}
+.lv small{white-space:nowrap}
+@media (max-width:520px){
+  h1{font-size:1.28rem;white-space:normal;min-width:0;flex:1}
+  h1 small{font-size:.72rem}
+  header{align-items:flex-start;gap:8px}
+  .hdr-btns{flex:none;flex-wrap:nowrap;gap:6px}
+  .hdr-btns .btn.small{padding:8px 11px;font-size:.86rem}
+  .card{padding:24px 16px;border-radius:28px}
+  .q{font-size:1.36rem}
+  .thermo{gap:6px}
+  .lv{padding:8px 1px;border-width:2px;border-radius:20px}
+  .lv small{font-size:.74rem}
+  .moods{gap:6px}
+  .moods button{padding:6px 7px;font-size:1.55rem;border-radius:20px}
+  .homemain{gap:8px}
+  .hm{padding:14px 4px 12px;border-radius:26px}
+  .weather{gap:10px}
+  .wx{padding:18px 8px}
+  .monmsg{padding:22px 14px 14px}
+  .monmsg b{font-size:1.18rem}
+  .tabbar{left:8px;right:8px}
+  .sos{right:12px}
+}
+
+@media (max-width:380px){
+  .moods{gap:4px}
+  .moods button{padding:5px 4px;font-size:1.4rem}
+  .starbar{white-space:nowrap;font-size:1.1rem}
+}
+
+/* ---------- 尊重「減少動態效果」 ---------- */
+@media (prefers-reduced-motion:reduce){
+  .step,body.focus .step,#dex .pick,#jdex .pick,.toast,.introcard,.wishask,.lv.sel,.need.sel,.moods button.sel,.tap.done{animation:none!important}
+  .btn,.pick,.hm,.wx,.chip,.lv,.need,.moods button,.tabbar button,.drawer,.pbar i{transition-duration:.01s!important}
+}

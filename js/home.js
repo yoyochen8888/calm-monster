@@ -150,7 +150,7 @@ function renderHome(){
     if(store.moodDay!==today()){store.moodDay=today();store.mood=m[1];store.moodLog.push({d:today(),m:m[1]});store.moodLog=store.moodLog.slice(-90);save();gain('心情打卡',3)}else{store.mood=m[1];save()}
     renderHome();
     S.moodShow=true;$('#moodCard').style.display='';
-    $('#moodMsg').innerHTML=(m[2]?`太好了！要不要把這個好心情存進快樂寶盒？<br><button class="btn small" id="moodJoy" style="margin-top:8px">✨ 存起來</button>`:`謝謝你說出來。要不要去冷靜站，讓${m[1]}的怪獸變小？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`)+` <button class="chip" id="moodOk" style="margin-top:8px">好</button>`;
+    $('#moodMsg').innerHTML=(m[2]?`太好了！要不要把這個好心情存進快樂寶盒？<br><button class="btn small" id="moodJoy" style="margin-top:8px">✨ 存起來</button>`:`謝謝你告訴我。${m[1]}的時候，要不要去冷靜站照顧一下這隻怪獸？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`)+` <button class="chip" id="moodOk" style="margin-top:8px">好</button>`;
     $('#moodOk').onclick=()=>{S.moodShow=false;$('#moodCard').style.display='none'};
     const g=$('#moodGo');if(g)g.onclick=startFlow;const mj=$('#moodJoy');if(mj)mj.onclick=()=>startJoy(m[1]==='平靜'?'safe':'happy');});
 }
@@ -202,7 +202,7 @@ function renderGoods(){
   $$('[data-good]').forEach(b=>b.onclick=()=>{goodPick=b.dataset.good;tone(600,.1);renderGoods()});
   const cb=$('#confirmBox');cb.innerHTML='';
   if(left<=0){cb.innerHTML='<p class="hint">今天已經給了 3 次星星，明天再繼續！也可以直接口頭稱讚孩子喔。</p>';return}
-  if(goodPick){cb.innerHTML=`<p class="hint">今天還可以給 ${left} 次。說出具體的事，例如「你剛剛生氣時用說的，好棒」。</p>`;
+  if(goodPick){cb.innerHTML=`<p class="hint">今天還可以給 ${left} 次。說出你看到的事，例如「你剛剛生氣的時候，是用說的」。</p>`;
     cb.appendChild(holdBtn('大人按住 2 秒確認 +10 ⭐',2000,()=>{store.pday.n++;save();gain(goodPick,10);goodPick=null;renderGoods()}))}
   else cb.innerHTML='<p class="hint">先選一件孩子做到的事</p>';
 }
@@ -278,7 +278,7 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
   const cc={};L.forEach(x=>{if(x.cause)cc[x.cause]=(cc[x.cause]||0)+1});const topC=Object.entries(cc).sort((a,b)=>b[1]-a[1])[0];
   const age=S.age||'mid';
   const fm=famOf(k);
-  $('#mdBody').innerHTML=`<div class="monmsg" style="--mc:${e.color}"><small>${fm.ico} ${fm.name}</small><b>「${EMO_MSG[k]}」</b><span>牠需要：${fm.need}</span></div><h4>🌱 成長進化</h4><div class="evorow">${STAGES.map((t,i)=>`<div class="evocell ${i+1>cur?'lock':''} ${i+1===cur?'now':''}">${monster(k,66,'',{grow:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small><small>${i+1>cur?'🔒 Lv.'+t.from:i+1===cur?'現在':'✓'}</small></div>`).join('')}</div>
+  $('#mdBody').innerHTML=`<div class="monmsg up" style="--mc:${e.color}"><small>${fm.ico} ${fm.name}</small><b>${phr('「'+EMO_MSG[k]+'」')}</b><span>${phr('牠需要：'+fm.need)}</span></div><h4>🌱 成長進化</h4><div class="evorow">${STAGES.map((t,i)=>`<div class="evocell ${i+1>cur?'lock':''} ${i+1===cur?'now':''}">${monster(k,66,'',{grow:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small><small>${i+1>cur?'🔒 Lv.'+t.from:i+1===cur?'現在':'✓'}</small></div>`).join('')}</div>
     <p class="hint" style="text-align:left">${lvOf(store.xp[k]||0)>=CORNER_LV?'':`到 Lv.${CORNER_LV}，牠會教你牠的拿手方法。`}每次陪牠冷靜，牠就會長大、變得更成熟。長大後會學會「${BADGE[k][0]} ${BADGE[k][1]}」：${BADGE[k][2]}。</p>
     <h4>🌡️ 牠變大的時候</h4><div class="evorow">${SIZES.map((t,i)=>`<div class="evocell mood">${monster(k,58,'',{mood:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small></div>`).join('')}<div class="evocell calm">${HASART.has(k)?`<svg class="mon" width="58" height="58" viewBox="-8 -22 136 150"><image href="img/${k}0.webp" x="-4" y="-8" width="128" height="128"/></svg>`:monster(k,58,'',{grow:1,level:1,eq:{head:null,neck:null}})}<small>冷靜下來</small></div></div>
     <p class="hint" style="text-align:left">情緒越大，牠看起來越兇，這是在告訴你「我很不舒服」。冷靜下來，牠就會變回溫柔的樣子。</p>

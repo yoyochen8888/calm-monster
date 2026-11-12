@@ -1,7 +1,7 @@
 /* 遊戲時間：每天10分鐘、記憶翻牌、烏龜兔子石頭、顏色泡泡、安靜觀察 */
 /* ---------- games hub ---------- */
 function gameReward(id,label){if(!store.playLog.includes(today()))store.playLog.push(today());store.playLog=store.playLog.slice(-60);
-  if(store.gameDay[id]!==today()){store.gameDay[id]=today();gain(label,3)}else{save();toast('今天已經拿過這個遊戲的星星了，再玩也很棒！')}}
+  if(store.gameDay[id]!==today()){store.gameDay[id]=today();gain(label,3)}else{save();toast('今天已經拿過這個遊戲的星星了，想玩可以再玩！')}}
 const LIB=[
   ['redgreen','🚦','紅綠燈','大人喊「綠燈」就走或跑，喊「紅燈」立刻定住；加「黃燈」就慢慢走。','聽指令、衝動控制、身體煞車','太簡單：黃燈要單腳站；太難：只用紅燈和綠燈。'],
   ['tamb','🥁','鈴鼓快慢走','鈴鼓敲快就快走，敲慢就像烏龜慢慢走，聲音停了就要停。沒有鈴鼓可以拍手。','聽指令、調整速度、自我控制','太簡單：加入「倒退走」；太難：只有快和停。'],
@@ -82,7 +82,7 @@ function renderRoutine(){
     <div class="row"><button class="btn small" id="rBreath">開始呼吸</button></div>`+next();
     faceCard($('#rFace'));
     $('#rBreath').onclick=()=>{$('#rBreath').style.display='none';let i=0;const ball=$('#rBall');
-      const go1=()=>{if(i>=3){$('#rBw').textContent='好棒，身體變平靜了';chime();ball.style.transform='scale(1)';return}
+      const go1=()=>{if(i>=3){$('#rBw').textContent='做完了。感覺看看，身體變平靜了嗎？';chime();ball.style.transform='scale(1)';return}
         ball.style.transitionDuration='3000ms';ball.style.transform='scale(1.8)';$('#rBw').textContent=`第 ${i+1} 次：吸～`;
         later(()=>{ball.style.transitionDuration='5000ms';ball.style.transform='scale(1)';$('#rBw').textContent=`第 ${i+1} 次：慢慢吹泡泡～`;i++;later(go1,5300)},3000)};go1()};
     bindNext();return}
@@ -136,7 +136,7 @@ function endMemory(){const M=S.mem;M.over=true;renderMemory();const hn=store.her
   let t;if(M.mode==='coop')t=`🤝 你們一起用了 ${M.moves} 次就全部找到了！合作好棒！`;
   else if(M.score.kid>M.score.hero)t=`🎉 你贏了！<br>${hn}：「我輸了，有點可惜……但是跟你玩好開心！我們再來一次？」`;
   else if(M.score.kid<M.score.hero)t=`${hn}這次贏了。<br>${hn}：「你很想贏，輸了有點不服氣對不對？我們先吹一口氣～呼～。有時候贏、有時候輸，輸了可以說『再玩一次』！」`;
-  else t=`平手！你們都好厲害！`;
+  else t=`平手！兩個人都好專心！`;
   m.innerHTML=t+`<div class="row" style="margin-top:10px"><button class="btn small" id="memAgain">再玩一次</button>${M.mode==='vs'&&M.score.kid<M.score.hero?'<button class="btn small ghost" id="memCalm">去冷靜站</button>':''}</div>`;
   $('#memAgain').onclick=()=>renderMemory(true);const c=$('#memCalm');if(c)c.onclick=startFlow;
   gameReward('memory','記憶翻牌');}
@@ -148,7 +148,7 @@ function renderTR(){S.tr={p:0,running:false,cmd:null,last:0,stoneOk:0,stoneTap:0
   $('#trCmd').textContent='準備好了嗎？';$('#trCmd').style.background='#FFF3DF';$('#trBar').style.width='0';
   $('#trRun').style.left='0';$('#trRun').innerHTML=store.hero?hero(store.hero.type,40):'🏃';$('#trTap').textContent='開始';$('#trInfo').textContent='聽到指令就照做，石頭的時候要忍住不點喔！'}
 function trNext(){const T=S.tr;if(!T.running)return;
-  if(T.cmd==='stone'&&!T.tapped){T.stoneOk++;toast('定住了！好厲害 🪨')}
+  if(T.cmd==='stone'&&!T.tapped){T.stoneOk++;toast('定住了！你踩住煞車了 🪨')}
   const young=S.age==='young';const opts=T.cmd==='stone'?['rabbit','turtle']:['rabbit','turtle','stone','stone'];
   T.cmd=opts[Math.floor(Math.random()*opts.length)];T.tapped=false;
   const [txt,bg]=TRC[T.cmd];$('#trCmd').textContent=txt;$('#trCmd').style.background=bg;speak(txt.replace(/[^一-鿿！…]/g,''));
@@ -162,7 +162,7 @@ $('#trTap').addEventListener('pointerdown',e=>{e.preventDefault();ac();const T=S
   T.last=now;T.p=Math.min(100,T.p+(T.cmd==='rabbit'?(S.age==='young'?5:3):4));info.textContent=T.cmd==='rabbit'?'衝啊！':'慢慢的，很好';
   $('#trBar').style.width=T.p+'%';$('#trRun').style.left=`calc(${T.p}% - ${T.p*0.4}px)`;tone(700,.05,'triangle',.06);
   if(T.p>=100){T.running=false;stopAct();$('#trCmd').textContent='🏁 到終點了！';$('#trCmd').style.background='#FFF3C4';
-    info.textContent=`石頭時定住成功 ${T.stoneOk} 次！${T.stoneTap?'下次試試看石頭時一次都不動。':'完全沒有偷動，煞車好厲害！'}`;$('#trTap').textContent='再玩一次';chime();gameReward('tr','烏龜兔子石頭')}});
+    info.textContent=`石頭時定住成功 ${T.stoneOk} 次！${T.stoneTap?'下次試試看石頭時一次都不動。':'完全沒有偷動，你管住了自己的身體！'}`;$('#trTap').textContent='再玩一次';chime();gameReward('tr','烏龜兔子石頭')}});
 
 /* ---------- color bubbles ---------- */
 function renderCB(){const young=S.age==='young';const ks=young?['angry','sad','defiant']:['angry','sad','defiant','stuck','scared'];
