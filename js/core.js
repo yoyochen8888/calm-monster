@@ -53,7 +53,7 @@ function go(n,noPush){
   $('#dots').style.display=(n>=1&&n<=7)?'':'none';
   $('#navrow').style.display=(n===0||n===7||n===10)?'none':'';
   $('#navBack').style.visibility=S.hist.length?'visible':'hidden';
-  const tab=(n>=1&&n<=8)?1:((n>=18&&n<=21)||n===23)?17:n===22?9:(n>=24&&n<=27)?10:n;
+  const tab=(n>=1&&n<=8)?1:((n>=18&&n<=21)||n===23)?17:(n===22||n===29)?9:((n>=24&&n<=27)||n===28)?10:n;
   $$('[data-tab]').forEach(b=>b.classList.toggle('on',+b.dataset.tab===tab));
   $$('.step').forEach(s=>s.classList.toggle('on',+s.dataset.step===n));
   $('#dots').innerHTML=Array.from({length:8},(_,i)=>`<i class="${i===n?'on':''}"></i>`).join('');
@@ -84,6 +84,8 @@ function go(n,noPush){
   if(n===25)renderGarden();
   if(n===26)renderReview();
   if(n===27)renderQuiet();
+  if(n===28)renderJoy();
+  if(n===29)renderJoyBox();
   if(typeof ambSync==='function')ambSync();
 }
 

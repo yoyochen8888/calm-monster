@@ -37,6 +37,7 @@ function renderAges(){
 /* step 1 */
 function renderMonsters(){
   $('#monQ').textContent=S.sos?'你好一點了！剛剛是哪一隻怪獸來找你？':'現在，你心裡住著哪一隻怪獸？';
+  $('#monJoy').style.display=S.sos?'none':'';
   $('#monHint').textContent=S.sos?'點一隻最像剛剛的感覺，我們再看看牠現在多大':'點一隻最像你的';
   $('#monsters').innerHTML=visibleEmo().map(k=>[k,EMO[k]]).map(([k,e])=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">
     ${monster(k,84,'',{mood:2})}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span><span class="lvtag">Lv.${lvOf(store.xp[k]||0)} ${TITLES[lvOf(store.xp[k]||0)-1]}</span></button>`).join('');

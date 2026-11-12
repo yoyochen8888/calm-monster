@@ -37,7 +37,7 @@ function renderTest(){const box=$('#testBox');if(!box)return;box.innerHTML='';
       <button class="chip" id="tStars">再加 1000 ⭐</button><button class="chip" id="tHero">主角 +300 經驗</button>
       <button class="chip" id="tGrow">菜和花馬上長好</button><button class="chip" id="tDay">重置今天的工作（可再做一次）</button><button class="chip" id="tNight">預覽白天／晚上</button></div>
     <div class="row" style="justify-content:flex-start"><button class="btn small" id="tEnd">結束測試，還原紀錄</button></div>`;
-  $$('[data-tl]').forEach(b=>b.onclick=()=>{const t=LEVELS[+b.dataset.tl-1];Object.keys(EMO).forEach(k=>store.xp[k]=Math.max(t,1));save();toast(`全部怪獸變成 Lv.${b.dataset.tl}「${STAGES[stageOf(+b.dataset.tl)-1].n}」`);renderTest()});
+  $$('[data-tl]').forEach(b=>b.onclick=()=>{const t=LEVELS[+b.dataset.tl-1];Object.keys(EMO).forEach(k=>store.xp[k]=Math.max(t,1));store.jxp=store.jxp||{};Object.keys(JOY).forEach(k=>store.jxp[k]=Math.max(t,1));save();toast(`全部怪獸變成 Lv.${b.dataset.tl}「${STAGES[stageOf(+b.dataset.tl)-1].n}」`);renderTest()});
   $('#tStars').onclick=()=>{store.stars+=1000;save();renderTest()};
   $('#tHero').onclick=()=>{store.pxp=(store.pxp||0)+300;save();toast('主角經驗 +300')};
   $('#tGrow').onclick=()=>{Object.keys(store.grow).forEach(k=>store.grow[k]=3);if(store.crop)store.crop.st=3;save();toast('都長好了，回家園看看')};

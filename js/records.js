@@ -53,6 +53,7 @@ function reviewHtml(off){
   if(w.W.length)kid.push(`做到了：${w.W.slice(0,4).map(x=>`<b>${x.text}</b>`).join('、')}`);
   if(w.prac)kid.push(`平時練習了 <b>${w.prac}</b> 天`);
   const mdays=Object.keys(w.moods).length;if(mdays)kid.push(`說出自己的心情 <b>${mdays}</b> 天`);
+  const jw=joyWeek(w.a);if(jw.length)kid.push(`存了 <b>${jw.length}</b> 個好時刻：${jw.slice(-3).map(j=>`<b>${esc(j.note||j.what||JOY[j.k].short)}</b>`).join('、')}`);
   const kidHtml=kid.length?`<ul class="rv-list">${kid.map(x=>`<li>${x}</li>`).join('')}</ul>`
     :`<p>${off?'上週':'這週'}還沒有用冷靜站。想練習的時候，隨時都可以來。</p>`;
   /* 七天一覽：心情＋冷靜次數 */
@@ -70,6 +71,7 @@ function reviewHtml(off){
   if(w.topP&&w.topP[1]>=2)ad.push(`比較常發生在<b>${w.topP[0]}</b>（${w.topP[1]} 次）`);
   if(w.topPlan)ad.push(`孩子選的「下次可以」：${w.topPlan[0]}`);
   ad.push(`平時練習 ${w.prac} 天、遊戲時間 ${w.play} 天、心情打卡 ${mdays} 天`);
+  {const jw=joyWeek(w.a),jp=joyWeek(p.a);if(jw.length||jp.length)ad.push(`存進快樂寶盒的好時刻 <b>${jw.length}</b> 個（上週 ${jp.length} 個）`)}
   const adHtml=`<ul class="rv-list">${ad.map(x=>`<li>${x}</li>`).join('')}</ul>`+
     (w.L.length&&p.L.length&&w.L.length>p.L.length?'<p class="rv-key">次數變多不一定是變差，也可能是孩子更願意用冷靜站了；可以一起看看「平均變小」和「4–5 級」的次數。</p>':'');
   return `<div class="rv-kid"><b>🌟 ${who}${off?'上週':'這週'}做到的事</b>${kidHtml}</div>${strip}
@@ -80,6 +82,7 @@ function reviewText(off){const w=weekData(off),p=weekData(off+1);const wd=['一'
   t+=`冷靜站 ${w.L.length} 次（${cmp(w.L.length,p.L.length,'次')}）`+(w.L.length?`，平均變小 ${w.avg.toFixed(1)} 級`:'')+(w.big?`，開始時 4–5 級 ${w.big} 次`:'')+'\n';
   if(w.topP&&w.topP[1]>=2)t+=`比較常發生在${w.topP[0]}\n`;
   t+=`平時練習 ${w.prac} 天、遊戲時間 ${w.play} 天、心情打卡 ${mdays} 天\n`;
+  const jw=joyWeek(w.a);if(jw.length)t+=`好時刻 ${jw.length} 個：`+jw.map(j=>`${JOY[j.k].short}${j.note||j.what?`（${j.note||j.what}）`:''}`).join('、')+'\n';
   t+='每天：'+w.days.map((d,i)=>`${wd[i]}${w.moods[d]?w.moods[d]:''}${w.perDay[i].length?`（冷靜站${w.perDay[i].length}次）`:''}`).join('、')+'\n\n';
   return t}
 function renderLog(){

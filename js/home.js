@@ -9,6 +9,7 @@ function renderDex(){
   $('#dex').insertAdjacentHTML('afterend',hid?`<p class="hint" id="dexMore">還有 ${hid} 隻怪獸，長大一點就會遇到牠們（大人可以在「換主角 / 年齡」調整年齡）</p>`:'');
   $('#critDexSub').textContent=`安靜觀察拍到的小動物：${critFound()} / ${Object.keys(CRIT).length}`;
   const dm=$$('#dexMore');if(dm.length>1)dm.slice(0,-1).forEach(x=>x.remove());
+  renderJoyDex();
 }
 
 /* ---------- hero ---------- */
@@ -39,6 +40,7 @@ const SPOTS={tree:[[0,0],[250,0],[140,-6]],flowers:[[0,0],[236,0],[120,-22]],ten
   swing:[[0,0],[-262,0],[-150,8]],pond:[[0,0],[-178,22],[-86,26]],house:[[0,0],[-236,0],[-128,-6]],garden:[[0,0],[230,0],[110,-4]]};
 const CROPS={carrot:['🥕','紅蘿蔔'],tomato:['🍅','番茄'],corn:['🌽','玉米']};
 const REAL_TASKS=['幫家裡的植物澆水','幫忙擺碗筷','把自己的玩具收好','幫忙洗一樣菜或水果','跟家人說一件今天開心的事','抱抱家人說謝謝','自己把書包整理好','幫忙把衣服放進洗衣籃'];
+const JOY_PEP=['想到開心的事，我就會出現喔','謝謝你注意到我！','好的感覺也要好好記住'];
 const HOME_PEP=['謝謝你照顧我們！','我今天也有好好呼吸喔','我們一起住在這裡真好'];
 function posOf(id){const p=store.pos[id];if(p&&typeof p==='object')return [p.x,p.y];const sp=SPOTS[id];return sp?sp[(p||0)%sp.length]:[0,0]}
 /* 冷靜角落：怪獸 Lv.4（冷靜高手）解鎖，點了直接練習那個方法 */
@@ -93,10 +95,13 @@ function scene(){
   const fr=Object.keys(EMO).filter(k=>(store.xp[k]||0)>0);
   const pos=[[96,150],[216,152],[70,186],[244,190],[124,196],[182,200],[40,160],[290,170],[150,214],[260,214],[20,214],[310,150],[200,176],[100,222]];
   fr.forEach((k,i)=>{const [px,py]=HOME_POS[k]||pos[i];add(py+42,`<g data-mon="${k}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${i*.5}s">${monster(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`)});
+  /* 情緒夥伴（v25）：一起品味過就搬進來 */
+  const jf=Object.keys(JOY).filter(k=>jxpOf(k)>0);
+  jf.forEach((k,i)=>{const id='j-'+k,[px,py]=HOME_POS[id]||pos[(fr.length+i)%pos.length].map((v,j)=>v+(fr.length+i>=pos.length?(j?6:14):0));add(py+42,`<g data-mon="${id}" data-actor="m" class="homemon actor" style="transform:translate(${px}px,${py}px);${S.decor?'pointer-events:none;opacity:.55':''}"><g class="flip"><g class="act ${night?'sleepy':'bob'}" style="animation-delay:${(fr.length+i)*.5}s">${friend(k,42)}</g></g>${night?`<text class="zzz" x="34" y="6" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`)});
   if(store.hero){const [hx,hy]=HOME_POS.hero||[150,102];add(hy+56,`<g data-actor="h" class="actor" style="pointer-events:none;transform:translate(${hx}px,${hy}px)"><g class="flip"><g class="act ${night?'sleepy':'bob'}">${hero(store.hero.type,56)}</g></g></g>`)}
   v+=L.sort((a,b)=>a[0]-b[0]).map(x=>x[1]).join('')+clayAmbient(C,night);
   if(night)v+=`<rect width="360" height="250" fill="#1A1F45" opacity=".22" pointer-events="none"/>`;
-  if(!fr.length)v+=`<text x="180" y="244" text-anchor="middle" font-size="11" fill="#5A7A50">去冷靜站陪一隻怪獸冷靜，牠就會搬進家園喔</text>`;
+  if(!fr.length&&!jf.length)v+=`<text x="180" y="244" text-anchor="middle" font-size="11" fill="#5A7A50">去冷靜站陪一隻怪獸冷靜，牠就會搬進家園喔</text>`;
   return `<svg viewBox="0 0 360 250" width="100%" style="display:block;border-radius:18px">${C.defs()}`+v+`</svg>`;
 }
 function bindScene(){
@@ -108,7 +113,9 @@ function bindScene(){
       el.onpointerup=el.onpointercancel=()=>{el.onpointermove=null;el.classList.remove('dragging');store.pos[id]={x:Math.round(nx),y:Math.round(ny)};save();tone(520,.06)}}})}
   [['pond',24],['garden',25],['flowers',25]].forEach(([id,st])=>{const el=$(`#scene [data-it="${id}"]`);if(el)el.onclick=()=>{if(S.decor)return;
     if(isNight()){toast('晚上了，大家都在睡覺，明天再來吧 🌙');return}go(st)}});
-  $$('#scene [data-mon]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.mon,e=EMO[k],l=lvOf(store.xp[k]||0),b=BADGE[k];
+  $$('#scene [data-mon]').forEach(el=>el.onclick=()=>{if(S.decor)return;const k=el.dataset.mon;
+    if(k.startsWith('j-')){const j=JOY[k.slice(2)];const line=JOY_PEP[Math.floor(Math.random()*JOY_PEP.length)];toast(`${j.name}：「${line}」`);speak(line);actDo(el,'hop',900);return}
+    const e=EMO[k],l=lvOf(store.xp[k]||0),b=BADGE[k];
     const line=stageOf(l)>=2?`我學會了${b[1]}：${b[2]}！`:HOME_PEP[Math.floor(Math.random()*HOME_PEP.length)];
     toast(`${e.name}：「${line}」`);speak(line);actDo(el,'hop',900)});
   startWander();
@@ -140,10 +147,11 @@ function renderHome(){
   $$('[data-mood]').forEach(b=>b.onclick=()=>{const m=MOODS.find(x=>x[1]===b.dataset.mood);
     if(store.moodDay!==today()){store.moodDay=today();store.mood=m[1];store.moodLog.push({d:today(),m:m[1]});store.moodLog=store.moodLog.slice(-90);save();gain('心情打卡',3)}else{store.mood=m[1];save()}
     renderHome();
-    $('#moodMsg').innerHTML=m[2]?'太好了！把好心情存起來。心情好的時候，也可以先「平時練習」喔。':`謝謝你說出來。要不要去冷靜站，讓${m[1]}的怪獸變小？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`;
-    const g=$('#moodGo');if(g)g.onclick=startFlow;});
+    $('#moodMsg').innerHTML=m[2]?`太好了！要不要把這個好心情存進快樂寶盒？<br><button class="btn small" id="moodJoy" style="margin-top:8px">✨ 存起來</button>`:`謝謝你說出來。要不要去冷靜站，讓${m[1]}的怪獸變小？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`;
+    const g=$('#moodGo');if(g)g.onclick=startFlow;const mj=$('#moodJoy');if(mj)mj.onclick=()=>startJoy(m[1]==='平靜'?'safe':'happy');});
 }
 $('#hStart').onclick=startFlow;
+$('#hJoy').onclick=()=>startJoy();
 $('#hQuiet').onclick=()=>go(27);
 function startPractice(emo,act){resetFlow();store.day.n--;save();S.practice=true;S.emo=emo||'scared';S.act=act||'breathe';go(3)}
 $('#hGames').onclick=()=>go(17);
