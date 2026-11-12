@@ -50,13 +50,16 @@ function go(n,noPush){
   if(!noPush&&S.step!==undefined&&S.step!==n)S.hist.push(S.step);
   if(n===7||n===10)S.hist=[];
   S.step=n;
+  /* 冷靜流程專注模式（v27）：只留內容、一條進度和離開鍵 */
+  const focus=n>=1&&n<=8;document.body.classList.toggle('focus',focus);
+  $('#navHome').textContent=focus?'✕ 先離開':'🏠 回家園';
   $('#dots').style.display=(n>=1&&n<=7)?'':'none';
   $('#navrow').style.display=(n===0||n===7||n===10)?'none':'';
   $('#navBack').style.visibility=S.hist.length?'visible':'hidden';
   const tab=(n>=1&&n<=8)?1:((n>=18&&n<=21)||n===23)?17:(n===22||n===29)?9:((n>=24&&n<=27)||n===28)?10:n;
   $$('[data-tab]').forEach(b=>b.classList.toggle('on',+b.dataset.tab===tab));
   $$('.step').forEach(s=>s.classList.toggle('on',+s.dataset.step===n));
-  $('#dots').innerHTML=Array.from({length:8},(_,i)=>`<i class="${i===n?'on':''}"></i>`).join('');
+  $('#dots').innerHTML=`<div class="pbar"><i style="width:${Math.round(n/7*100)}%"></i></div>`;
   window.scrollTo({top:0,behavior:'smooth'});
   if(n===1)renderMonsters();
   if(n===2)renderSize();

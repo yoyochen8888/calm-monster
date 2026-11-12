@@ -34,13 +34,29 @@ function renderAges(){
     <div class="age-ico">${a.ico}</div><b>${a.name}</b><span>${a.sub}</span></button>`).join('');
   $$('[data-age]').forEach(b=>b.onclick=()=>{S.age=b.dataset.age;store.age=S.age;save();tone(600,.12);go(store.hero?10:12)});
 }
-/* step 1 */
+/* step 1（v27）：先選「心裡的天氣」，再從 2–4 隻裡選；不顯示等級和顏色，減少選擇負擔 */
+const WEATHER={hot:['🌋','像火山','好熱、好想爆炸'],comfort:['🌧️','像下雨','想哭、心裡重重的'],safe:['🌀','像颳大風','心跳快、怕怕的、亂亂的'],repair:['🩹','像受傷了','覺得做錯了、好丟臉']};
 function renderMonsters(){
-  $('#monQ').textContent=S.sos?'你好一點了！剛剛是哪一隻怪獸來找你？':'現在，你心裡住著哪一隻怪獸？';
   $('#monJoy').style.display=S.sos?'none':'';renderAdultCue();
-  $('#monHint').textContent=S.sos?'點一隻最像剛剛的感覺，我們再看看牠現在多大':'點一隻最像你的';
-  $('#monsters').innerHTML=visibleEmo().map(k=>[k,EMO[k]]).map(([k,e])=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">
-    ${monster(k,84,'',{mood:2})}<b>${e.name}</b><span class="cname" style="background:${e.color}">${e.cname}</span><span class="lvtag">Lv.${lvOf(store.xp[k]||0)} ${TITLES[lvOf(store.xp[k]||0)-1]}</span></button>`).join('');
+  const vis=visibleEmo();const last={};store.log.forEach(l=>{if(!last[l.emo]||l.t>last[l.emo])last[l.emo]=l.t});
+  const fams=Object.keys(FAM).filter(f=>vis.some(k=>EMO_FAM[k]===f));
+  const two=S.age!=='young'&&vis.length>6;/* 3–5 歲只有 5 隻，直接選 */
+  if(two&&!S.fam&&!S.pickAll){
+    $('#monQ').textContent=S.sos?'你好一點了！剛剛心裡的天氣像什麼？':'現在，心裡的天氣像什麼？';
+    $('#monHint').textContent='點一個最像的';
+    $('#monsters').className='weather';
+    $('#monsters').innerHTML=fams.map(f=>{const w=WEATHER[f];return `<button class="wx wx-${f}" data-wx="${f}"><i>${w[0]}</i><b>${w[1]}</b><span>${w[2]}</span></button>`}).join('')
+      +`<button class="chip wxall" id="wxAll">不知道，看全部怪獸</button>`;
+    $$('[data-wx]').forEach(b=>b.onclick=()=>{S.fam=b.dataset.wx;tone(520,.12);speak('心裡'+WEATHER[S.fam][1]);renderMonsters()});
+    $('#wxAll').onclick=()=>{S.pickAll=true;renderMonsters()};
+    return}
+  const list=(two&&!S.pickAll?vis.filter(k=>EMO_FAM[k]===S.fam):vis).sort((a,b)=>(last[b]||0)-(last[a]||0));
+  $('#monQ').textContent=S.sos?'剛剛是哪一隻怪獸來找你？':'是哪一隻怪獸來了？';
+  $('#monHint').textContent='點一隻最像你的';
+  $('#monsters').className='grid '+(list.length<=4?'g2':'g3');
+  $('#monsters').innerHTML=list.map(k=>`<button class="pick ${S.emo===k?'sel':''}" data-emo="${k}">${monster(k,list.length<=4?110:84,'',{mood:2})}<b>${EMO[k].name}</b></button>`).join('')
+    +(two?`<div class="row" style="grid-column:1/-1"><button class="chip" id="wxBack">← 換一個天氣</button></div>`:'');
+  const wb=$('#wxBack');if(wb)wb.onclick=()=>{S.fam=null;S.pickAll=false;renderMonsters()};
   $$('[data-emo]').forEach(b=>b.onclick=()=>{S.emo=b.dataset.emo;tone(500,.12);speak('我是'+EMO[S.emo].name);
     if(S.sos){S.sos=false;S.lv0=4;S.lv=4;S.lv2=0;if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1,quiet:1})}S.sosDone=0;go(4)}else go(2)});
 }
@@ -231,7 +247,7 @@ function actButterfly(){
 
 /* step 4 */
 /* 3–5 歲（v26）：再看一次大小就完成，「發生什麼、下次怎麼做」留給事後的一起回顧 */
-function toTalk(){if(S.age==='young')$('#finish').onclick();else go(5)}
+function toTalk(){if(S.age==='young')$('#finish').onclick();else{S.talkPh=0;go(5)}}
 function renderRe(){
   const f=famOf(S.emo),cf=EMO_FAM[S.emo]==='comfort';
   $('#reQ').textContent=f.reQ;$('#reHint').textContent=f.reHint;
@@ -257,6 +273,8 @@ function nextAct(){const l=EMO[S.emo].acts;S.act=l[(l.indexOf(S.act)+1)%l.length
 
 /* step 5 */
 function renderTalk(){
+  $('#talkMain').style.display=S.talkPh?'none':'';$('#talkRepair').style.display=S.talkPh?'':'none';
+  $('#speakSent').textContent=S.talkPh?'🔊 唸給我聽':'🔊 唸出來';
   const mk=(id,arr,key)=>{$(id).innerHTML=arr.map(x=>`<button class="chip ${S[key]===x?'sel':''}">${x}</button>`).join('');
     $(id).querySelectorAll('.chip').forEach(b=>b.onclick=()=>{S[key]=b.textContent;tone(560,.1);renderTalk()})};
   const F=famOf(S.emo);mk('#causes',F.causes,'cause');mk('#wants',F.wants,'want');mk('#dmg',['沒有','有'],'dmg');
@@ -268,8 +286,9 @@ function renderTalk(){
   const w=S.want||'＿＿＿';
   $('#sentence').innerHTML=`我覺得<u>${e.feel}</u>，<br>因為<u>${c}</u>。<br>我現在想要<u>${w}</u>。`;
 }
-$('#speakSent').onclick=()=>speak($('#sentence').textContent);
-$('#toNext').onclick=()=>{if(S.cause&&!S.talkRewarded){S.talkRewarded=true;gain('把感覺說出來',5,{flow:1,quiet:1})}go(6)};
+$('#speakSent').onclick=()=>speak(S.talkPh?'最後一個問題。剛剛有沒有東西壞掉，或有人被弄痛、弄難過？不管答案是什麼都沒關係。':$('#sentence').textContent);
+$('#toNext').onclick=()=>{if(S.cause&&!S.talkRewarded){S.talkRewarded=true;gain('把感覺說出來',5,{flow:1,quiet:1})}
+  if(!S.talkPh){S.talkPh=1;renderTalk();window.scrollTo({top:0,behavior:'smooth'});return}go(6)};
 
 /* step 6 */
 function renderPlans(){
@@ -297,7 +316,7 @@ function gain(label,n,opt={}){
   tone(880,.12,'triangle',.1);if(up)setTimeout(()=>{tone(784,.2);setTimeout(()=>tone(1046,.5),180)},350);
   return n;
 }
-function resetFlow(){Object.assign(S,{sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,sizeSpoke:null,need:null,cueDone:false,dmg:null,repair:null,actsDone:[],monUp:null,heroUp:null,capToasted:false});
+function resetFlow(){Object.assign(S,{sos:false,sosDone:0,emo:null,lv:0,lv0:0,lv2:0,act:null,cause:null,want:null,plan:null,usedCo:false,tries:0,earned:[],actRewards:0,coRewarded:false,talkRewarded:false,practice:false,sizeSpoke:null,need:null,fam:null,pickAll:false,talkPh:0,cueDone:false,dmg:null,repair:null,actsDone:[],monUp:null,heroUp:null,capToasted:false});
   const d=today();if(!store.day||store.day.d!==d)store.day={d,n:0};S.capped=store.day.n>=5;store.day.n++;save()}
 function startFlow(){if(!S.age){go(0);return}resetFlow();S.hist=[10];go(1,true)}
 function holdBtn(label,ms,cb){const b=document.createElement('button');b.className='hold';b.innerHTML=`<i></i><span>${label}</span>`;
@@ -332,6 +351,8 @@ $('#finish').onclick=()=>{
   $('#levelUp').innerHTML=S.monUp?`${S.monUp.from<CORNER_LV&&S.monUp.to>=CORNER_LV?`<div class="levelup">⭐ ${EMO[S.emo].name}教你牠的拿手方法：${CORNERS[S.emo].ico} ${CORNERS[S.emo].name}！到圖鑑就可以一起練習</div>`:''}<div class="levelup">🎉 升級了！${e.name}變成 <b>Lv.${S.monUp.to}「${TITLES[S.monUp.to-1]}」</b><br><small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`✨ 長大成「${STAGES[stageOf(S.monUp.to)-1].n}」，學會了${BADGE[S.emo][1]}：${BADGE[S.emo][2]}！`:S.monUp.to>=5?'身上出現了金色光環':S.monUp.to>=3?'身邊開始閃閃發亮':'又長大了一點'}</small>${stageOf(S.monUp.to)>stageOf(S.monUp.from)?`<div class="evo">${monster(S.emo,70,'',{level:S.monUp.from})}<b>➜</b>${monster(S.emo,96,'wobble',{level:S.monUp.to})}</div>`:''}</div>`:'';
   if(S.heroUp)$('#levelUp').insertAdjacentHTML('beforeend',`<div class="levelup">🎉 ${store.hero?store.hero.name:'主角'}升到 Lv.${S.heroUp}「${PTITLES[S.heroUp-1]}」！</div>`);
   const total=S.earned.reduce((a,b)=>a+b[1],0);
+  $('#connect').innerHTML=`<b>🤗 跟陪你的人抱一下，或擊個掌</b><span>${S.usedCo?'謝謝大人陪你一起度過':'你剛剛做了一件很不容易的事'}</span>`;
+  $('#rewardSum').textContent=S.capped?'今天的星星拿滿了':`這次拿到 ${total} ⭐`;$('#rewardBox').open=false;
   $('#rewardList').innerHTML=S.capped?`<li>今天已經練習 5 次以上了，星星明天再來拿。你還是很棒！</li>`
     :S.earned.map(([t,n])=>`<li><span>${t}</span><b>+${n} ⭐</b></li>`).join('')+`<li class="total"><span>這次一共拿到</span><b>${total} ⭐</b></li>`;
   $('#toughMsg').style.display=tough?'':'none';$('#toughMsg').textContent=tough;
@@ -339,7 +360,6 @@ $('#finish').onclick=()=>{
   chime();
 };
 $('#restart').onclick=()=>go(10);
-$('#winDex').onclick=()=>go(11);
 
 /* ---------- traffic light activity ---------- */
 function actLight(){

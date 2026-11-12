@@ -400,3 +400,18 @@ body.quietmode header,body.quietmode .tabbar,body.quietmode #navrow,body.quietmo
 @keyframes drop{to{transform:translateY(230px)}}
 .rainbox.paused .drop{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.drop{animation:none;display:none}}
+
+/* 冷靜流程專注模式（v27） */
+body.focus header,body.focus .tabbar,body.focus #sos{display:none!important}
+body.focus .wrap{padding-bottom:30px}
+.pbar{width:min(260px,60%);height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:4px auto 0}
+.pbar i{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .5s}
+.weather{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.wx{border:0;border-radius:24px;padding:22px 10px;font:inherit;color:#3B2F2A;cursor:pointer;box-shadow:0 4px 0 rgba(120,90,60,.12)}
+.wx i{display:block;font-style:normal;font-size:3.4rem;line-height:1.15}.wx b{display:block;font-size:1.3rem;margin-top:6px}.wx span{display:block;font-size:.88rem;opacity:.75;margin-top:2px}
+.wx-hot{background:#FFE3DC}.wx-comfort{background:#DFEBFF}.wx-safe{background:#DDF3EE}.wx-repair{background:#F1E6F7}
+.wx:active{transform:translateY(2px);box-shadow:none}
+.wxall{grid-column:1/-1;justify-self:center;margin-top:4px}
+.connect{background:#FFF3DF;border-radius:18px;padding:14px;text-align:center;margin:8px 0 12px}
+.connect b{display:block;font-size:1.25rem}.connect span{display:block;color:var(--soft);margin-top:4px}
+.rewardbox{max-width:360px;margin:6px auto}.rewardbox summary{cursor:pointer;text-align:center;color:var(--soft);font-size:.95rem;padding:6px}
