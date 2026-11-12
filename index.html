@@ -87,16 +87,22 @@
 
   <!-- 5 talk -->
   <section class="step card" data-step="5">
+    <div id="talkMain">
     <p class="q">說說看，發生什麼事了？</p>
-    <p class="hint">選一個最像的，說出來怪獸會更小喔</p>
+    <p class="hint">選一個最像的，說出來會舒服一點</p>
     <div class="chips" id="causes"></div>
     <p class="hint" style="margin:18px 0 8px">你現在想要……</p>
     <div class="chips" id="wants"></div>
     <div class="sentence" id="sentence"></div>
+    </div>
+    <div id="talkRepair" style="display:none">
+    <p class="q">最後一個問題</p>
+    <p class="hint">不管答案是什麼都沒關係，我們可以一起想辦法</p>
     <div class="soft" style="text-align:left">
       <b>剛剛有沒有東西壞掉，或有人被弄痛、弄難過？</b>
       <div class="chips" id="dmg" style="margin-top:8px;justify-content:flex-start"></div>
       <div id="repairOpts"></div>
+    </div>
     </div>
     <div class="row">
       <button class="speak" id="speakSent">🔊 唸出來</button>
@@ -116,14 +122,14 @@
   <section class="step card" data-step="7">
     <p class="q" id="winQ">你做到了！</p>
     <div class="stage" id="winMon" style="min-height:150px"></div>
+    <div class="connect" id="connect"></div>
     <p class="hint" id="winLv" style="margin:4px 0 0"></p>
     <div class="xpbar" style="max-width:300px;margin:8px auto"><i id="winXp" style="width:0"></i></div>
     <div id="levelUp"></div>
-    <ul class="reward" id="rewardList"></ul>
+    <details class="rewardbox" id="rewardBox"><summary id="rewardSum"></summary><ul class="reward" id="rewardList"></ul></details>
     <div class="soft" id="toughMsg" style="display:none"></div>
     <div class="sentence" id="planShow"></div>
     <div class="row">
-      <button class="btn ghost" id="winDex">⭐ 去商店</button>
       <button class="btn" id="restart">🏠 回家園</button>
     </div>
   </section>
