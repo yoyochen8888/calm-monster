@@ -153,27 +153,33 @@
       <div class="starbar" style="margin:0">⭐ <b id="homeStars">0</b></div>
     </div>
     <div class="xpbar" style="margin:8px 0 0"><i id="heroXp"></i></div>
+    <div class="moodcard" id="moodCard">
+      <p class="q" style="font-size:1.15rem;margin:0 0 8px">今天心情怎麼樣？</p>
+      <div class="moods" id="moods"></div>
+      <p class="hint" id="moodMsg" style="margin-top:10px"></p>
+    </div>
     <div class="scene" id="scene"></div>
     <div class="row" id="decorBar" style="display:none;margin-top:8px"><span class="hint" style="margin:0">按住家具拖拉移動</span><button class="btn small" id="decorDone">布置好了</button></div>
-    <div class="row" style="margin-top:8px"><button class="chip" id="hQuiet">🌿 靜靜看</button></div>
-    <div id="reviewBox"></div>
-    <div id="wishBox"></div>
-    <div id="chores"></div>
-    <div id="repairBox"></div>
-    <div id="voucherBox"></div>
-    <button class="pick" id="hJoy" style="width:100%;margin-top:14px;border-color:#FFD98A;background:#FFF9EA"><b>✨ 開心的事</b><span>開心、驕傲、安心的時候，把好感覺存起來</span></button>
-    <div class="grid g2" style="margin-top:12px">
-      <button class="pick" id="hStart" style="border-color:#F7B8AE;background:#FFF1EE"><b>💛 冷靜站</b><span>一步一步讓怪獸變小</span></button>
-      <button class="pick" id="hWater"><b>🪄 布置家園</b><span id="hWaterSub"></span></button>
-      <button class="pick" id="hGames"><b>🎮 遊戲時間</b><span id="hGamesSub"></span></button>
-      <button class="pick" id="hParent"><b>🌟 大人給星星</b><span>平時表現好</span></button>
-      <button class="pick" id="hWeek"><b>📅 一週練習表</b><span id="hWeekSub">每天的小任務</span></button>
-      <button class="pick" id="hLog"><b>📒 情緒紀錄</b><span>回顧和分享</span></button>
+    <div class="homemain">
+      <button class="hm hm-calm" id="hStart"><i>💛</i><b>冷靜站</b><span>怪獸來了</span></button>
+      <button class="hm hm-joy" id="hJoy"><i>✨</i><b>開心的事</b><span>存起好感覺</span></button>
+      <button class="hm hm-today" id="hToday"><i>📋</i><b>今天</b><span id="hTodaySub"></span></button>
     </div>
-    <p class="q" style="font-size:1.15rem;margin-top:20px">今天心情怎麼樣？</p>
-    <div class="moods" id="moods"></div>
-    <p class="hint" id="moodMsg" style="margin-top:10px"></p>
-    <div class="row"><button class="btn ghost small" id="hEdit">換主角 / 年齡</button></div>
+    <div class="todaybox" id="todayBox" style="display:none">
+      <div id="reviewBox"></div>
+      <div id="wishBox"></div>
+      <div id="chores"></div>
+      <div id="repairBox"></div>
+      <div id="voucherBox"></div>
+    </div>
+    <div class="homelinks">
+      <button class="chip" id="hQuiet">🌿 靜靜看</button>
+      <button class="chip" id="hWater">🪄 布置</button>
+      <button class="chip" id="hLog">📒 紀錄</button>
+      <button class="chip" id="hWeek">📅 練習表</button>
+      <button class="chip" id="hParent">🌟 大人給星星</button>
+      <button class="chip" id="hEdit">換主角 / 年齡</button>
+    </div>
   </section>
 
   <!-- 11 shop -->
