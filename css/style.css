@@ -380,3 +380,23 @@ body.quietmode header,body.quietmode .tabbar,body.quietmode #navrow,body.quietmo
 .jbitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-left:6px solid var(--jc);border-radius:16px;padding:6px 12px 6px 6px;margin:0 0 8px;font:inherit;color:inherit;cursor:pointer}
 .jbitem span{font-size:.92rem;line-height:1.45}.jbitem b{display:block;font-size:.8rem;color:var(--soft)}
 @media (prefers-reduced-motion:reduce){.jyglow{animation:none}}
+
+/* 怪獸分家族（v26） */
+.monmsg{background:#fff;border:3px solid var(--mc);border-radius:18px;padding:10px 14px;margin:6px auto 8px;max-width:420px;text-align:center}
+.monmsg small{display:block;font-size:.8rem;color:var(--soft)}.monmsg b{display:block;font-size:1.25rem;margin:2px 0}.monmsg span{font-size:.9rem;color:var(--soft)}
+.adultcue{display:flex;align-items:center;gap:10px;justify-content:space-between;background:#EEF4FF;border-radius:14px;padding:8px 12px;margin:0 0 12px;font-size:.9rem;text-align:left}
+.adultbox{background:#F7F3EC;border-radius:14px;padding:8px 12px;margin-top:14px;font-size:.9rem;line-height:1.6}
+.adultbox summary{cursor:pointer;font-weight:600}.adultbox p{margin:6px 0}
+.needs{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:6px 0 10px}
+.need{background:#fff;border:3px solid var(--line);border-radius:18px;padding:12px 6px;font:inherit;color:inherit;cursor:pointer}
+.need i{display:block;font-style:normal;font-size:2.4rem;line-height:1.2}.need b{display:block;font-size:1.05rem}
+.need.sel{border-color:var(--accent);background:var(--accent-2)}
+.needs.kind{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.needs.kind .need{padding:14px 10px}
+.rainbox{position:relative;height:210px;border-radius:20px;overflow:hidden;background:linear-gradient(#C9D6E8,#E8EEF6);margin:4px 0 8px;transition:background 2s}
+.rainbox.sunny{background:linear-gradient(#CDEBFF,#FFF6DD)}
+.raincloud{position:absolute;top:6px;left:50%;transform:translateX(-50%);font-size:3.4rem}
+.rainmon{position:absolute;bottom:4px;left:50%;transform:translateX(-50%)}
+.drop{position:absolute;top:-12px;width:3px;height:14px;border-radius:2px;background:#7FA7D6;opacity:.7;animation:drop 1.2s linear infinite}
+@keyframes drop{to{transform:translateY(230px)}}
+.rainbox.paused .drop{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.drop{animation:none;display:none}}
