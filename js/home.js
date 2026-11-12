@@ -266,6 +266,8 @@ Object.assign(INTRO,{
   lonely:['沒有人跟你玩、被排擠、或想念不在身邊的人的時候。','心裡空空的、提不起勁、不想說話。','牠想說「我需要有人陪」。','抱抱自己，找一個信任的人說說，或主動邀請一個人一起玩。'],
   stress:['功課太多、考試快到了、很多事情同時要做的時候。','肩膀緊緊、頭脹脹的、睡不好、容易發脾氣。','牠想說「我需要休息一下」。','把事情寫下來，一次只做一件，做完一件就休息一下，也可以請人幫忙。']
 });
+/* 身體訊號（v31）：孩子自己的版本，冷靜站會用它提醒 */
+const BODY_SIG=['臉熱熱的','心跳很快','拳頭握緊','肩膀硬硬的','想哭','喉嚨緊緊的','肚子怪怪的','想躲起來','想大叫','想跑來跑去','手腳發抖','頭脹脹的','沒有力氣'];
 function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp),nx=nextOf(xp);const [when,body,why,how]=INTRO[k];
   $('#mdMon').innerHTML=monster(k,140,'wobble');
   $('#mdName').innerHTML=`<i class="cdot" style="background:${e.color}"></i>${e.name}`;
@@ -282,6 +284,8 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
     <p class="hint" style="text-align:left">情緒越大，牠看起來越兇，這是在告訴你「我很不舒服」。冷靜下來，牠就會變回溫柔的樣子。</p>
     <h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
     <h4>🫀 牠來的時候，身體會怎樣？</h4><p>${body}</p>
+    <div class="soft" style="text-align:left"><b>我的身體訊號</b><br><small>牠來的時候，「你的」身體會怎樣？點選你的（越早發現，越容易照顧）</small>
+      <div class="chips" style="justify-content:flex-start;margin-top:8px">${BODY_SIG.map(c=>`<button class="chip ${(store.bodySig&&store.bodySig[k]||[]).includes(c)?'sel':''}" data-bs="${c}">${c}</button>`).join('')}</div></div>
     <h4>💬 牠想告訴你什麼？</h4><p>${why}</p>
     <h4>🛠️ 怎麼跟牠相處？</h4><p>${how}</p>
     ${lvOf(store.xp[k]||0)>=CORNER_LV?`<div class="skillbox"><b>⭐ 牠的拿手方法：${CORNERS[k].ico} ${CORNERS[k].name}</b><span>一起練習「${ACT_NAME[CORNERS[k].act]}」</span><button class="btn small" data-mdact="${CORNERS[k].act}">一起練習</button></div>`:''}
@@ -290,6 +294,7 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
     <h4>⭐ 我的冷靜秘訣</h4><p class="hint" style="text-align:left;margin:0 0 6px">寫下（或請大人幫你寫）對付${e.name}最有用的方法</p>
     <textarea id="mdTip" style="width:100%;min-height:70px;border:2px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit" placeholder="例如：抱著小熊數到 10">${store.tips[k]||''}</textarea>
     <div class="gdetail"><b>給大人</b>：${PARENT[k].say[age]}<br><small>${PARENT[k].after}</small></div>`;
+  $$('[data-bs]').forEach(b=>b.onclick=()=>{store.bodySig=store.bodySig||{};const a=store.bodySig[k]=store.bodySig[k]||[];const c=b.dataset.bs,i=a.indexOf(c);i>=0?a.splice(i,1):a.push(c);save();tone(600,.1);b.classList.toggle('sel')});
   $('#mdTip').onchange=()=>{store.tips[k]=$('#mdTip').value;save();toast('秘訣存好了')};
   $$('[data-mdact]').forEach(b=>b.onclick=()=>startPractice(k,b.dataset.mdact));
 }

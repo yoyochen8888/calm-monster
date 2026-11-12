@@ -76,7 +76,9 @@ function renderSize(){
   const e=EMO[S.emo],f=famOf(S.emo);
   $('#sizeQ').textContent=f.sizeQ(e.name);
   $('#sizeKey').textContent=EMO_FAM[S.emo]==='hot'?'🟢 平靜　🟡 有點煩　🔴 快爆炸':'🟢 一點點　🟡 中中的　🔴 好強烈';
-  $('#sizeHint').textContent=`你${e.feel}。身體可能會${e.body}。`;
+  const mySig=store.bodySig&&store.bodySig[S.emo];
+  const sigTxt=mySig&&mySig.length?`你${e.feel}。你說過牠來的時候，你會${mySig.join('、')}。`:`你${e.feel}。身體可能會${e.body}。`;
+  $('#sizeHint').textContent=sigTxt;
   $('#sizeMsg').innerHTML=`<div class="monmsg" style="--mc:${e.color}"><small>${e.name}想告訴你</small><b>「${EMO_MSG[S.emo]}」</b><span>${f.ok}</span></div>`;
   if(S.sizeSpoke!==S.emo){S.sizeSpoke=S.emo;setTimeout(()=>{if(S.step===2)speak(`${e.name}想告訴你：${EMO_MSG[S.emo]}。${f.ok}。`)},700)}
   const upd=()=>{
@@ -85,7 +87,7 @@ function renderSize(){
     $('#toCalm').textContent=big?'請大人來陪我':f.go;
     $('#selfTry').style.display=big?'':'none';
     if(big)$('#sizeHint').textContent='怪獸超級大！先請大人來陪你。';
-    else $('#sizeHint').textContent=`你${e.feel}。身體可能會${e.body}。`;
+    else $('#sizeHint').textContent=sigTxt;
   };
   thermo($('#thermo'),$('#sizeStage'),'lv',upd);
   upd();
