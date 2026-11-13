@@ -412,6 +412,12 @@ svg.yard .bfly.b1{animation:yfly1 26s linear infinite}svg.yard .bfly.b2{animatio
 @keyframes yfly3{0%{transform:translate(90px,120px)}35%{transform:translate(30px,170px)}70%{transform:translate(110px,190px)}100%{transform:translate(90px,120px)}}
 svg.yard .ffly{animation:yff 8s ease-in-out infinite}
 @keyframes yff{0%,100%{transform:translate(0,0);opacity:.2}30%{transform:translate(8px,-10px);opacity:1}65%{transform:translate(-7px,-4px);opacity:.5}}
+/* 走路：身體上下彈、左右擺、往前傾（.act 的原點在腳底） */
+svg.yard .act.ywalk{animation:ywalk .42s ease-in-out infinite}
+@keyframes ywalk{0%,100%{transform:translateY(0) rotate(-3deg) scale(1,1)}25%{transform:translateY(-3px) rotate(0) scale(.98,1.03)}50%{transform:translateY(0) rotate(3deg) scale(1.03,.97)}75%{transform:translateY(-3px) rotate(0) scale(.98,1.03)}}
+svg.yard .ydust circle{transform-box:fill-box;transform-origin:center;animation:ydust .75s ease-out forwards}
+@keyframes ydust{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:translateY(-5px) scale(1.6)}}
+svg.yard .actor{will-change:transform}
 @media (prefers-reduced-motion:reduce){svg.yard *{animation:none!important}}
 
 /* =========================================================
@@ -421,12 +427,12 @@ svg.yard .ffly{animation:yff 8s ease-in-out infinite}
 .wrap{padding-bottom:calc(170px + env(safe-area-inset-bottom))}
 body.focus .wrap{padding-bottom:30px}
 /* 測試模式：改成右上角的小標籤，不再蓋住星星和經驗條 */
-.testtag{top:auto;bottom:calc(84px + env(safe-area-inset-bottom));left:12px;transform:none;font-size:.72rem;padding:3px 10px;opacity:.9}
+.testtag{top:calc(4px + env(safe-area-inset-top));bottom:auto;left:4px;transform:none;font-size:0;padding:2px 8px;opacity:.85}
+.testtag::before{content:'🧪 測試中';font-size:.68rem}
 @media (max-width:520px){
   /* 馬上冷靜：手機上縮成圓圓的一顆，靠右下，不再壓住卡片的字 */
   .sos{width:64px;height:64px;min-height:0;padding:0;border-radius:50%;justify-content:center;flex-direction:column;gap:0;font-size:.72rem;line-height:1.15;right:10px;bottom:calc(92px + env(safe-area-inset-bottom))}
   .sos .sos-t{display:block;font-size:.7rem}
-  .testtag{bottom:calc(160px + env(safe-area-inset-bottom))}
 }
 
 /* ---------- 尊重「減少動態效果」 ---------- */

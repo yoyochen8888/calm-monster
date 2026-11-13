@@ -205,7 +205,9 @@ function yWrap(id,inner){const [dx,dy]=posOf(id);return `<g data-it="${id}" tran
 /* 主角、怪獸、夥伴：腳底對齊 (x,y) */
 const Y_MON_POS=[[130,218],[210,256],[86,236],[264,236],[156,262],[300,262],[60,200],[236,214],[110,264],[324,214],[196,226],[44,264]];
 const Y_HERO_HOME=[180,198];
-function yActor(attrs,x,y,inner,cls,delay,extra){return `<g ${attrs} class="actor ${cls||''}" style="transform:translate(${x}px,${y}px);${extra||''}"><ellipse cx="0" cy="0" rx="12" ry="3.6" fill="#3F5A30" opacity=".2"/><g class="flip"><g class="act ${isNight()?'sleepy':'bob'}" style="animation-delay:${delay||0}s">${inner}</g></g>${isNight()?`<text class="zzz" x="12" y="-40" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`}
+function yScale(y){return (0.8+Math.max(0,Math.min(1,(y-165)/112))*0.32).toFixed(3)}
+function yT(x,y){return `translate(${(+x).toFixed(1)}px,${(+y).toFixed(1)}px) scale(${yScale(y)})`}
+function yActor(attrs,x,y,inner,cls,delay,extra){return `<g ${attrs} class="actor ${cls||''}" style="transform:${yT(x,y)};${extra||''}"><ellipse cx="0" cy="0" rx="12" ry="3.6" fill="#3F5A30" opacity=".2"/><g class="flip"><g class="act ${isNight()?'sleepy':'bob'}" style="animation-delay:${delay||0}s">${inner}</g></g>${isNight()?`<text class="zzz" x="12" y="-40" font-size="10" fill="#fff">Z<tspan font-size="7" dy="-4">z</tspan></text>`:''}</g>`}
 function yMonArt(svg){return `<g transform="translate(-21 -41)">${svg}</g>`}
 function yHeroArt(){const t=store.hero.type;return `<g transform="translate(-23 -60)">${hero(t,46)}</g>`}
 
@@ -246,13 +248,15 @@ function yFix(x,y){x=Math.max(22,Math.min(338,x));y=Math.max(170,Math.min(276,y)
   if(o.includes('swing')){const [sx,sy]=P('swing');if(x>18+sx&&x<86+sx&&y>194+sy&&y<224+sy)y=227+sy}
   return [Math.max(22,Math.min(338,x)),Math.max(170,Math.min(276,y))]}
 function yResort(root){const L=$(root+' #ysorted');if(!L)return;const kids=[...L.children];
-  kids.forEach(k=>{const a=k.querySelector(':scope > .actor');if(a){const m=/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(a.style.transform);if(m)k.dataset.y=m[2]}});
+  kids.forEach(k=>{const a=k.querySelector(':scope > .actor');if(a){try{k.dataset.y=new DOMMatrix(getComputedStyle(a).transform).f.toFixed(1)}catch(e){}}});
   const want=kids.slice().sort((p,q)=>p.dataset.y-q.dataset.y);if(want.some((e,i)=>e!==kids[i]))want.forEach(e=>L.appendChild(e))}
 function yMoveTo(el,id,nx,ny,speed,root){const m=/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(el.style.transform)||[0,180,200];const x=+m[1],y=+m[2];
-  const dist=Math.hypot(nx-x,ny-y),dur=Math.max(.6,dist/speed);el.querySelector('.flip').classList.toggle('left',nx<x);
-  el.style.transition=`transform ${dur}s linear`;el.style.transform=`translate(${nx.toFixed(1)}px,${ny.toFixed(1)}px)`;HOME_POS[id]=[nx,ny];
-  actDo(el,'walk',dur*1000);clearTimeout(el._rs);const t0=performance.now(),tick=()=>{yResort(root);if(performance.now()-t0<dur*1000+100)el._rs=setTimeout(tick,120)};tick();return dur}
+  const dist=Math.hypot(nx-x,ny-y),dur=Math.max(.7,dist/speed+.25);if(Math.abs(nx-x)>2)el.querySelector('.flip').classList.toggle('left',nx<x);
+  el.style.transition=`transform ${dur}s cubic-bezier(.42,0,.36,1)`;el.style.transform=yT(nx,ny);HOME_POS[id]=[nx,ny];
+  actDo(el,'ywalk',dur*1000-120);yDust(el,x,y,root);setTimeout(()=>{if(el.isConnected)yDust(el,nx,ny,root)},dur*1000-150);clearTimeout(el._rs);const t0=performance.now(),tick=()=>{yResort(root);if(performance.now()-t0<dur*1000+100)el._rs=setTimeout(tick,120)};tick();return dur}
 
+function yDust(el,x,y,root){if(RM)return;const L=$(root+' svg.yard');if(!L)return;const ns='http://www.w3.org/2000/svg',g=document.createElementNS(ns,'g');g.setAttribute('class','ydust');g.setAttribute('pointer-events','none');
+  g.innerHTML=[-7,0,7].map((dx,i)=>`<circle cx="${(x+dx).toFixed(1)}" cy="${(y-1).toFixed(1)}" r="${2.4-i%2*.6}" fill="#FFFDF5" style="animation-delay:${i*.05}s"/>`).join('');L.appendChild(g);setTimeout(()=>g.remove(),800)}
 /* 主角和怪獸在院子裡慢慢晃（晚上睡覺、布置時暫停） */
 function startWander(root='#scene'){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
   const actors=$$(root+' .actor');actors.forEach(el=>{el._next=performance.now()+1200+Math.random()*2500});
@@ -296,7 +300,7 @@ function bindScene(){
 
 /* ---------- 主角：小熊、小狗換成新比例的生成圖，可以換 4 套衣服 ---------- */
 HEROES.dog=HEROES.dog||{name:'小狗',c:'#D9824A'};
-const Y_HERO_NEW={bear:[[152,260],[162,260],[162,260],[155,260]],dog:[[169,260],[194,260],[194,260],[173,260]]};
+const Y_HERO_NEW={bear:[[164,260],[160,260],[160,260],[164,260]],dog:[[192,260],[192,260],[192,260],[194,260]]};
 const Y_OUTFITS=[['粉紅毛衣','#F5A9B8'],['薄荷點點','#93D8BF'],['鵝黃條紋','#FBD56E'],['天空格子','#9CCBEF']];
 const yHeroOld=hero;
 hero=function(type,size=90,eqo){

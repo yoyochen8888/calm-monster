@@ -65,7 +65,7 @@ function wrapIt(id,inner){const [dx,dy]=posOf(id);const ed=S.decor;
 /* ---------- 家園小動態：走動、休息、跳一跳、東張西望（晚上睡覺、布置時暫停） ---------- */
 const HOME_POS={};let wanderT=null;
 const RM=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
-function actDo(el,cls,ms){const a=el.querySelector('.act');if(!a)return;a.classList.remove('bob','walk','rest','hop','look');void a.getBoundingClientRect();a.classList.add(cls);
+function actDo(el,cls,ms){const a=el.querySelector('.act');if(!a)return;a.classList.remove('bob','walk','ywalk','rest','hop','look');void a.getBoundingClientRect();a.classList.add(cls);
   if(ms)setTimeout(()=>{if(a.isConnected&&a.classList.contains(cls)){a.classList.remove(cls);a.classList.add('bob')}},ms)}
 function startWander(root='#scene'){clearInterval(wanderT);if(RM||isNight()||S.decor)return;
   const actors=$$(root+' .actor');actors.forEach(el=>{el._next=performance.now()+800+Math.random()*2500});
