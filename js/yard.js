@@ -144,7 +144,9 @@ function yResort(root){const L=$(root+' #ysorted');if(!L)return;const kids=[...L
   kids.forEach(k=>{const a=k.querySelector(':scope > .actor');if(a){try{k.dataset.y=new DOMMatrix(getComputedStyle(a).transform).f.toFixed(1)}catch(e){}}});
   const want=kids.slice().sort((p,q)=>p.dataset.y-q.dataset.y);if(want.some((e,i)=>e!==kids[i]))want.forEach(e=>L.appendChild(e))}
 function yMoveTo(el,id,nx,ny,speed,root){const m=/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(el.style.transform)||[0,180,200];const x=+m[1],y=+m[2];
-  const dist=Math.hypot(nx-x,ny-y),dur=Math.max(.7,dist/speed+.25);if(Math.abs(nx-x)>2)el.querySelector('.flip').classList.toggle('left',nx<x);
+  const dist=Math.hypot(nx-x,ny-y),dur=Math.max(.7,dist/speed+.25);/* 正面的角色不翻面（翻面會像對折），改成往要去的方向微微傾身，到了再站直 */
+  const fl=el.querySelector('.flip');fl.classList.remove('left');clearTimeout(fl._lt);fl.classList.toggle('leanL',nx<x-2);fl.classList.toggle('leanR',nx>x+2);
+  fl._lt=setTimeout(()=>fl.classList.remove('leanL','leanR'),Math.max(300,dur*1000-250));
   el.style.transition=`transform ${dur}s cubic-bezier(.42,0,.36,1)`;el.style.transform=yT(nx,ny);HOME_POS[id]=[nx,ny];
   actDo(el,'ywalk',dur*1000-120);yDust(el,x,y,root);setTimeout(()=>{if(el.isConnected)yDust(el,nx,ny,root)},dur*1000-150);clearTimeout(el._rs);const t0=performance.now(),tick=()=>{yResort(root);if(performance.now()-t0<dur*1000+100)el._rs=setTimeout(tick,120)};tick();return dur}
 

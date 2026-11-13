@@ -422,6 +422,8 @@ svg.yard .actor{will-change:transform}
 
 svg.yard .ywalk .hlegL{animation:yleg .42s ease-in-out infinite}
 svg.yard .ywalk .hlegR{animation:yleg .42s ease-in-out infinite;animation-delay:-.21s}
+svg.yard .flip,svg.yard .flip.left{transform-box:fill-box;transform-origin:50% 100%;transform:none;transition:transform .45s cubic-bezier(.34,1.3,.5,1)}
+svg.yard .flip.leanL{transform:rotate(-6deg)}svg.yard .flip.leanR{transform:rotate(6deg)}
 @keyframes yleg{0%,50%,100%{transform:translateY(0)}25%{transform:translateY(-4.5px)}}
 @media (prefers-reduced-motion:reduce){svg.yard *{animation:none!important}}
 
