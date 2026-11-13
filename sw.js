@@ -1,6 +1,6 @@
 /* 離線快取（v21）：第一次開啟時把整個工具存進裝置，之後沒有網路也能開，而且一點就開。
    ★ 每次更新程式或圖片，都要把下面的 VERSION 改掉（例如 v21 → v22），裝置才會抓新版。 */
-const VERSION='v34';
+const VERSION='v35';
 const CACHE='calm-monster-'+VERSION;
 const FILES=[
   './',
@@ -36,6 +36,35 @@ const FILES=[
   'img/hero_dog2.webp',
   'img/hero_dog3.webp',
   'img/hero_dog4.webp',
+  'img/yard_bg.webp',
+  'img/y_pond.webp',
+  'img/y_garden.webp',
+  'img/y_tent.webp',
+  'img/y_swing.webp',
+  'img/y_lamp.webp',
+  'img/y_mailbox.webp',
+  'img/y_bench.webp',
+  'img/y_birdhouse.webp',
+  'img/y_trellis.webp',
+  'img/y_table.webp',
+  'img/y_chair.webp',
+  'img/y_basket.webp',
+  'img/y_bush.webp',
+  'img/y_pot.webp',
+  'img/y_flowers.webp',
+  'img/y_fern.webp',
+  'img/hero_fox1.webp',
+  'img/hero_fox2.webp',
+  'img/hero_fox3.webp',
+  'img/hero_fox4.webp',
+  'img/hero_rabbit1.webp',
+  'img/hero_rabbit2.webp',
+  'img/hero_rabbit3.webp',
+  'img/hero_rabbit4.webp',
+  'img/hero_cat1.webp',
+  'img/hero_cat2.webp',
+  'img/hero_cat3.webp',
+  'img/hero_cat4.webp',
   'js/backup.js',
   'js/main.js',
   'icons/icon-192.png',
