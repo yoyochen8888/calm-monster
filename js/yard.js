@@ -193,24 +193,32 @@ function bindScene(){
 
 /* ---------- 主角：五隻都換成新比例的生成圖，可以換 4 套衣服 ---------- */
 HEROES.dog=HEROES.dog||{name:'小狗',c:'#D9824A'};
-const Y_HERO_NEW={bear:[[164,260],[160,260],[160,260],[164,260]],dog:[[192,260],[192,260],[192,260],[194,260]],
-  fox:[[163,260],[163,260],[163,260],[163,260]],rabbit:[[140,260],[136,260],[136,260],[138,260]],cat:[[167,260],[163,260],[163,260],[164,260]]};
+/* 每張圖：[寬(高都是300), 腳縫開始的高度, 兩腳中間, 腳的左邊, 腳的右邊]（比例，程式量出來的） */
+const Y_HM={bear1:[188,0.89,0.5,0.229,0.766],bear2:[187,0.89,0.497,0.23,0.765],bear3:[188,0.89,0.5,0.229,0.766],bear4:[187,0.89,0.497,0.23,0.765],dog1:[213,0.883,0.5,0.258,0.742],dog2:[214,0.88,0.5,0.257,0.743],dog3:[213,0.883,0.495,0.254,0.742],dog4:[214,0.883,0.498,0.252,0.738],rabbit1:[130,0.913,0.5,0.2,0.792],rabbit2:[130,0.913,0.5,0.2,0.792],rabbit3:[130,0.913,0.496,0.2,0.792],rabbit4:[129,0.913,0.5,0.202,0.798],cat1:[191,0.893,0.563,0.309,0.812],cat2:[191,0.893,0.563,0.309,0.812],cat3:[191,0.893,0.56,0.309,0.812],cat4:[191,0.893,0.56,0.309,0.806],fox1:[186,0.897,0.5,0.253,0.747],fox2:[186,0.897,0.505,0.253,0.753],fox3:[186,0.897,0.5,0.253,0.747],fox4:[186,0.897,0.5,0.247,0.747]};
+const Y_HERO_NEW={bear:1,dog:1,fox:1,rabbit:1,cat:1};
 /* 帽子戴在哪：頭頂離圖最上面多遠（兔子有長耳朵，頭比較低）、頭寬是圖寬的幾成 */
-const Y_HEAD={bear:[.04,.7],dog:[.04,.6],fox:[.1,.6],rabbit:[.3,.72],cat:[.08,.64]};
-const Y_OUTFITS=[['粉紅毛衣','#F5A9B8'],['薄荷點點','#93D8BF'],['鵝黃條紋','#FBD56E'],['天空格子','#9CCBEF']];
+const Y_HEAD={bear:[.03,.8],dog:[.04,.6],fox:[.05,.66],rabbit:[.28,.78],cat:[.05,.66]};
+let yClipN=0;
+const Y_OUTFITS=[['橘色圍巾','#F2A65A'],['薄荷點點','#93D8BF'],['鵝黃條紋','#FBD56E'],['天空格子','#9CCBEF']];
 const yHeroOld=hero;
 hero=function(type,size=90,eqo){
   if(!Y_HERO_NEW[type])return yHeroOld(type,size,eqo);
   const eq=eqo||store.equip||{};const of=Math.max(1,Math.min(4,(eqo?1:(store.hero&&store.hero.type===type&&store.hero.outfit)||1)));
-  const [iw,ih]=Y_HERO_NEW[type][of-1],h=124,w=h*iw/ih;
-  /* 頭頂大約在圖的最上面往下 6%，頭寬大約是圖寬的 70%（小狗的耳朵比較寬，頭寬抓 60%） */
+  const M=Y_HM[type+of]||Y_HM[type+'1'],h=124,w=h*M[0]/300,x0=50-w/2,y0=-6;
+  /* 紙偶走路：同一張圖剪成身體＋左腳＋右腳，走路時兩腳輪流抬起（腳畫在身體後面，抬起來會藏進身體） */
+  const cy=y0+h*M[1],gx=x0+w*M[2],l0=x0+w*M[3],l1=x0+w*M[4],yb=y0+h+2,id='yhc'+(++yClipN),href=`img/hero_${type}${of}.webp`;
+  const im=c=>`<image href="${href}" x="${x0.toFixed(1)}" y="${y0}" width="${w.toFixed(1)}" height="${h}" clip-path="url(#${id}${c})"/>`;
+  const art=`<defs><clipPath id="${id}b"><rect x="-60" y="-80" width="220" height="${(cy+80).toFixed(1)}"/><rect x="-60" y="${cy.toFixed(1)}" width="${(l0+60).toFixed(1)}" height="60"/><rect x="${l1.toFixed(1)}" y="${cy.toFixed(1)}" width="${(160-l1).toFixed(1)}" height="60"/></clipPath>
+    <clipPath id="${id}l"><rect x="${l0.toFixed(1)}" y="${(cy-3).toFixed(1)}" width="${(gx-l0).toFixed(1)}" height="${(yb-cy+3).toFixed(1)}"/></clipPath><clipPath id="${id}r"><rect x="${gx.toFixed(1)}" y="${(cy-3).toFixed(1)}" width="${(l1-gx).toFixed(1)}" height="${(yb-cy+3).toFixed(1)}"/></clipPath></defs>
+    <g class="hleg hlegL">${im('l')}</g><g class="hleg hlegR">${im('r')}</g>${im('b')}`;
+  /* 頭頂大約在圖的最上面往下一點，頭寬依動物不同 */
   const [ht,hr]=Y_HEAD[type]||[.04,.7],hw=w*hr,hs=hw/60,top=-6+h*ht;
   const cape=eq.hback==='cape'?`<path d="M28 62 Q50 54 72 62 L84 114 Q50 122 16 114Z" fill="#E4574B"/><path d="M28 62 Q50 54 72 62" stroke="#B8382F" stroke-width="3" fill="none"/>`:'';
   const pack=eq.hback==='pack'?`<rect x="68" y="66" width="20" height="30" rx="8" fill="#5B8DEF"/><rect x="72" y="73" width="12" height="7" rx="2" fill="#3E6FD0"/>`:'';
   const hat=eq.hhead==='straw'?`<ellipse cx="50" cy="22" rx="34" ry="7" fill="#E9C46A"/><path d="M34 22 Q36 4 50 4 Q64 4 66 22Z" fill="#F2D384"/><rect x="34" y="15" width="32" height="5" fill="#E76F51"/>`
     :eq.hhead==='wizard'?`<path d="M28 24 L54 -14 L72 24Z" fill="#7B5CC9"/><ellipse cx="50" cy="24" rx="27" ry="5" fill="#5E43A8"/><circle cx="54" cy="-13" r="4" fill="#FFD166"/><path d="M50 4 l2 -5 l2 5 l5 1 l-4 3 l1 5 l-4 -3 l-4 3 l1 -5 l-4 -3z" fill="#FFD166"/>`:'';
   return `<svg width="${size}" height="${Math.round(size*1.36)}" viewBox="0 -16 100 136" overflow="visible">${cape}${pack}
-    <image href="img/hero_${type}${of}.webp" x="${(50-w/2).toFixed(1)}" y="-6" width="${w.toFixed(1)}" height="${h}"/>
+    ${art}
     ${hat?`<g transform="translate(50 ${top.toFixed(1)}) scale(${hs.toFixed(2)}) translate(-50 -22)">${hat}</g>`:''}</svg>`};
 
 /* 選主角的頁面：多一排衣服可以選 */
@@ -221,5 +229,5 @@ renderHeroes=function(){yRenderHeroesOld();let box=$('#yOutfits');
   const cur=(store.hero&&store.hero.type===t&&store.hero.outfit)||S.yOutfit||1;S.yOutfit=cur;
   box.innerHTML=`<p class="hint" style="width:100%;margin:0 0 4px">選一件衣服</p>`+Y_OUTFITS.map(([n,c],i)=>`<button class="chip ${cur===i+1?'sel':''}" data-of="${i+1}"><i style="display:inline-block;width:16px;height:16px;border-radius:50%;background:${c};vertical-align:-3px;margin-right:6px"></i>${n}</button>`).join('');
   $$('#yOutfits [data-of]').forEach(b=>b.onclick=()=>{S.yOutfit=+b.dataset.of;if(store.hero&&store.hero.type===t){store.hero.outfit=S.yOutfit;save()}tone(600,.1);renderHeroes()});
-  const sel=$(`[data-hero="${t}"] svg image`);if(sel)sel.setAttribute('href',`img/hero_${t}${cur}.webp`)};
+  $$(`[data-hero="${t}"] svg image`).forEach(im=>im.setAttribute('href',`img/hero_${t}${cur}.webp`))};
 $('#heroOk').onclick=()=>{const nm=$('#heroNameIn').value.trim()||HEROES[heroPick].name;store.hero={type:heroPick,name:nm};if(Y_HERO_NEW[heroPick])store.hero.outfit=S.yOutfit||1;save();chime();go(10)};

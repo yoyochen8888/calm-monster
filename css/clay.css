@@ -418,6 +418,11 @@ svg.yard .act.ywalk{animation:ywalk .42s ease-in-out infinite}
 svg.yard .ydust circle{transform-box:fill-box;transform-origin:center;animation:ydust .75s ease-out forwards}
 @keyframes ydust{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:translateY(-5px) scale(1.6)}}
 svg.yard .actor{will-change:transform}
+/* v36 紙偶走路：左右腳輪流抬，和身體的 ywalk 同一拍（身體在 25%、75% 往上時，正好一隻腳抬起） */
+
+svg.yard .ywalk .hlegL{animation:yleg .42s ease-in-out infinite}
+svg.yard .ywalk .hlegR{animation:yleg .42s ease-in-out infinite;animation-delay:-.21s}
+@keyframes yleg{0%,50%,100%{transform:translateY(0)}25%{transform:translateY(-4.5px)}}
 @media (prefers-reduced-motion:reduce){svg.yard *{animation:none!important}}
 
 /* =========================================================
