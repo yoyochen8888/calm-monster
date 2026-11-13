@@ -150,7 +150,7 @@ function renderHome(){
     if(store.moodDay!==today()){store.moodDay=today();store.mood=m[1];store.moodLog.push({d:today(),m:m[1]});store.moodLog=store.moodLog.slice(-90);save();gain('心情打卡',3)}else{store.mood=m[1];save()}
     renderHome();
     S.moodShow=true;$('#moodCard').style.display='';
-    $('#moodMsg').innerHTML=(m[2]?`太好了！要不要把這個好心情存進快樂寶盒？<br><button class="btn small" id="moodJoy" style="margin-top:8px">✨ 存起來</button>`:`謝謝你告訴我。${m[1]}的時候，要不要去冷靜站照顧一下這隻怪獸？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`)+` <button class="chip" id="moodOk" style="margin-top:8px">好</button>`;
+    $('#moodMsg').innerHTML=(m[2]?`太好了！要不要把這個好心情存進快樂寶盒？<br><button class="btn small" id="moodJoy" style="margin-top:8px">✨ 存起來</button>`:`謝謝你告訴我。${m[1]}的時候，要不要去冷靜站照顧一下這隻怪獸？<br><button class="btn small" id="moodGo" style="margin-top:8px">去冷靜站</button>`)+` <button class="chip" id="moodOk" style="margin-top:8px">先不用</button>`;
     $('#moodOk').onclick=()=>{S.moodShow=false;$('#moodCard').style.display='none'};
     const g=$('#moodGo');if(g)g.onclick=startFlow;const mj=$('#moodJoy');if(mj)mj.onclick=()=>startJoy(m[1]==='平靜'?'safe':'happy');});
 }
