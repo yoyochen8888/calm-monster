@@ -413,15 +413,24 @@ svg.yard .bfly.b1{animation:yfly1 26s linear infinite}svg.yard .bfly.b2{animatio
 svg.yard .ffly{animation:yff 8s ease-in-out infinite}
 @keyframes yff{0%,100%{transform:translate(0,0);opacity:.2}30%{transform:translate(8px,-10px);opacity:1}65%{transform:translate(-7px,-4px);opacity:.5}}
 /* 走路：身體上下彈、左右擺、往前傾（.act 的原點在腳底） */
-svg.yard .act.ywalk{animation:ywalk .42s ease-in-out infinite}
+svg.yard .act.ywalk{animation:ywalk var(--wc,.42s) ease-in-out infinite}
 @keyframes ywalk{0%,100%{transform:translateY(0) rotate(-3deg) scale(1,1)}25%{transform:translateY(-3px) rotate(0) scale(.98,1.03)}50%{transform:translateY(0) rotate(3deg) scale(1.03,.97)}75%{transform:translateY(-3px) rotate(0) scale(.98,1.03)}}
 svg.yard .ydust circle{transform-box:fill-box;transform-origin:center;animation:ydust .75s ease-out forwards}
 @keyframes ydust{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:translateY(-5px) scale(1.6)}}
 svg.yard .actor{will-change:transform}
 /* v36 紙偶走路：左右腳輪流抬，和身體的 ywalk 同一拍（身體在 25%、75% 往上時，正好一隻腳抬起） */
 
-svg.yard .ywalk .hlegL{animation:yleg .42s ease-in-out infinite}
-svg.yard .ywalk .hlegR{animation:yleg .42s ease-in-out infinite;animation-delay:-.21s}
+svg.yard .ywalk .hlegL{animation:yleg var(--wc,.42s) ease-in-out infinite}
+svg.yard .ywalk .hlegR{animation:yleg var(--wc,.42s) ease-in-out infinite;animation-delay:calc(var(--wc,.42s) / -2)}
+svg.yard .flip,svg.yard .flip.left{transform-box:fill-box;transform-origin:50% 100%;transform:none;transition:transform .45s cubic-bezier(.34,1.3,.5,1)}
+svg.yard .flip.leanL{transform:rotate(calc(var(--lean,6deg) * -1))}svg.yard .flip.leanR{transform:rotate(var(--lean,6deg))}
+/* 起步先蹲、換方向原地小跳轉身、到了輕輕落地 */
+svg.yard .act.ycrouch{animation:ycrouch .14s ease-out forwards}
+@keyframes ycrouch{to{transform:translateY(1px) scale(1.05,.93)}}
+svg.yard .act.yturn{animation:yturn .26s ease-in-out}
+@keyframes yturn{0%{transform:scale(1.04,.94)}45%{transform:translateY(-6px) scale(.86,1.06)}80%{transform:translateY(0) scale(1.05,.95)}100%{transform:none}}
+svg.yard .act.yland{animation:yland .3s ease-out}
+@keyframes yland{0%{transform:scale(1.06,.92)}55%{transform:scale(.98,1.03)}100%{transform:none}}
 @keyframes yleg{0%,50%,100%{transform:translateY(0)}25%{transform:translateY(-4.5px)}}
 @media (prefers-reduced-motion:reduce){svg.yard *{animation:none!important}}
 
