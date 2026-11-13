@@ -143,12 +143,28 @@ function yFix(x,y){const o=store.owned,P=id=>posOf(id);
 function yResort(root){const L=$(root+' #ysorted');if(!L)return;const kids=[...L.children];
   kids.forEach(k=>{const a=k.querySelector(':scope > .actor');if(a){try{k.dataset.y=new DOMMatrix(getComputedStyle(a).transform).f.toFixed(1)}catch(e){}}});
   const want=kids.slice().sort((p,q)=>p.dataset.y-q.dataset.y);if(want.some((e,i)=>e!==kids[i]))want.forEach(e=>L.appendChild(e))}
+/* 走路（v37）：正面的角色不翻面（翻面會像對折）
+   起步先蹲一下 → 換方向時原地小跳轉身 → 腳步快慢跟著速度 → 往前進方向傾身 → 到了輕輕落地站直 */
 function yMoveTo(el,id,nx,ny,speed,root){const m=/translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(el.style.transform)||[0,180,200];const x=+m[1],y=+m[2];
-  const dist=Math.hypot(nx-x,ny-y),dur=Math.max(.7,dist/speed+.25);/* 正面的角色不翻面（翻面會像對折），改成往要去的方向微微傾身，到了再站直 */
-  const fl=el.querySelector('.flip');fl.classList.remove('left');clearTimeout(fl._lt);fl.classList.toggle('leanL',nx<x-2);fl.classList.toggle('leanR',nx>x+2);
-  fl._lt=setTimeout(()=>fl.classList.remove('leanL','leanR'),Math.max(300,dur*1000-250));
-  el.style.transition=`transform ${dur}s cubic-bezier(.42,0,.36,1)`;el.style.transform=yT(nx,ny);HOME_POS[id]=[nx,ny];
-  actDo(el,'ywalk',dur*1000-120);yDust(el,x,y,root);setTimeout(()=>{if(el.isConnected)yDust(el,nx,ny,root)},dur*1000-150);clearTimeout(el._rs);const t0=performance.now(),tick=()=>{yResort(root);if(performance.now()-t0<dur*1000+100)el._rs=setTimeout(tick,120)};tick();return dur}
+  const a=el.querySelector('.act'),fl=el.querySelector('.flip');
+  const dist=Math.hypot(nx-x,ny-y),walk=Math.max(.6,dist/speed+.2);
+  const dir=nx<x-2?'L':nx>x+2?'R':(el._dir||'R'),turn=!!el._dir&&el._dir!==dir&&Math.abs(nx-x)>6,moving=el._until>performance.now();
+  el._dir=dir;
+  /* 一個走路循環（兩步）大約走 13 單位：走得慢步子就慢 */
+  el.style.setProperty('--wc',Math.max(.42,Math.min(.8,13/speed)).toFixed(2)+'s');
+  el.style.setProperty('--lean',(speed>40?6:4)+'deg');
+  const pre=RM?0:turn?.26:moving?0:.14;
+  [a,fl].forEach(e=>e&&clearTimeout(e._t));a.classList.remove('yturn','yland','ycrouch');
+  if(pre){a.classList.remove('bob','rest','hop','look','ywalk');void a.getBoundingClientRect();a.classList.add(turn?'yturn':'ycrouch')}
+  fl.classList.remove('left');
+  fl._t=setTimeout(()=>{fl.classList.toggle('leanL',dir==='L'&&Math.abs(nx-x)>2);fl.classList.toggle('leanR',dir==='R'&&Math.abs(nx-x)>2);
+    fl._t=setTimeout(()=>fl.classList.remove('leanL','leanR'),Math.max(200,walk*1000-260))},pre*1000);
+  el.style.transition=`transform ${walk}s cubic-bezier(.35,0,.3,1) ${pre}s`;el.style.transform=yT(nx,ny);HOME_POS[id]=[nx,ny];
+  const dur=pre+walk;el._until=performance.now()+dur*1000;
+  a._t=setTimeout(()=>{a.classList.remove('yturn','ycrouch');actDo(el,'ywalk',walk*1000-60);
+    a._t=setTimeout(()=>{if(!a.isConnected)return;a.classList.remove('bob');void a.getBoundingClientRect();a.classList.add('yland');a._t=setTimeout(()=>{a.classList.remove('yland');a.classList.add('bob')},300)},walk*1000-40)},pre*1000);
+  setTimeout(()=>yDust(el,x,y,root),pre*1000);setTimeout(()=>{if(el.isConnected)yDust(el,nx,ny,root)},dur*1000-120);
+  clearTimeout(el._rs);const t0=performance.now(),tick=()=>{yResort(root);if(performance.now()-t0<dur*1000+100)el._rs=setTimeout(tick,120)};tick();return dur}
 
 function yDust(el,x,y,root){if(RM)return;const L=$(root+' svg.yard');if(!L)return;const ns='http://www.w3.org/2000/svg',g=document.createElementNS(ns,'g');g.setAttribute('class','ydust');g.setAttribute('pointer-events','none');
   g.innerHTML=[-7,0,7].map((dx,i)=>`<circle cx="${(x+dx).toFixed(1)}" cy="${(y-1).toFixed(1)}" r="${2.4-i%2*.6}" fill="#FFFDF5" style="animation-delay:${i*.05}s"/>`).join('');L.appendChild(g);setTimeout(()=>g.remove(),800)}
