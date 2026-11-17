@@ -1,0 +1,28 @@
+/* 小角落 v38：花園的動態（池塘全部在 canvas 裡畫） */
+.gardensvg.g2 .g2-cloud{animation:g2drift 90s linear infinite}
+@keyframes g2drift{from{transform:translateX(-120px)}to{transform:translateX(330px)}}
+.gardensvg.g2 .g2-rays{animation:g2spin 40s linear infinite}
+@keyframes g2spin{to{transform:rotate(360deg)}}
+.gardensvg.g2 .g2-bird{animation:g2bird 9s ease-in-out infinite}
+@keyframes g2bird{0%,70%,100%{transform:translate(0,0)}74%{transform:translate(0,-5px)}78%{transform:translate(0,0)}86%{transform:rotate(-8deg)}92%{transform:rotate(0)}}
+.gardensvg.g2 .g2-flap{transform-box:fill-box;transform-origin:center;animation:g2flap .3s ease-in-out infinite}
+@keyframes g2flap{50%{transform:scaleX(.35)}}
+.gardensvg.g2 .g2-bx1{animation:g2x1 17s ease-in-out infinite alternate}
+.gardensvg.g2 .g2-by1{animation:g2y1 5.5s ease-in-out infinite alternate}
+@keyframes g2x1{from{transform:translateX(20px)}to{transform:translateX(200px)}}
+@keyframes g2y1{0%{transform:translateY(150px)}50%{transform:translateY(118px)}100%{transform:translateY(170px)}}
+.gardensvg.g2 .g2-bx2{animation:g2x2 23s ease-in-out infinite alternate}
+.gardensvg.g2 .g2-by2{animation:g2y2 7s ease-in-out infinite alternate}
+@keyframes g2x2{from{transform:translateX(330px)}to{transform:translateX(160px)}}
+@keyframes g2y2{0%{transform:translateY(190px)}50%{transform:translateY(150px)}100%{transform:translateY(176px)}}
+.gardensvg.g2 .g2-bee{animation:g2bee 12s ease-in-out infinite}
+@keyframes g2bee{0%,100%{transform:translate(40px,160px)}20%{transform:translate(70px,150px)}40%{transform:translate(100px,166px)}55%{transform:translate(84px,170px) rotate(4deg)}75%{transform:translate(52px,152px)}}
+.gardensvg.g2 .g2-lady{animation:g2lady 40s ease-in-out infinite alternate}
+@keyframes g2lady{0%,10%{transform:translateX(0)}90%,100%{transform:translateX(150px)}}
+.gardensvg.g2 .g2-snail{animation:g2snail 140s linear infinite alternate}
+@keyframes g2snail{from{transform:translateX(0)}to{transform:translateX(70px)}}
+.gardensvg.g2 .g2-tw{animation:g2tw 2.2s ease-in-out infinite}
+@keyframes g2tw{0%,100%{opacity:.2}50%{opacity:1}}
+.gardensvg.g2 .g2-rain{opacity:0;transform:translateY(-30px);transition:opacity .6s,transform .8s cubic-bezier(.3,1.2,.5,1)}
+.gardensvg.g2.pour .g2-rain{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.gardensvg.g2 *{animation:none!important}.gardensvg.g2 .g2-bx1{transform:translateX(90px)}.gardensvg.g2 .g2-by1{transform:translateY(140px)}.gardensvg.g2 .g2-bx2{transform:translateX(260px)}.gardensvg.g2 .g2-by2{transform:translateY(170px)}.gardensvg.g2 .g2-bee{transform:translate(70px,150px)}}
