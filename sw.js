@@ -1,6 +1,6 @@
 /* 離線快取（v21）：第一次開啟時把整個工具存進裝置，之後沒有網路也能開，而且一點就開。
    ★ 每次更新程式或圖片，都要把下面的 VERSION 改掉（例如 v21 → v22），裝置才會抓新版。 */
-const VERSION='v43';
+const VERSION='v44';
 const CACHE='calm-monster-'+VERSION;
 const FILES=[
   './',
@@ -94,6 +94,17 @@ const FILES=[
   'img/defiantg2.webp',
   'img/defiantg3.webp',
   'img/defiantg4.webp',
+  'img/p_bg.webp',
+  'img/p_koi_orange.webp',
+  'img/p_koi_white.webp',
+  'img/p_koi_gold.webp',
+  'img/p_pad_big.webp',
+  'img/p_pad_small.webp',
+  'img/p_pad_flower.webp',
+  'img/p_dfly.webp',
+  'img/p_frog.webp',
+  'img/p_petal.webp',
+  'img/hero_dog.webp',
   'img/hero_bear.webp',
   'img/hero_cat.webp',
   'img/hero_fox.webp',
