@@ -27,7 +27,7 @@ function visibleJoy(){const base=AGE_JOY[S.age||'mid']||AGE_JOY.mid;return Objec
 function joyLog(){return Array.isArray(store.joyLog)?store.joyLog:(store.joyLog=[])}
 
 /* 夥伴的圖：先用程式畫的黏土版（之後可以換成生成圖），一樣隨等級長大、變成熟 */
-function friend(k,size=110,cls='',opt={}){const e=JOY[k];const lv=opt.level||lvOf(jxpOf(k));const g=stageOf(lv);
+function friend(k,size=110,cls='',opt={}){const e=JOY[k];const lv=opt.level||lvOf(jxpOf(k));const g=opt.big?4:stageOf(lv);
   const w=136*STAGES[g-1].s,x=60-w/2,y=124-w;
   const spark=(sx,sy,r)=>`<path d="M${sx} ${sy-r} L${sx+r*.3} ${sy-r*.3} L${sx+r} ${sy} L${sx+r*.3} ${sy+r*.3} L${sx} ${sy+r} L${sx-r*.3} ${sy+r*.3} L${sx-r} ${sy} L${sx-r*.3} ${sy-r*.3} Z" fill="#FFD166"/>`;
   const sparks=lv>=3?spark(2,34,7)+spark(118,46,6)+(lv>=4?spark(110,110,5)+spark(6,100,5):''):'';
@@ -51,7 +51,7 @@ function renderJoy(){const R=S.jy;if(!R){go(10,true);return}
   let say='';
   if(R.i===0){
     $('#jyTitle').textContent='是哪一個情緒夥伴來了？';$('#jyHint').textContent='好的感覺也值得被看見，點一個最像你的';say='是哪一個情緒夥伴來了？';
-    A.innerHTML=`<div class="grid g3">${visibleJoy().map(k=>`<button class="pick ${R.k===k?'sel':''}" data-jk="${k}">${friend(k,104,'',{main:1,level:4})}<b>${JOY[k].short}</b><span>${JOY[k].feel}</span></button>`).join('')}</div>`;
+    A.innerHTML=`<div class="grid g3">${visibleJoy().map(k=>`<button class="pick ${R.k===k?'sel':''}" data-jk="${k}">${friend(k,104,'',{main:1,big:1})}<b>${JOY[k].short}</b><span>${JOY[k].feel}</span></button>`).join('')}</div>`;
     $$('[data-jk]').forEach(b=>b.onclick=()=>{R.k=b.dataset.jk;R.i=1;tone(660,.12);speak('我是'+JOY[R.k].name);renderJoy()});
     nav.innerHTML=`<button class="btn ghost" id="jyHome">回家園</button>`;$('#jyHome').onclick=()=>go(10);
   } else if(R.i===1){
