@@ -33,7 +33,10 @@ function friend(k,size=110,cls='',opt={}){const e=JOY[k];const lv=opt.level||lvO
   const sparks=lv>=3?spark(2,34,7)+spark(118,46,6)+(lv>=4?spark(110,110,5)+spark(6,100,5):''):'';
   const aura=lv>=5?`<ellipse cx="60" cy="62" rx="62" ry="60" fill="none" stroke="#FFD166" stroke-width="4" stroke-dasharray="2 8" stroke-linecap="round"/>`:'';
   return `<svg class="mon ${cls}" width="${size}" height="${size}" viewBox="-8 -22 136 150" aria-label="${e.name} ${STAGES[g-1].n}">${aura}
-    <ellipse cx="60" cy="121" rx="${w*.36}" ry="5" fill="${e.color}" opacity=".18"/>${clayMon(e.color,x,y,w,0,k)}${sparks}</svg>`}
+    <ellipse cx="60" cy="121" rx="${w*.36}" ry="5" fill="${e.color}" opacity=".18"/>${(()=>{const f=opt.main?`joy_${k}0`:`joy_${k}g${g}`,ar=JOY_ASPECT[f]||1;
+      return `<image href="img/${f}.webp" x="${(60-w*ar/2).toFixed(1)}" y="${y}" width="${(w*ar).toFixed(1)}" height="${w}"/>`})()}${sparks}</svg>`}
+/* v46：夥伴換成生成圖（主圖＋4 個成長階段），寬的圖要記比例 */
+const JOY_ASPECT={'joy_happy0': 1.01, 'joy_happyg1': 1.09, 'joy_safeg1': 1.2, 'joy_curiousg2': 1.05};
 
 /* ---------- 品味流程（step 28） ---------- */
 function startJoy(k){S.jy={i:k?1:0,k:k||null,body:[],what:'',note:'',how:''};go(28)}
@@ -48,7 +51,7 @@ function renderJoy(){const R=S.jy;if(!R){go(10,true);return}
   let say='';
   if(R.i===0){
     $('#jyTitle').textContent='是哪一個情緒夥伴來了？';$('#jyHint').textContent='好的感覺也值得被看見，點一個最像你的';say='是哪一個情緒夥伴來了？';
-    A.innerHTML=`<div class="grid g3">${visibleJoy().map(k=>`<button class="pick ${R.k===k?'sel':''}" data-jk="${k}">${friend(k,80)}<b>${JOY[k].short}</b><span>${JOY[k].feel}</span></button>`).join('')}</div>`;
+    A.innerHTML=`<div class="grid g3">${visibleJoy().map(k=>`<button class="pick ${R.k===k?'sel':''}" data-jk="${k}">${friend(k,104,'',{main:1,level:4})}<b>${JOY[k].short}</b><span>${JOY[k].feel}</span></button>`).join('')}</div>`;
     $$('[data-jk]').forEach(b=>b.onclick=()=>{R.k=b.dataset.jk;R.i=1;tone(660,.12);speak('我是'+JOY[R.k].name);renderJoy()});
     nav.innerHTML=`<button class="btn ghost" id="jyHome">回家園</button>`;$('#jyHome').onclick=()=>go(10);
   } else if(R.i===1){
@@ -69,7 +72,7 @@ function renderJoy(){const R=S.jy;if(!R){go(10,true);return}
     $('#jyTitle').textContent='把這個感覺好好記住';$('#jyHint').textContent='閉上眼睛，想著那個畫面，跟著光慢慢呼吸三次';
     say='閉上眼睛，想著那個畫面。跟著光，慢慢吸氣，慢慢吐氣。';
     const what=R.note.trim()||R.what;
-    A.innerHTML=`<div class="jysavor" style="--jc:${e.color}"><div class="jyglow"></div><div class="jymon">${friend(R.k,120)}</div></div>
+    A.innerHTML=`<div class="jysavor" style="--jc:${e.color}"><div class="jyglow"></div><div class="jymon">${friend(R.k,120,'',{main:1})}</div></div>
       ${what?`<p class="rvgood">「${esc(what)}」</p>`:''}
       <p class="hint" style="margin-top:10px">記住了嗎？想把它放在哪裡？</p>
       <div class="grid g2"><button class="pick" data-jh="box"><b>🎁 放進快樂寶盒</b><span>以後可以打開來看</span></button>

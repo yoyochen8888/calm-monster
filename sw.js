@@ -1,6 +1,6 @@
 /* 離線快取（v21）：第一次開啟時把整個工具存進裝置，之後沒有網路也能開，而且一點就開。
    ★ 每次更新程式或圖片，都要把下面的 VERSION 改掉（例如 v21 → v22），裝置才會抓新版。 */
-const VERSION='v45';
+const VERSION='v46';
 const CACHE='calm-monster-'+VERSION;
 const FILES=[
   './',
@@ -216,7 +216,32 @@ const FILES=[
   'img/stressg1.webp',
   'img/stressg2.webp',
   'img/stressg3.webp',
-  'img/stressg4.webp'
+  'img/stressg4.webp',
+  'img/joy_happy0.webp',
+  'img/joy_happyg1.webp',
+  'img/joy_happyg2.webp',
+  'img/joy_happyg3.webp',
+  'img/joy_happyg4.webp',
+  'img/joy_proud0.webp',
+  'img/joy_proudg1.webp',
+  'img/joy_proudg2.webp',
+  'img/joy_proudg3.webp',
+  'img/joy_proudg4.webp',
+  'img/joy_safe0.webp',
+  'img/joy_safeg1.webp',
+  'img/joy_safeg2.webp',
+  'img/joy_safeg3.webp',
+  'img/joy_safeg4.webp',
+  'img/joy_curious0.webp',
+  'img/joy_curiousg1.webp',
+  'img/joy_curiousg2.webp',
+  'img/joy_curiousg3.webp',
+  'img/joy_curiousg4.webp',
+  'img/joy_grateful0.webp',
+  'img/joy_gratefulg1.webp',
+  'img/joy_gratefulg2.webp',
+  'img/joy_gratefulg3.webp',
+  'img/joy_gratefulg4.webp'
 ];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all(FILES.map(f=>fetch(f,{cache:'reload'}).then(r=>{if(!r.ok)throw new Error(f);return c.put(f,r)})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('calm-monster-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
