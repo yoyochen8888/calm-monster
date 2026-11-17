@@ -27,7 +27,7 @@ const AGE_EMO={young:['angry','sad','stuck','scared','wronged','reluctant'],
   old:Object.keys(EMO)};
 function visibleEmo(){const base=AGE_EMO[S.age||'mid']||AGE_EMO.mid;return Object.keys(EMO).filter(k=>base.includes(k)||(store.xp&&store.xp[k]>0))}
 /* 有 3D 圖的怪獸；其他先用簡單圖形頂著 */
-const HASART=new Set(['angry','sad','defiant','stuck','scared','wronged']);
+const HASART=new Set(['angry','sad','defiant','stuck','scared','wronged','reluctant','jealous','shy','hyper','embarrassed','guilty','lonely','stress']);
 const LV=[
   {n:1,t:'小小的',h:'#6CCB70'},{n:2,t:'有一點',h:'#A8D86B'},{n:3,t:'中中的',h:'#F7D046'},{n:4,t:'很大',h:'#F5A524'},{n:5,t:'超級大',h:'#F26B5B'}
 ];
@@ -165,9 +165,10 @@ const BADGE={angry:['🚦','紅綠燈徽章','生氣時會先停一下'],sad:['�
   hyper:['🐌','蝸牛煞車','慢慢降速'],embarrassed:['😊','沒關係貼紙','每個人都會出糗'],guilty:['🩹','修復 OK 繃','說對不起，再去修復'],
   lonely:['🏮','小燈籠','主動找一個人'],stress:['📋','一件事清單','一次只做一件事']};
 /* 已換成 3D 新圖、有 4 階段成長圖的怪獸（徽章已畫在圖裡，不再疊 emoji） */
-const GROWN=new Set(['angry','sad','defiant','stuck','scared','wronged']);
+const GROWN=new Set(['angry','sad','defiant','stuck','scared','wronged','reluctant','jealous','shy','hyper','embarrassed','guilty','lonely','stress']);
 /* 比較寬的圖（手拿旗子、張開手臂）：寬高比，讓身體高度跟其他階段一致 */
-const ASPECT={stuck2:1.03,stuck4:1.11,stuck0:1.18,stuckg2:1.15,stuckg4:1.11};
+const ASPECT={stuck2:1.03,stuck4:1.11,stuck0:1.18,stuckg2:1.15,stuckg4:1.11,
+  /* v45：8 隻新怪獸的生成圖 */reluctant3:1.1,reluctant4:1.16,reluctant0:1.07,reluctantg2:1.02,hyperg2:1.13,embarrassed1:1.1,embarrassed0:1.08,embarrassedg2:1.06,guilty3:1.08,stress0:1.08,stressg2:1.07,jealousg2:1.01};
 const IMG=(k,st)=>`img/${k}${st}.webp`;
 function nextOf(xp){const l=lvOf(xp);if(l>=LEVELS.length)return {pct:100,need:0};const a=LEVELS[l-1],b=LEVELS[l];return {pct:Math.round((xp-a)/(b-a)*100),need:b-xp}}
 const HEROES={fox:{name:'小狐狸',c:'#F39A4B'},bear:{name:'小熊',c:'#B07A52'},rabbit:{name:'小兔子',c:'#E9DDF2'},cat:{name:'小貓',c:'#9AA3B5'}};
