@@ -34,6 +34,7 @@ function renderGames(){
 $('#gRoutine').onclick=()=>{S.rStage=0;go(18)};
 $('#gMem').onclick=()=>go(19);$('#gTR').onclick=()=>go(20);$('#gColor').onclick=()=>go(21);
 $('#gCalm').onclick=()=>startPractice('scared','breathe');
+$('#gGuess').onclick=()=>{S.gs=null;go(30)};
 $('#gWatch').onclick=()=>{S.wMode='menu';go(23)};
 $('#toCritDex').onclick=()=>{S.wMode='album';go(23)};
 
@@ -51,7 +52,7 @@ function freezeMusic(el){
 function faceCard(el,onDraw){
   el.innerHTML=`<div class="stage" id="fcMon" style="min-height:110px"></div><div class="sentence" id="fcQ" style="display:none"></div><div class="row"><button class="btn small" id="fcDraw">抽一張怪獸卡</button></div>`;
   $('#fcDraw').onclick=e=>{e.stopPropagation();const ks=visibleEmo();const k=ks[Math.floor(Math.random()*ks.length)];
-    $('#fcMon').innerHTML=monster(k,100,'wobble',{mood:2});$('#fcQ').style.display='';$('#fcQ').innerHTML=`抽到<u>${EMO[k].name}</u>！<br>你什麼時候會覺得<u>${EMO[k].feel.replace(/^好/,'')}</u>？<br><small>說完換大人說一次</small>`;
+    $('#fcMon').innerHTML=monster(k,100,'wobble',{mood:2});$('#fcQ').style.display='';$('#fcQ').innerHTML=`抽到<u>${EMO[k].name}</u>！<br>你什麼時候會覺得<u>${EMO[k].feel.replace(/^好/,'')}</u>？<br><small>說完換大人說一次</small>`+(typeof CLUES!=='undefined'?`<br><small>演演看：臉可能${CLUES[k][0]}；身體可能${CLUES[k][1]}</small>`:'');
     tone(660,.15);speak(`抽到${EMO[k].name}。你什麼時候會覺得${EMO[k].feel.replace(/^好/,'')}？`);onDraw&&onDraw()};
 }
 
@@ -133,10 +134,10 @@ function heroTurn(){const M=S.mem;if(M.over||M.turn!=='hero')return;
   flipCard(pick1);
   later(()=>{let j;if(pair)j=pair[1];else{const m=known.find(x=>x!==pick1&&M.seen[x]===M.cards[pick1]);j=(m!==undefined&&Math.random()<memP)?m:hidden.filter(x=>x!==pick1)[Math.floor(Math.random()*(hidden.length-1))]}flipCard(j)},800)}
 function endMemory(){const M=S.mem;M.over=true;renderMemory();const hn=store.hero?store.hero.name:'主角';const m=$('#memMsg');m.style.display='';
-  let t;if(M.mode==='coop')t=`🤝 你們一起用了 ${M.moves} 次就全部找到了！合作好棒！`;
+  let t;if(M.mode==='coop')t=`🤝 你們一起用了 ${M.moves} 次就全部找到了！你們有輪流、有一起找！`;
   else if(M.score.kid>M.score.hero)t=`🎉 你贏了！<br>${hn}：「我輸了，有點可惜……但是跟你玩好開心！我們再來一次？」`;
   else if(M.score.kid<M.score.hero)t=`${hn}這次贏了。<br>${hn}：「你很想贏，輸了有點不服氣對不對？我們先吹一口氣～呼～。有時候贏、有時候輸，輸了可以說『再玩一次』！」`;
-  else t=`平手！兩個人都好專心！`;
+  else t=`平手！兩個人找到的一樣多！`;
   m.innerHTML=t+`<div class="row" style="margin-top:10px"><button class="btn small" id="memAgain">再玩一次</button>${M.mode==='vs'&&M.score.kid<M.score.hero?'<button class="btn small ghost" id="memCalm">去冷靜站</button>':''}</div>`;
   $('#memAgain').onclick=()=>renderMemory(true);const c=$('#memCalm');if(c)c.onclick=startFlow;
   gameReward('memory','記憶翻牌');}
@@ -165,7 +166,7 @@ $('#trTap').addEventListener('pointerdown',e=>{e.preventDefault();ac();const T=S
     info.textContent=`石頭時定住成功 ${T.stoneOk} 次！${T.stoneTap?'下次試試看石頭時一次都不動。':'完全沒有偷動，你管住了自己的身體！'}`;$('#trTap').textContent='再玩一次';chime();gameReward('tr','烏龜兔子石頭')}});
 
 /* ---------- color bubbles ---------- */
-function renderCB(){const young=S.age==='young';const ks=young?['angry','sad','defiant']:['angry','sad','defiant','stuck','scared'];
+function renderCB(){const young=S.age==='young';const ks=young?['angry','sad','stuck']:['angry','sad','defiant','stuck','scared'];
   S.cb={ks,goal:young?10:S.age==='old'?20:15,n:0,target:ks[0],run:false};
   $('#cbHint').textContent=`只戳指定顏色的泡泡，其他顏色要放過！戳到 ${S.cb.goal} 顆就成功`;
   $('#cbCmd').innerHTML='';$('#cbPond').innerHTML='';$('#cbCount').textContent='';$('#cbStart').style.display='';}
@@ -179,7 +180,7 @@ $('#cbStart').onclick=()=>{ac();const C=S.cb;C.run=true;$('#cbStart').style.disp
     b.style.setProperty('--bc',EMO[k].color);b.style.animationDuration=(young?7:5.5)+Math.random()*2.5+'s';
     b.addEventListener('pointerdown',ev=>{ev.preventDefault();if(k===C.target){C.n++;tone(800+Math.random()*300,.08,'triangle',.12);b.remove();
         $('#cbCount').textContent=`${C.n} / ${C.goal}`;
-        if(C.n>=C.goal){C.run=false;stopAct();pond.innerHTML='';$('#cbCmd').textContent='🎉 全部完成！眼睛好專心！';chime();$('#cbStart').style.display='';$('#cbStart').textContent='再玩一次';gameReward('color','顏色泡泡');S.cb.n=0;return}
+        if(C.n>=C.goal){C.run=false;stopAct();pond.innerHTML='';$('#cbCmd').textContent='🎉 全部完成！你每一顆都有看清楚顏色';chime();$('#cbStart').style.display='';$('#cbStart').textContent='再玩一次';gameReward('color','顏色泡泡');S.cb.n=0;return}
         if(C.n%5===0)cbSetTarget();}
       else{b.classList.add('shake');tone(200,.12,'sine',.08);$('#cbCount').textContent=`不是這個顏色喔～（${C.n} / ${C.goal}）`}});
     b.addEventListener('animationend',e=>{if(e.animationName==='rise')b.remove()});pond.appendChild(b);later(spawn,young?850:600)};

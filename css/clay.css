@@ -454,3 +454,22 @@ body.focus .wrap{padding-bottom:30px}
   .step,body.focus .step,#dex .pick,#jdex .pick,.toast,.introcard,.wishask,.lv.sel,.need.sel,.moods button.sel,.tap.done{animation:none!important}
   .btn,.pick,.hm,.wx,.chip,.lv,.need,.moods button,.tabbar button,.drawer,.pbar i{transition-duration:.01s!important}
 }
+
+/* ---------- v39：三條線索、工具箱、猜猜是誰 ---------- */
+.clues{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:6px 0 10px}
+.clues.one{grid-template-columns:1fr}
+.clue{background:#FFFCF4;border:3px solid var(--line);border-radius:18px;padding:12px 12px 14px;text-align:center;box-shadow:0 3px 0 var(--line);line-height:1.6}
+.clue i{display:block;font-style:normal;font-size:1.7rem;line-height:1.2}
+.clue b{display:block;font-size:1.02rem;margin:2px 0 4px}
+.clue span{display:block;font-size:.98rem}
+.cluemore{margin:0 0 10px}.cluemore summary{cursor:pointer;color:var(--soft);font-size:.92rem;padding:6px 2px}
+.vocab{margin:0 0 6px;font-size:.95rem}
+.tbnote{display:block;flex-basis:100%;text-align:center;color:var(--soft);font-size:.82rem;margin-top:2px}
+.chip.tool{background:#EAF6F0;border-color:#A8DCC5}
+.gsask{text-align:center;font-size:1.15rem;margin:10px 0 8px}
+.gsopts{margin-top:12px}
+.gswrong{opacity:.55;animation:gsno .35s}
+@keyframes gsno{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}70%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){.gswrong{animation:none}}
+.gsopts{grid-template-columns:repeat(3,1fr)!important;gap:8px}
+.gsopts .pick{padding:10px 4px}.gsopts .pick b{font-size:1rem}

@@ -79,13 +79,15 @@ function renderSize(){
   const e=EMO[S.emo],f=famOf(S.emo);
   $('#sizeQ').textContent=f.sizeQ(e.name);
   $('#sizeKey').textContent=EMO_FAM[S.emo]==='hot'?'🟢 平靜　🟡 有點煩　🔴 快爆炸':'🟢 一點點　🟡 中中的　🔴 好強烈';
+  const sizeLegend=$('#sizeKey').textContent;
   const mySig=store.bodySig&&store.bodySig[S.emo];
-  const sigTxt=mySig&&mySig.length?`你${e.feel}。你說過牠來的時候，你會${mySig.join('、')}。`:`你${e.feel}。身體可能會${e.body}。`;
+  const sigTxt=mySig&&mySig.length?`你${e.feel}。你說過牠來的時候，你會${mySig.join('、')}。`:`你${e.feel}。身體可能會${(typeof CLUES!=='undefined'&&CLUES[S.emo]?CLUES[S.emo][1]:e.body)}。`;
   $('#sizeHint').textContent=sigTxt;
   $('#sizeMsg').innerHTML=`<div class="monmsg" style="--mc:${e.color}"><small>${e.name}想告訴你</small><b>${phr('「'+EMO_MSG[S.emo]+'」')}</b><span>${phr(f.ok)}</span></div>`;
   if(S.sizeSpoke!==S.emo){S.sizeSpoke=S.emo;setTimeout(()=>{if(S.step===2)speak(`${e.name}想告訴你：${EMO_MSG[S.emo]}。${f.ok}。`)},700)}
   const upd=()=>{
     $('#toCalm').disabled=!S.lv;
+    if(typeof sizeDesc==='function'){const d=S.lv&&sizeDesc(S.emo,S.lv);$('#sizeKey').textContent=d?'可能像這樣：'+d:sizeLegend;if(d&&S.sizeSaid!==S.emo+S.lv){S.sizeSaid=S.emo+S.lv;if(S.lv<5)speak(d)}}
     const big=S.lv===5;
     $('#toCalm').textContent=big?'請大人來陪我':f.go;
     $('#selfTry').style.display=big?'':'none';
@@ -110,7 +112,8 @@ function renderAct(){
   const big=!S.sos&&!S.practice&&S.lv>=4;
   const list=S.sos?['breathe','butterfly','squeeze']:S.practice?['breathe','light','bubbles','squeeze','senses','butterfly','fish','rain','kind']:big?famOf(S.emo).body.slice():e.acts.slice();
   if(!S.act||!list.includes(S.act))S.act=list[0];
-  $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${ACT_NAME[a]}</button>`).join('');
+  const tb=(!S.sos&&!S.practice&&typeof toolbox==='function')?toolbox(S.emo).filter(a=>list.includes(a)):[];
+  $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${tb.includes(a)?'🧰 ':''}${ACT_NAME[a]}</button>`).join('')+(tb.length?`<small class="tbnote">🧰 在你的工具箱裡：上次有讓怪獸變小</small>`:'');
   $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct();ambSync()});
   $('#actTitle').textContent=S.sos?'🆘 先一起呼吸，不用想是哪隻怪獸':S.practice?'平時練習：心情好的時候先練起來':big?(EMO_FAM[S.emo]==='comfort'?'先讓人陪著你':'先照顧身體'):'冷靜時間';
   $('#actAdult').innerHTML=S.sos||S.practice?'':adultBox(S.emo);
@@ -119,7 +122,7 @@ function renderAct(){
 $('#speakAct').onclick=()=>speak(actSpeech);
 $('#actDone').onclick=()=>{
   if(S.practice){
-    if(store.pracDay!==today()){store.pracDay=today();store.pracLog.push(today());store.pracLog=store.pracLog.slice(-60);gain('平時練習',5)}else toast('今天已經練習過了，你好認真！');
+    if(store.pracDay!==today()){store.pracDay=today();store.pracLog.push(today());store.pracLog=store.pracLog.slice(-60);gain('平時練習',5)}else toast('今天已經練習過了，想練可以再練');
     S.practice=false;const bk=S.hist.pop();go(bk!==undefined?bk:17,true);return}
   S.actsDone=S.actsDone||[];if(!S.actsDone.includes(S.act))S.actsDone.push(S.act);
   if(S.sos){S.sosDone=1;go(1);return}

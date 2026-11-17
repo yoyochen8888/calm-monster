@@ -22,7 +22,7 @@ const EMO={
   stress:{cname:'咖啡色',name:'壓力怪獸',color:'#A97B50',feel:'壓力好大，事情好多',body:'肩膀緊緊、頭脹脹、睡不好',acts:['breathe','squeeze','senses','fish'],face:'stuck'}
 };
 /* 依年齡顯示的怪獸（已經一起冷靜過的怪獸一定會顯示） */
-const AGE_EMO={young:['angry','sad','scared','wronged','reluctant'],
+const AGE_EMO={young:['angry','sad','stuck','scared','wronged','reluctant'],
   mid:['angry','sad','defiant','stuck','scared','wronged','reluctant','jealous','shy','hyper'],
   old:Object.keys(EMO)};
 function visibleEmo(){const base=AGE_EMO[S.age||'mid']||AGE_EMO.mid;return Object.keys(EMO).filter(k=>base.includes(k)||(store.xp&&store.xp[k]>0))}
@@ -68,7 +68,7 @@ const PARENT={
     avoid:'「這有什麼好哭的」「別難過了，又沒什麼」',
     after:'孩子平靜後問：「你需要我幫什麼忙？」讓孩子自己選。'},
   defiant:{first:'不服氣背後常是「很在乎、想做好」。先肯定這份在乎，再談輸贏。',
-    say:{young:'「你好想贏，輸了好不甘心。想贏的心很棒喔！」',
+    say:{young:'「你好想贏，輸了好不甘心。你很在乎這個遊戲。」',
          mid:'「你覺得不公平、不服氣，代表你很在乎。冷靜一下，我們再看看哪裡可以練習。」',
          old:'「不甘心代表你有企圖心。你想再挑戰一次，還是先分析看看差在哪裡？」'},
     avoid:'「你就是輸不起」「你看人家都……」（和別人比較）',
@@ -115,7 +115,7 @@ Object.assign(PARENT,{
     avoid:'當眾笑孩子、轉述給別人聽、「這有什麼好丟臉的」',
     after:'分享大人自己出糗的故事，讓孩子知道出糗是正常的。'},
   guilty:{first:'內疚代表孩子知道在乎別人。重點放在「怎麼修復」，不要一直責備。',
-    say:{young:'「你覺得自己做錯了，心裡不舒服。我們一起去說對不起。」',mid:'「做錯事會難過，代表你很善良。你想怎麼補救？」',old:'「每個人都會犯錯。重要的是接下來怎麼做，你覺得可以怎麼修復？」'},
+    say:{young:'「你覺得自己做錯了，心裡不舒服。我們一起去說對不起。」',mid:'「做錯事會難過，是因為你在乎別人。你想怎麼補救？」',old:'「每個人都會犯錯。重要的是接下來怎麼做，你覺得可以怎麼修復？」'},
     avoid:'「你看你做的好事」「你就是壞孩子」（翻舊帳、否定孩子本人）',
     after:'可以用工具裡的「修復任務」，完成後一起確認，讓孩子學會負責而不是一直自責。'},
   lonely:{first:'先陪著，讓孩子知道你在。孤單常常說不出來，可以用「我注意到…」開頭。',
