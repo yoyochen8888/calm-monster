@@ -251,7 +251,7 @@ $('#navHome').onclick=()=>go(10);
 const INTRO={
   angry:['當事情「不公平」、被打斷、東西被拿走，或事情不照你想的時候，牠就會跑出來。','臉熱熱、心跳變快、拳頭握緊、想大叫或想丟東西。','牠其實是在保護你，告訴你「有件事讓我很不舒服」。生氣沒有錯，但不可以傷害別人和東西。','先讓身體停下來（紅綠燈），把力氣用在安全的地方（戳泡泡、擠檸檬、打枕頭），等身體冷靜了再用說的。'],
   sad:['失去喜歡的東西、很期待的事沒有發生、被拒絕，或想念一個人的時候。','眼睛酸酸、喉嚨緊緊、沒有力氣、想哭。','牠在告訴你「這件事對我很重要」。難過的時候哭一哭沒關係。','慢慢呼吸、蝴蝶抱抱自己、找一個人抱抱，或把難過說出來、畫出來。'],
-  defiant:['輸了、被比下去、覺得「我明明可以」或覺得不公平的時候。','心裡悶悶的、想爭辯、不想認輸、想再來一次。','牠代表你很在乎、很想做好。這份在乎是很棒的力量！','先擠檸檬把力氣放掉，跟昨天的自己比，說「再玩一次」，想想哪裡可以再練習。'],
+  defiant:['輸了、被比下去、覺得「我明明可以」或覺得不公平的時候。','心裡悶悶的、想爭辯、不想認輸、想再來一次。','牠代表你很在乎、很想做好。這份在乎會讓你想再練習。','先擠檸檬把力氣放掉，跟昨天的自己比，說「再玩一次」，想想哪裡可以再練習。'],
   stuck:['事情太難、試了好幾次還是做不到，或跟你想的不一樣的時候。','想放棄、想把東西丟掉、覺得自己很笨。','牠想說的是「這件事有點難」，不是「你很笨」。你只是「還沒」做到。','先休息一下再回來，把事情切成小步驟，說「我還沒做到」，也可以請人幫忙。'],
   scared:['遇到新的事、不知道會發生什麼、怕犯錯或怕被罵的時候。','肚子怪怪的、心跳很快、手冰冰的、想躲起來。','牠想保護你，提醒你要小心一點。','慢慢呼吸、用五感找找身邊的東西、跟大人說你在擔心什麼，然後先試一小步。'],
   wronged:['被誤會、被冤枉、覺得沒有人聽你說的時候。','想哭又說不出來、胸口悶悶的、覺得好不公平。','牠想讓別人聽見你的想法。','先蝴蝶抱抱自己，找一個信任的人說出你的版本，或把事情畫下來。']
@@ -262,7 +262,7 @@ Object.assign(INTRO,{
   shy:['見到不認識的人、要上台、要在很多人面前說話的時候。','臉熱熱的、聲音變小、想躲到大人後面。','牠想說「我需要一點時間熟悉」。害羞不是錯。','先在旁邊看一下，深呼吸，然後先揮揮手或說一個字就好。'],
   hyper:['玩得太開心、很多人一起鬧、等很久終於可以玩的時候。','身體停不下來、聲音越來越大、聽不到別人說話。','牠想說「我好開心」，只是油門踩太大了。','像紅綠燈一樣先停下來，像蝸牛一樣慢慢呼吸，喝口水再回來。'],
   embarrassed:['在別人面前出糗、說錯話、被笑的時候。','臉紅紅、好想消失、不想再去那個地方。','牠想說「我很在意別人怎麼看我」。','記得每個人都會出糗，深呼吸，笑一笑說「沒關係」，或找信任的人說說。'],
-  guilty:['做錯事、弄壞東西、讓別人難過的時候。','心裡沉沉的、不敢看別人、想躲起來。','牠想說「我在乎別人」。知道自己做錯，代表你很善良。','先冷靜，說對不起，再想一個修復的方法去做。'],
+  guilty:['做錯事、弄壞東西、讓別人難過的時候。','心裡沉沉的、不敢看別人、想躲起來。','牠想說「我在乎別人」。做錯事會不舒服，是因為你在乎。','先冷靜，說對不起，再想一個修復的方法去做。'],
   lonely:['沒有人跟你玩、被排擠、或想念不在身邊的人的時候。','心裡空空的、提不起勁、不想說話。','牠想說「我需要有人陪」。','抱抱自己，找一個信任的人說說，或主動邀請一個人一起玩。'],
   stress:['功課太多、考試快到了、很多事情同時要做的時候。','肩膀緊緊、頭脹脹的、睡不好、容易發脾氣。','牠想說「我需要休息一下」。','把事情寫下來，一次只做一件，做完一件就休息一下，也可以請人幫忙。']
 });
@@ -283,15 +283,15 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
     <h4>🌡️ 牠變大的時候</h4><div class="evorow">${SIZES.map((t,i)=>`<div class="evocell mood">${monster(k,58,'',{mood:i+1,level:1,eq:{head:null,neck:null}})}<small>${t.n}</small></div>`).join('')}<div class="evocell calm">${HASART.has(k)?`<svg class="mon" width="58" height="58" viewBox="-8 -22 136 150"><image href="img/${k}0.webp" x="-4" y="-8" width="128" height="128"/></svg>`:monster(k,58,'',{grow:1,level:1,eq:{head:null,neck:null}})}<small>冷靜下來</small></div></div>
     <p class="hint" style="text-align:left">情緒越大，牠看起來越兇，這是在告訴你「我很不舒服」。冷靜下來，牠就會變回溫柔的樣子。</p>
     <h4>🔎 牠什麼時候會出現？</h4><p>${when}</p>
-    <h4>🫀 牠來的時候，身體會怎樣？</h4><p>${body}</p>
+    ${cluesHtml(k)}
     <div class="soft" style="text-align:left"><b>我的身體訊號</b><br><small>牠來的時候，「你的」身體會怎樣？點選你的（越早發現，越容易照顧）</small>
       <div class="chips" style="justify-content:flex-start;margin-top:8px">${BODY_SIG.map(c=>`<button class="chip ${(store.bodySig&&store.bodySig[k]||[]).includes(c)?'sel':''}" data-bs="${c}">${c}</button>`).join('')}</div></div>
     <h4>💬 牠想告訴你什麼？</h4><p>${why}</p>
     <h4>🛠️ 怎麼跟牠相處？</h4><p>${how}</p>
     ${lvOf(store.xp[k]||0)>=CORNER_LV?`<div class="skillbox"><b>⭐ 牠的拿手方法：${CORNERS[k].ico} ${CORNERS[k].name}</b><span>一起練習「${ACT_NAME[CORNERS[k].act]}」</span><button class="btn small" data-mdact="${CORNERS[k].act}">一起練習</button></div>`:''}
     <div class="chips" style="justify-content:flex-start">${e.acts.map(a=>`<button class="chip" data-mdact="${a}">練習${ACT_NAME[a]}</button>`).join('')}</div>
-    <h4>📊 你和${e.name}</h4><p>${L.length?`一起冷靜過 <b>${L.length}</b> 次。`+(best?`對你最有效的是 <b>${best[0]}</b>（平均變小 ${(best[1][0]/best[1][1]).toFixed(1)} 級）。`:'')+(topC?`最常因為「${topC[0]}」出現。`:''):'還沒有一起冷靜的紀錄。下次牠來的時候，去冷靜站找牠吧！'}</p>
-    <h4>⭐ 我的冷靜秘訣</h4><p class="hint" style="text-align:left;margin:0 0 6px">寫下（或請大人幫你寫）對付${e.name}最有用的方法</p>
+    <h4>📊 你和${e.name}</h4><p>${L.length?`一起冷靜過 <b>${L.length}</b> 次。`+(topC?`最常因為「${topC[0]}」出現。`:''):'還沒有一起冷靜的紀錄。下次牠來的時候，去冷靜站找牠吧！'}</p>
+    <h4>🧰 我的工具箱</h4>${toolboxHtml(k)}<p class="hint" style="text-align:left;margin:10px 0 6px">我自己的秘訣：寫下（或請大人幫你寫）${e.name}來的時候，對你最有用的方法</p>
     <textarea id="mdTip" style="width:100%;min-height:70px;border:2px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit" placeholder="例如：抱著小熊數到 10">${store.tips[k]||''}</textarea>
     <div class="gdetail"><b>給大人</b>：${PARENT[k].say[age]}<br><small>${PARENT[k].after}</small></div>`;
   $$('[data-bs]').forEach(b=>b.onclick=()=>{store.bodySig=store.bodySig||{};const a=store.bodySig[k]=store.bodySig[k]||[];const c=b.dataset.bs,i=a.indexOf(c);i>=0?a.splice(i,1):a.push(c);save();tone(600,.1);b.classList.toggle('sel')});

@@ -87,7 +87,7 @@ function actRain(){
         $('#bw').textContent='雨停了。你陪自己度過了';chime();speak('雨停了。你陪自己度過了。')}};
     step()}}
 /* 溫柔的話：做錯事、出糗時，用對好朋友的方式對自己說話（自我疼惜） */
-const KIND={young:['每個人都會犯錯','我可以說對不起','我還是好孩子','大人會幫我'],
+const KIND={young:['每個人都會犯錯','我可以說對不起','大家還是愛我','大人會幫我'],
   mid:['每個人都會犯錯','做錯了可以補救','我還是很好的人','我正在學習'],
   old:['我做錯了一件事，不代表我很糟','我可以負責、去補救','這件事很快就會過去','我會怎麼安慰好朋友，就怎麼對自己說']};
 function actKind(){
@@ -97,7 +97,7 @@ function actKind(){
   A.innerHTML=`<div class="stage">${monster(S.emo,110,'wobble')}</div><div class="needs kind">${KIND[S.age||'mid'].map(t=>`<button class="need" data-kind="${t}"><b>${t}</b></button>`).join('')}</div>
     <div class="breath-word" id="bw" style="font-size:1.15rem"></div>`;
   $$('[data-kind]').forEach(b=>b.onclick=()=>{$$('[data-kind]').forEach(x=>x.classList.toggle('sel',x===b));const t=b.dataset.kind;let n=0;
-    const say=()=>{if(!$('#bw'))return;n++;$('#bw').textContent=`「${t}」 ${n} / 3`;speak(t);tone(440+n*60,.2,'sine',.07);if(n<3)later(say,3200);else later(()=>{if($('#bw')){$('#bw').textContent='你對自己好溫柔';chime()}},3000)};
+    const say=()=>{if(!$('#bw'))return;n++;$('#bw').textContent=`「${t}」 ${n} / 3`;speak(t);tone(440+n*60,.2,'sine',.07);if(n<3)later(say,3200);else later(()=>{if($('#bw')){$('#bw').textContent='你對自己說了溫柔的話';chime()}},3000)};
     timers.forEach(clearTimeout);timers=[];say()})}
 
 /* ---------- 給大人（收起來，需要時再打開） ---------- */

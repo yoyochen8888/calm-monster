@@ -245,6 +245,7 @@
     <button class="pick" id="gWatch" style="width:100%;margin-top:10px;border-color:#B9DDAA;background:#F4FAF0"><b>🔭 安靜觀察</b><span id="gWatchSub">安靜下來，小動物就會出現，拍照收進圖鑑</span></button>
     <p class="q secttl">自己玩的小遊戲</p>
     <div class="grid g2">
+      <button class="pick" id="gGuess"><b>🔍 猜猜是誰</b><span>看線索，猜怪獸</span></button>
       <button class="pick" id="gMem"><b>🃏 記憶翻牌</b><span>練專注、輪流</span></button>
       <button class="pick" id="gTR"><b>🐰 烏龜兔子石頭</b><span>練身體煞車</span></button>
       <button class="pick" id="gColor"><b>🫧 顏色泡泡</b><span>只戳指定顏色</span></button>
@@ -253,6 +254,14 @@
     <p class="q secttl">親子遊戲庫（大人帶著玩）</p>
     <p class="hint" id="gTime"></p>
     <div id="gLib"></div>
+  </section>
+
+  <!-- 30 猜猜是誰（v39） -->
+  <section class="step card" data-step="30">
+    <p class="q" id="gsQ">猜猜是誰</p>
+    <div class="chips" id="gsModes"></div>
+    <p class="hint" id="gsHint"></p>
+    <div id="gsBody"></div>
   </section>
 
   <!-- 18 10-minute routine -->
@@ -534,6 +543,7 @@
 <script src="js/wish.js"></script>
 <script src="js/review.js"></script>
 <script src="js/joy.js"></script>
+<script src="js/clues.js"></script>
 <script src="js/yard.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/main.js"></script>
