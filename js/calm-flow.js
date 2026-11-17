@@ -87,7 +87,7 @@ function renderSize(){
   if(S.sizeSpoke!==S.emo){S.sizeSpoke=S.emo;setTimeout(()=>{if(S.step===2)speak(`${e.name}想告訴你：${EMO_MSG[S.emo]}。${f.ok}。`)},700)}
   const upd=()=>{
     $('#toCalm').disabled=!S.lv;
-    if(typeof sizeDesc==='function'){const d=S.lv&&sizeDesc(S.emo,S.lv);$('#sizeKey').textContent=d?'可能像這樣：'+d:sizeLegend;if(d&&S.sizeSaid!==S.emo+S.lv){S.sizeSaid=S.emo+S.lv;if(S.lv<5)speak(d)}}
+    if(typeof sizeDesc==='function'){const d=S.lv&&sizeDesc(S.emo,S.lv);const w=d&&typeof sizeWord==='function'&&sizeWord(S.emo,S.lv);$('#sizeKey').textContent=d?'可能像這樣：'+d+(w?`。這種感覺可以說「${w}」`:''):sizeLegend;if(d&&S.sizeSaid!==S.emo+S.lv){S.sizeSaid=S.emo+S.lv;if(S.lv<5)speak(d)}}
     const big=S.lv===5;
     $('#toCalm').textContent=big?'請大人來陪我':f.go;
     $('#selfTry').style.display=big?'':'none';

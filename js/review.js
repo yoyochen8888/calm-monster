@@ -36,7 +36,7 @@ function renderReview(){const R=S.rv,l=R&&store.log.find(x=>x.t===R.t);if(!l){go
     const good=l.acts&&l.acts.length?`那時候你用了「${l.acts.join('、')}」，怪獸從 ${l.lv0} 變成 ${l.lv2}。`:l.co?'那時候你願意讓大人陪你，這很勇敢。':`那時候怪獸從 ${l.lv0} 變成 ${l.lv2}。`;
     $('#rvTitle').textContent='一起回顧';$('#rvHint').textContent=`${rvWhen(l.t)}，${e.name}來過`;
     A.innerHTML=`<div class="rvmon">${monster(l.emo,110)}</div><p class="rvgood">${good}</p>
-      <div class="gdetail"><b>給大人</b>：回顧不是檢討，是一起回頭看看。<br>・挑孩子心情平靜、願意聊的時候<br>・先說一件那次他做得好的事（上面那句可以直接唸）<br>・每一題都可以跳過；孩子不想說就停，下次再試</div>`;
+      <div class="gdetail"><b>給大人</b>：回顧不是檢討，是一起回頭看看。<br>・挑孩子心情平靜、願意聊的時候<br>・先說一件那次他做得好的事（上面那句可以直接唸）<br>・每一題都可以跳過；孩子不想說就停，下次再試</div>${typeof adultFive==='function'?adultFive():''}`;
     nav.innerHTML=`<button class="btn ghost" id="rvLater">下次再說</button>`+next('開始');
     $('#rvLater').onclick=()=>go(10);
   } else if(q0){
