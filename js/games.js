@@ -138,7 +138,7 @@ function endMemory(){const M=S.mem;M.over=true;renderMemory();const hn=store.her
   else if(M.score.kid>M.score.hero)t=`🎉 你贏了！<br>${hn}：「我輸了，有點可惜……但是跟你玩好開心！我們再來一次？」`;
   else if(M.score.kid<M.score.hero)t=`${hn}這次贏了。<br>${hn}：「你很想贏，輸了有點不服氣對不對？我們先吹一口氣～呼～。有時候贏、有時候輸，輸了可以說『再玩一次』！」`;
   else t=`平手！兩個人找到的一樣多！`;
-  m.innerHTML=t+`<div class="row" style="margin-top:10px"><button class="btn small" id="memAgain">再玩一次</button>${M.mode==='vs'&&M.score.kid<M.score.hero?'<button class="btn small ghost" id="memCalm">去冷靜站</button>':''}</div>`;
+  m.innerHTML=(store.hero&&M.mode==='vs'?`<div class="memhero">${hero(store.hero.type,64,{})}</div>`:'')+t+`<div class="row" style="margin-top:10px"><button class="btn small" id="memAgain">再玩一次</button>${M.mode==='vs'&&M.score.kid<M.score.hero?'<button class="btn small ghost" id="memCalm">去冷靜站</button>':''}</div>`;
   $('#memAgain').onclick=()=>renderMemory(true);const c=$('#memCalm');if(c)c.onclick=startFlow;
   gameReward('memory','記憶翻牌');}
 $('#memNew').onclick=()=>{stopAct();renderMemory(true)};
@@ -149,10 +149,10 @@ function renderTR(){S.tr={p:0,running:false,cmd:null,last:0,stoneOk:0,stoneTap:0
   $('#trCmd').textContent='準備好了嗎？';$('#trCmd').style.background='#FFF3DF';$('#trBar').style.width='0';
   $('#trRun').style.left='0';$('#trRun').innerHTML=store.hero?hero(store.hero.type,40):'🏃';$('#trTap').textContent='開始';$('#trInfo').textContent='聽到指令就照做，石頭的時候要忍住不點喔！'}
 function trNext(){const T=S.tr;if(!T.running)return;
-  if(T.cmd==='stone'&&!T.tapped){T.stoneOk++;toast('定住了！你踩住煞車了 🪨')}
+  if(T.cmd==='stone'&&!T.tapped){T.stoneOk++;toast('定住了！你踩住煞車了')}
   const young=S.age==='young';const opts=T.cmd==='stone'?['rabbit','turtle']:['rabbit','turtle','stone','stone'];
   T.cmd=opts[Math.floor(Math.random()*opts.length)];T.tapped=false;
-  const [txt,bg]=TRC[T.cmd];$('#trCmd').textContent=txt;$('#trCmd').style.background=bg;speak(txt.replace(/[^一-鿿！…]/g,''));
+  const [txt,bg]=TRC[T.cmd];if(typeof trCmdHtml==='function')$('#trCmd').innerHTML=trCmdHtml(T.cmd);else $('#trCmd').textContent=txt;$('#trCmd').style.background=bg;$('#trTap').dataset.cmd=T.cmd;speak(txt.replace(/[^一-鿿！…]/g,''));
   tone(T.cmd==='stone'?220:T.cmd==='turtle'?330:660,.2);
   later(trNext,(young?4000:3000)+Math.random()*(young?2500:2000))}
 $('#trTap').addEventListener('pointerdown',e=>{e.preventDefault();ac();const T=S.tr;if(!T)return;
@@ -161,8 +161,8 @@ $('#trTap').addEventListener('pointerdown',e=>{e.preventDefault();ac();const T=S
   if(T.cmd==='stone'){T.tapped=true;T.stoneTap++;info.textContent='噢！石頭不能動喔，忍住～';$('#trCmd').classList.remove('shake');void $('#trCmd').offsetWidth;$('#trCmd').classList.add('shake');return}
   if(T.cmd==='turtle'&&now-T.last<800){info.textContent='慢一點～像烏龜一樣';T.last=now;return}
   T.last=now;T.p=Math.min(100,T.p+(T.cmd==='rabbit'?(S.age==='young'?5:3):4));info.textContent=T.cmd==='rabbit'?'衝啊！':'慢慢的，很好';
-  $('#trBar').style.width=T.p+'%';$('#trRun').style.left=`calc(${T.p}% - ${T.p*0.4}px)`;tone(700,.05,'triangle',.06);
-  if(T.p>=100){T.running=false;stopAct();$('#trCmd').textContent='🏁 到終點了！';$('#trCmd').style.background='#FFF3C4';
+  $('#trBar').style.width=T.p+'%';$('#trRun').style.left=`calc(${T.p}% - ${T.p*0.4}px)`;if(typeof trHop==='function')trHop(T.cmd);tone(700,.05,'triangle',.06);
+  if(T.p>=100){T.running=false;stopAct();if(typeof trCmdHtml==='function')$('#trCmd').innerHTML=trCmdHtml('flag');else $('#trCmd').textContent='🏁 到終點了！';$('#trTap').dataset.cmd='';$('#trCmd').style.background='#FFF3C4';
     info.textContent=`石頭時定住成功 ${T.stoneOk} 次！${T.stoneTap?'下次試試看石頭時一次都不動。':'完全沒有偷動，你管住了自己的身體！'}`;$('#trTap').textContent='再玩一次';chime();gameReward('tr','烏龜兔子石頭')}});
 
 /* ---------- color bubbles ---------- */

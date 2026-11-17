@@ -1,0 +1,100 @@
+/* v41：小遊戲畫面（記憶翻牌、烏龜兔子石頭、顏色泡泡、猜猜是誰）
+   遊戲可以 Q 彈；冷靜流程不套用這裡的動態。 */
+
+/* ---------- 記憶翻牌 ---------- */
+.memgrid.memtable{max-width:440px;padding:14px;border-radius:26px;gap:10px;
+  background:radial-gradient(circle at 12px 12px,#ffffff66 2px,transparent 3px) 0 0/24px 24px,linear-gradient(#CDEBDD,#B9E1CE);
+  box-shadow:inset 0 3px 0 #E4F5EC,inset 0 -4px 0 #9FD0B9,0 4px 0 #8FC3AB}
+.mcard2{aspect-ratio:1;padding:0;border:0;background:none;cursor:pointer;perspective:600px;-webkit-tap-highlight-color:transparent;
+  animation:mdeal .34s cubic-bezier(.3,1.5,.5,1) backwards;animation-delay:calc(var(--i)*38ms)}
+.mflip{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transition:transform .38s cubic-bezier(.4,1.3,.5,1)}
+.mcard2.up .mflip{transform:rotateY(180deg)}
+.mface{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.mback{background:repeating-linear-gradient(45deg,#FFE9B8 0 9px,#FFF3D6 9px 18px);border:3px solid #F1D9A6;box-shadow:inset 0 2px 0 #FFF8E6,0 4px 0 #E3C282;color:#D9A441;font-size:1.5rem}
+.mfront{transform:rotateY(180deg);background:#FFFCF4;border:3px solid var(--line);box-shadow:inset 0 2px 0 #fff,0 4px 0 var(--line)}
+.mfront svg{width:82%;height:82%}
+.mcard2:active .mback{transform:translateY(2px);box-shadow:inset 0 2px 0 #FFF8E6,0 2px 0 #E3C282}
+.mcard2.ok .mfront{background:#EAF6F0;border-color:#A8DCC5;box-shadow:inset 0 2px 0 #fff,0 4px 0 #A8DCC5}
+.mcard2.ok{position:relative}
+.mcard2.pop .mflip{animation:mpop .5s cubic-bezier(.3,1.6,.5,1)}
+.mcard2.pop::after{content:'';position:absolute;inset:-6px;border-radius:24px;border:3px solid #FBE3A0;opacity:0;animation:mring .6s ease-out;pointer-events:none}
+.memgrid.heroturn .mcard2:not(.up){cursor:default}
+.memgrid.heroturn{filter:saturate(.9)}
+@keyframes mdeal{from{transform:scale(.4) translateY(14px);opacity:0}to{transform:none;opacity:1}}
+@keyframes mpop{0%{transform:rotateY(180deg) scale(1)}45%{transform:rotateY(180deg) scale(1.14)}100%{transform:rotateY(180deg) scale(1)}}
+@keyframes mring{0%{opacity:.9;transform:scale(.85)}100%{opacity:0;transform:scale(1.18)}}
+.scores .who{background:#FFFCF4;padding:6px 14px;gap:6px;box-shadow:0 3px 0 var(--line);transition:transform .2s}
+.scores .who b{font-weight:700}
+.scores .who.turn{border-color:#F3C45C;background:#FFF1C2;box-shadow:0 3px 0 #EBCB7A;transform:translateY(-2px) scale(1.05)}
+.memhero{display:flex;justify-content:center;margin-bottom:4px}
+#memMsg{background:#FFF6DE;border-radius:20px;box-shadow:inset 0 2px 0 #FFFBEF,0 4px 0 #EFD9A8}
+
+/* ---------- 烏龜兔子石頭 ---------- */
+.trlegend{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:4px 0 10px}
+.trleg{display:flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;border-radius:999px;font-size:.86rem;line-height:1.25;text-align:left;box-shadow:0 3px 0 #00000012}
+.trleg b{display:block;font-size:.95rem}
+.trleg-rabbit{background:#FFE4EC}.trleg-turtle{background:#E1F5E6}.trleg-stone{background:#ECE7F4}
+.cmd{font-size:clamp(1.35rem,6vw,2.1rem)}
+#trCmd{min-height:86px;display:flex;align-items:center;justify-content:center;border-radius:24px;box-shadow:inset 0 2px 0 #ffffffaa,0 4px 0 #00000012}
+.trcmd{display:inline-flex;align-items:center;gap:10px;animation:trin .3s cubic-bezier(.3,1.6,.5,1)}
+.trcmd b{font-weight:700}
+@keyframes trin{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+.track.trk2{height:104px;border-radius:22px;overflow:hidden;box-shadow:inset 0 2px 0 #ffffff88,0 4px 0 #B9D9A6;
+  background:
+    radial-gradient(circle at 88% 22%,#FFF3B0 0 16px,#FFF3B000 17px),
+    radial-gradient(ellipse 60px 16px at 22% 20%,#fff 0 99%,#fff0 100%),
+    radial-gradient(ellipse 44px 12px at 58% 30%,#ffffffcc 0 99%,#fff0 100%),
+    radial-gradient(ellipse 160px 46px at 18% 62%,#BFE3A6 0 99%,#BFE3A600 100%),
+    radial-gradient(ellipse 200px 52px at 76% 64%,#CDEBB4 0 99%,#CDEBB400 100%),
+    linear-gradient(#DDF1FB 0 52%,#CFEBB8 52% 100%)}
+.track.trk2::before{content:'';position:absolute;left:0;right:0;bottom:8px;height:30px;background:#F3DFB8;box-shadow:inset 0 3px 0 #FBEFD6,inset 0 -3px 0 #E3C894}
+.track.trk2::after{content:'';position:absolute;left:10px;right:54px;bottom:22px;height:3px;background:repeating-linear-gradient(90deg,#fff 0 14px,transparent 14px 28px);opacity:.85}
+.track.trk2 i{top:auto;bottom:8px;height:30px;background:#FFE7A8;opacity:.75;z-index:1}
+.track.trk2 span{bottom:12px;z-index:3;display:block;transform-origin:50% 100%}
+.track.trk2 b{right:6px;top:auto;bottom:10px;z-index:2;font-size:1.6rem;line-height:1}
+#trRun.hop{animation:trhop .26s ease-out}
+#trRun.step{animation:trstep .5s ease-in-out}
+@keyframes trhop{0%{transform:translateY(0) scaleY(.92)}45%{transform:translateY(-14px) scaleY(1.05)}100%{transform:none}}
+@keyframes trstep{0%{transform:rotate(0)}35%{transform:rotate(-5deg) translateY(-3px)}70%{transform:rotate(4deg)}100%{transform:none}}
+.bigtap{width:170px;height:170px;transition:background-color .2s,box-shadow .2s}
+.bigtap[data-cmd="rabbit"]{--face:#FFC9D8;--edge:#F2A2B8;background:#FFC9D8;box-shadow:0 8px 0 #F2A2B8}
+.bigtap[data-cmd="turtle"]{--face:#BFE8CC;--edge:#93CDA6;background:#BFE8CC;box-shadow:0 8px 0 #93CDA6}
+.bigtap[data-cmd="stone"]{--face:#DAD4E6;--edge:#B5ACC9;background:#DAD4E6;box-shadow:0 8px 0 #B5ACC9}
+
+/* ---------- 顏色泡泡 ---------- */
+.cbcmd{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;font-size:clamp(1.2rem,5.4vw,1.8rem)}
+.cbtag{display:inline-flex;align-items:center;gap:4px;padding:2px 16px 2px 6px;border-radius:999px;background:var(--bc);color:#fff;font-weight:700;box-shadow:inset 0 2px 0 #ffffff55,0 4px 0 #00000022;animation:trin .3s cubic-bezier(.3,1.6,.5,1)}
+.cbtag svg{background:#ffffffd9;border-radius:50%}
+.pond{height:360px;border-radius:24px;box-shadow:inset 0 3px 0 #ffffffaa,0 4px 0 #B9D9A6;
+  background:
+    radial-gradient(circle at 84% 14%,#FFF3B0 0 22px,#FFF3B000 23px),
+    radial-gradient(ellipse 240px 70px at 20% 100%,#BFE3A6 0 99%,#BFE3A600 100%),
+    radial-gradient(ellipse 260px 60px at 82% 102%,#CDEBB4 0 99%,#CDEBB400 100%),
+    linear-gradient(#CFEAFB,#EAF7FF 70%,#E3F4D8)}
+.pond::before,.pond::after{content:'';position:absolute;height:22px;border-radius:999px;background:#fff;opacity:.85;box-shadow:18px -10px 0 2px #fff,40px 0 0 0 #fff;animation:cbcloud 38s linear infinite}
+.pond::before{width:46px;top:36px;left:-90px}
+.pond::after{width:34px;top:92px;left:-90px;opacity:.6;animation-duration:54s;animation-delay:-20s}
+@keyframes cbcloud{to{transform:translateX(calc(100vw + 120px))}}
+.bub{border:0;opacity:.96;z-index:2;
+  background:radial-gradient(circle at 30% 26%,#ffffffee 0 9%,#ffffff55 10% 22%,#fff0 23%),radial-gradient(circle at 68% 76%,#ffffff40 0 14%,#fff0 15%),radial-gradient(circle at 40% 36%,color-mix(in srgb,var(--bc) 55%,#fff),var(--bc) 78%);
+  box-shadow:inset 0 0 0 2px #ffffff80,inset -6px -8px 14px #00000014,0 6px 10px #00000010}
+.bub.shake{animation-name:rise,shk}
+.bpop{position:absolute;width:0;height:0;z-index:3;pointer-events:none}
+.bpop i{position:absolute;left:calc(var(--sz)/-2);top:calc(var(--sz)/-2);width:var(--sz);height:var(--sz);border-radius:50%;border:4px solid var(--bc);animation:bring .45s ease-out forwards}
+.bpop b{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:var(--bc);transform:rotate(var(--a)) translateY(0);animation:bdot .5s ease-out forwards}
+@keyframes bring{from{transform:scale(.6);opacity:.9}to{transform:scale(1.5);opacity:0}}
+@keyframes bdot{from{transform:rotate(var(--a)) translateY(calc(var(--sz)*-.3)) scale(1);opacity:1}to{transform:rotate(var(--a)) translateY(calc(var(--sz)*-.95)) scale(.3);opacity:0}}
+#cbCount{font-size:1.1rem;font-weight:700;color:var(--ink)}
+
+/* ---------- 猜猜是誰：線索一張一張出現、答對時怪獸跳一下 ---------- */
+#gsBody .clue{animation:gsin .32s cubic-bezier(.3,1.5,.5,1) backwards}
+#gsBody .clue:nth-child(2){animation-delay:.05s}#gsBody .clue:nth-child(3){animation-delay:.1s}
+#gsBody .gsopts .pick{animation:gsin .3s cubic-bezier(.3,1.5,.5,1) backwards}
+#gsBody .gsopts .pick:nth-child(2){animation-delay:.06s}#gsBody .gsopts .pick:nth-child(3){animation-delay:.12s}
+#gsBody .gsopts .pick.gswrong{animation:gsno .35s}
+@keyframes gsin{from{transform:translateY(10px) scale(.94);opacity:0}to{transform:none;opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  .mcard2,.mcard2.pop .mflip,.mcard2.pop::after,.trcmd,.cbtag,#trRun.hop,#trRun.step,.pond::before,.pond::after,.bpop i,.bpop b,#gsBody .clue,#gsBody .gsopts .pick{animation:none!important}
+  .mflip{transition-duration:.01s}
+}
