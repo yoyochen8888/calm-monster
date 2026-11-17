@@ -13,6 +13,10 @@
 /* ---------- 池塘 ---------- */
 const KOI={'#FFB25B':['#FF9A4D','#FFF7EE',null],'#FF8A80':['#FFF6EC','#FF6F5E',null],'#FFD86B':['#FFD25E','#FFF3C7',null],
   '#FFA8CF':['#FFF6EC','#FF9A4D','#7A6A86'],'#B9A0F0':['#CDB8F5','#FFF6EC',null]};
+/* v44：池塘換成生成圖（底圖、錦鯉、睡蓮、青蛙、蜻蜓、花瓣）。圖還沒載入時，先用原本程式畫的。 */
+const PSP={};['bg','koi_orange','koi_white','koi_gold','pad_big','pad_small','pad_flower','dfly','frog','petal'].forEach(n=>{const i=new Image();i.src=`img/p_${n}.webp`;PSP[n]=i});
+const pOk=n=>PSP[n]&&PSP[n].complete&&PSP[n].naturalWidth>0;
+const KOI_SP={'#FFB25B':'koi_orange','#FF8A80':'koi_white','#FFD86B':'koi_gold','#FFA8CF':'koi_white','#B9A0F0':'koi_orange'};
 function pondCanvas(A,nFish){
   const calm=A.id==='fishPond';/* 冷靜流程裡的看魚呼吸：少一點小驚喜，安安靜靜 */
   A.innerHTML=`<canvas class="pondcv"></canvas>`;const cv=A.querySelector('canvas');
@@ -62,6 +66,8 @@ function pondCanvas(A,nFish){
   function drawPad(p,i,t){const [px,py,r]=p;const k=p.kick*Math.sin((t-p.kt||0)*9)*Math.exp(-(t-(p.kt||0))*1.6);
     const rot=p.rot+Math.sin(t*.35+i)*.05+(isFinite(k)?k*.25:0),ox=Math.sin(t*.4+i*2)*1.2;
     x.fillStyle='rgba(20,70,80,.16)';x.beginPath();x.ellipse(px+5+ox,py+8,r,r*.92,0,0,6.28);x.fill();
+    const sp=i===2?'pad_flower':i===3?'pad_small':'pad_big';
+    if(pOk(sp)){const im=PSP[sp],d=r*2.15*(i===2?1.25:1),dh=d*im.naturalHeight/im.naturalWidth;x.save();x.translate(px+ox,py);x.rotate(rot);x.drawImage(im,-d/2,-dh/2,d,dh);x.restore();return null}
     const pg=x.createRadialGradient(px-r*.35,py-r*.4,r*.1,px,py,r);pg.addColorStop(0,'#B4E39C');pg.addColorStop(.7,'#7CC873');pg.addColorStop(1,'#62B262');
     x.fillStyle=pg;x.beginPath();x.moveTo(px+ox,py);x.arc(px+ox,py,r,rot+.16,rot+6.12);x.closePath();x.fill();
     x.strokeStyle='rgba(255,255,255,.28)';x.lineWidth=1.1;for(let v=0;v<7;v++){const a=rot+.5+v*.82;x.beginPath();x.moveTo(px+ox,py);x.lineTo(px+ox+Math.cos(a)*r*.82,py+Math.sin(a)*r*.82);x.stroke()}
@@ -77,7 +83,15 @@ function pondCanvas(A,nFish){
     return {x:fx,y:fy,a:Math.random()*6.28,s:.35+Math.random()*.2,c:FISH_C[i%5],len:W*(.085+Math.random()*.025),tx:fx,ty:fy,w:Math.random()*6,pick:0}});
   function spots(f){if(f.sp)return f.sp;let s=(f.c.charCodeAt(1)*7+Math.round(f.len*10))%97;const r=()=>(s=(s*37+11)%97)/97;
     f.sp=[...Array(4)].map(()=>[.35-r()*.75,(r()-.5)*.5,.12+r()*.12,r()<.3?2:1]);return f.sp}
-  function drawFish(f,t){const L=f.len,[base,patch,dark]=KOI[f.c]||[f.c,'#FFF6EC',null],N=9,pts=[];
+  /* 生成圖的魚：切成直條，一條一條往上下錯開，看起來身體在彎、尾巴在擺 */
+  function drawFishImg(f,im){const L=f.len*1.25,h=L*im.naturalHeight/im.naturalWidth,N=12,sw=im.naturalWidth/N,dw=L/N;
+    x.save();x.translate(f.x,f.y);x.rotate(f.a);
+    x.fillStyle='rgba(20,60,80,.16)';x.beginPath();x.ellipse(7,10,L*.42,h*.3,0,0,6.28);x.fill();
+    for(let j=0;j<N;j++){const u=1-(j+.5)/N;/* u：0 是頭、1 是尾巴 */
+      const oy=Math.sin(f.w-u*2.4)*L*.09*Math.pow(u,1.4);
+      x.drawImage(im,j*sw,0,sw+1,im.naturalHeight,-L/2+j*dw,-h/2+oy,dw+.6,h)}
+    x.restore()}
+  function drawFish(f,t){const sp=KOI_SP[f.c];if(sp&&pOk(sp))return drawFishImg(f,PSP[sp]);const L=f.len,[base,patch,dark]=KOI[f.c]||[f.c,'#FFF6EC',null],N=9,pts=[];
     for(let i=0;i<N;i++){const u=i/(N-1);pts.push([L*.5-u*L,Math.sin(f.w-u*2.4)*L*.11*Math.pow(u,1.4)])}
     const wid=u=>L*.22*Math.sin(Math.PI*Math.min(1,u*.9+.08))*(u>.75?1-(u-.75)*1.6:1);
     x.save();x.translate(f.x,f.y);x.rotate(f.a);
@@ -105,7 +119,11 @@ function pondCanvas(A,nFish){
   /* 5. 小生命：青蛙（點牠會跳進水裡，過一會兒爬回葉子上）、蜻蜓（偶爾飛來停一下）、飄過的花瓣 */
   const frog={pad:0,st:'sit',t:0,blink:0,x:0,y:0};
   function frogAt(){const p=pads[frog.pad];return [p[0]-p[2]*.1,p[1]-p[2]*.1]}
-  function drawFrog(px,py,s,t,eyesClosed){x.save();x.translate(px,py);x.scale(s,s);
+  function drawFrog(px,py,s,t,eyesClosed){
+    if(pOk('frog')){const im=PSP.frog,d=30*s,dh=d*im.naturalHeight/im.naturalWidth,br=1+Math.sin(t*2.2)*.025;
+      x.fillStyle='rgba(20,70,60,.2)';x.beginPath();x.ellipse(px+2*s,py+dh*.38,d*.42,d*.2,0,0,6.28);x.fill();
+      x.save();x.translate(px,py+dh*.45);x.scale(1/br,br*(eyesClosed?.96:1));x.drawImage(im,-d/2,-dh,d,dh);x.restore();return}
+    x.save();x.translate(px,py);x.scale(s,s);
     x.fillStyle='rgba(20,70,60,.2)';x.beginPath();x.ellipse(2,6,13,8,0,0,6.28);x.fill();
     x.fillStyle='#7CCB6B';[[-10,6],[10,6]].forEach(([fx,fy])=>{x.beginPath();x.ellipse(fx,fy,5,3,fx<0?.5:-.5,0,6.28);x.fill()});
     const g=x.createRadialGradient(-4,-4,1,0,0,14);g.addColorStop(0,'#B9EBA0');g.addColorStop(1,'#78C566');x.fillStyle=g;x.beginPath();x.ellipse(0,0,12,10,0,0,6.28);x.fill();
@@ -123,11 +141,14 @@ function pondCanvas(A,nFish){
     return [rx0+Math.sin(t*.9+1)*2.4,ry0-46]}
   const dfly={st:'away',t:performance.now()+(calm?1e12:6000+Math.random()*8000),x:-20,y:H*.3,sx:0,sy:0,tx:0,ty:0,ang:0};
   function drawDfly(t,flying){x.save();x.translate(dfly.x,dfly.y);x.rotate(dfly.ang);
+    if(pOk('dfly')){const im=PSP.dfly,d=34*W/340,dh=d*im.naturalHeight/im.naturalWidth,fl=flying?.72+.28*Math.abs(Math.sin(t*40)):1;
+      x.rotate(Math.PI/2);x.fillStyle='rgba(20,60,80,.12)';x.beginPath();x.ellipse(5,9,d*.3,dh*.3,0,0,6.28);x.fill();
+      x.scale(fl,1);x.drawImage(im,-d/2,-dh/2,d,dh);x.restore();return}
     const fl=flying?Math.abs(Math.sin(t*60)):.15;x.fillStyle=`rgba(210,235,255,${.45+fl*.25})`;x.strokeStyle='rgba(140,180,220,.5)';x.lineWidth=.6;
     [[-2,-1],[-2,1],[2,-1],[2,1]].forEach(([wx,sd])=>{x.beginPath();x.ellipse(wx,sd*8,3,8+(flying?fl*1.5:0),sd*(wx<0?.25:-.25),0,6.28);x.fill();x.stroke()});
     x.fillStyle='#7EC8E3';x.beginPath();x.ellipse(-9,0,10,1.8,0,0,6.28);x.fill();x.fillStyle='#5BB4D6';x.beginPath();x.ellipse(2,0,4,2.6,0,0,6.28);x.fill();
     x.fillStyle='#3E8FB3';x.beginPath();x.arc(6,-1.6,1.8,0,6.28);x.arc(6,1.6,1.8,0,6.28);x.fill();x.restore()}
-  function dflyTick(now,t){if(dfly.st==='away'){if(now>dfly.t){const land=Math.random()<.5?'reed':'pad';dfly.land=land;
+  function dflyTick(now,t){if(dfly.st==='away'){if(now>dfly.t){const land=!pOk('bg')&&Math.random()<.5?'reed':'pad';dfly.land=land;
       dfly.st='in';dfly.sx=Math.random()<.5?-20:W+20;dfly.sy=H*(.15+Math.random()*.5);dfly.x=dfly.sx;dfly.y=dfly.sy;dfly.t0=now}return}
     const tgt=dfly.land==='reed'?P.reedTip:[pads[2][0]+pads[2][2]*.4,pads[2][1]-pads[2][2]*.3];
     if(dfly.st==='in'){const k=Math.min(1,(now-dfly.t0)/3200),e=1-Math.pow(1-k,3);const nx=dfly.sx+(tgt[0]-dfly.sx)*e+Math.sin(k*9)*12*(1-k),ny=dfly.sy+(tgt[1]-dfly.sy)*e+Math.cos(k*7)*10*(1-k);
@@ -141,6 +162,7 @@ function pondCanvas(A,nFish){
       if(!inside(p.x,p.y,.9)||now-p.born>60000){petals.splice(i,1);continue}
       if(Math.random()<.004)P.rip.push({x:p.x,y:p.y,r:2,a:.25,m:W*.05});
       x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle='rgba(30,80,90,.12)';x.beginPath();x.ellipse(2,3,5,3,0,0,6.28);x.fill();
+      if(pOk('petal')){const d=13*W/340;x.drawImage(PSP.petal,-d/2,-d/2,d,d*PSP.petal.naturalHeight/PSP.petal.naturalWidth);x.restore();continue}
       x.fillStyle='#FFC6DC';x.beginPath();x.ellipse(0,0,5.4,3.2,0,0,6.28);x.fill();x.fillStyle='#FFE1EC';x.beginPath();x.ellipse(-1.2,-.6,2.6,1.2,0,0,6.28);x.fill();x.restore()}}
 
   /* 碰水面：漣漪＋水滴聲；碰到葉子會搖；碰到青蛙牠會跳進水裡 */
@@ -172,10 +194,11 @@ function pondCanvas(A,nFish){
     do{f.tx=cx+(Math.random()-.5)*rx*1.7;f.ty=cy+(Math.random()-.5)*ry*1.7}while(!inside(f.tx,f.ty,.78))}
   function frame(now){if(!cv.isConnected)return;
     const t=(now-P.t0)/1000;
-    x.drawImage(bgC,0,0,W,H);
+    const img=pOk('bg');
+    if(img){const im=PSP.bg,k=Math.max(W/im.naturalWidth,H/im.naturalHeight),iw=im.naturalWidth*k,ih=im.naturalHeight*k;x.drawImage(im,(W-iw)/2,(H-ih)/2,iw,ih)}else x.drawImage(bgC,0,0,W,H);
     x.save();blob(x,.97);x.clip();
     /* 水底的光紋，慢慢流動 */
-    x.strokeStyle='rgba(255,255,255,.09)';x.lineWidth=2.2;
+    x.strokeStyle=`rgba(255,255,255,${img?.05:.09})`;x.lineWidth=2.2;
     for(let i=0;i<7;i++){x.beginPath();for(let s=0;s<=20;s++){const u=s/20,px=u*W,py=H*(i/6)+Math.sin(u*7+t*.8+i)*9+Math.sin(u*3-t*.5+i*2)*6;s?x.lineTo(px,py):x.moveTo(px,py)}x.stroke()}
     for(let i=0;i<7;i++){x.beginPath();for(let s=0;s<=20;s++){const u=s/20,py=u*H,px=W*(i/6)+Math.sin(u*6-t*.7+i*1.3)*11+Math.sin(u*11+t*.4)*4;s?x.lineTo(px,py):x.moveTo(px,py)}x.stroke()}
     if(P.ring){const R=P.ring;x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=4;x.beginPath();x.arc(W/2,H/2,R.r,0,6.28);x.stroke();
@@ -193,7 +216,7 @@ function pondCanvas(A,nFish){
     /* 水面上的東西 */
     P.food.forEach(p=>{p.y+=.02;p.x+=Math.sin(now/900+p.x)*.05;x.fillStyle='rgba(20,60,80,.15)';x.beginPath();x.arc(p.x+2,p.y+3,3,0,6.28);x.fill();
       x.fillStyle='#C99A5E';x.beginPath();x.arc(p.x,p.y,3,0,6.28);x.fill();x.fillStyle='#E9C48E';x.beginPath();x.arc(p.x-.8,p.y-.8,1.1,0,6.28);x.fill()});
-    pads.forEach((p,i)=>{const ox=drawPad(p,i,t);if(i===2)lotus(p[0]+ox+p[2]*.15,p[1]-p[2]*.1,W/420,t);if(i===3)bud(p[0]+ox,p[1]-p[2]*.2,W/380)});
+    pads.forEach((p,i)=>{const ox=drawPad(p,i,t);if(ox===null)return;if(i===2)lotus(p[0]+ox+p[2]*.15,p[1]-p[2]*.1,W/420,t);if(i===3)bud(p[0]+ox,p[1]-p[2]*.2,W/380)});
     frogTick(now,t);
     if(!calm)petalTick(now);
     P.rip=P.rip.filter(r=>r.a>0.02);P.rip.forEach(r=>{r.r+=.9;r.a*=.975;x.strokeStyle=`rgba(255,255,255,${r.a})`;x.lineWidth=2;x.beginPath();x.ellipse(r.x,r.y,r.r,r.r*.86,0,0,6.28);x.stroke();
@@ -202,8 +225,7 @@ function pondCanvas(A,nFish){
     x.fillStyle='rgba(255,255,255,.16)';x.beginPath();x.ellipse(cx-rx*.35+Math.sin(t*.2)*6,cy-ry*.55,rx*.32,ry*.08,-.15,0,6.28);x.fill();
     for(let i=0;i<5;i++){const a=Math.max(0,Math.sin(t*1.3+i*2.1));if(a<.2)continue;const [gx,gy]=edge(i*1.3+.4,.55+(i%3)*.12);x.fillStyle=`rgba(255,255,255,${a*.8})`;x.beginPath();x.ellipse(gx,gy,4*a,1.1,0,0,6.28);x.fill()}
     x.restore();
-    x.drawImage(fgC,0,0,W,H);
-    P.reedTip=drawReeds(t);
+    if(img)P.reedTip=[W*.12,H*.2];else{x.drawImage(fgC,0,0,W,H);P.reedTip=drawReeds(t)}
     dflyTick(now,t);
     raf=requestAnimationFrame(frame)}
   raf=requestAnimationFrame(frame);
