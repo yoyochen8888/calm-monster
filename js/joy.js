@@ -53,7 +53,7 @@ function renderJoy(){const R=S.jy;if(!R){go(10,true);return}
     nav.innerHTML=`<button class="btn ghost" id="jyHome">回家園</button>`;$('#jyHome').onclick=()=>go(10);
   } else if(R.i===1){
     $('#jyTitle').textContent='身體有什麼感覺？';$('#jyHint').textContent='可以選好幾個';say=`${e.name}來了！你的身體有什麼感覺？`;
-    A.innerHTML=`<div class="rvmon">${friend(R.k,110,'wobble')}</div><p class="hint" style="margin-bottom:10px">${e.name}來的時候，常常會：${e.body}</p>
+    A.innerHTML=`<div class="rvmon">${friend(R.k,110,'wobble')}</div>${typeof joyClues==='function'?joyClues(R.k):`<p class="hint" style="margin-bottom:10px">${e.name}來的時候，常常會：${e.body}</p>`}
       <div class="chips">${JOY_BODY.map(c=>`<button class="chip ${R.body.includes(c)?'sel':''}" data-jb="${c}">${c}</button>`).join('')}</div>`;
     $$('[data-jb]').forEach(b=>b.onclick=()=>{const c=b.dataset.jb,i=R.body.indexOf(c);i>=0?R.body.splice(i,1):R.body.push(c);tone(620,.1);renderJoy()});
     nav.innerHTML=back+speakBtn+next();

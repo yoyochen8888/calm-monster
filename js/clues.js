@@ -24,11 +24,11 @@ const CLUE_LABEL=[['🙂','臉'],['🫀','身體'],['🏃','想做的事']];
 const VOCAB={angry:['不高興','火大'],sad:['失望','傷心'],stuck:['挫折','卡住了'],scared:['緊張','害怕'],defiant:['不甘心'],
   wronged:['被誤會'],jealous:['羨慕'],stress:['好累','喘不過氣'],lonely:['寂寞'],embarrassed:['丟臉']};
 
-function clueCard(k,i){return `<div class="clue"><i>${CLUE_LABEL[i][0]}</i><b>${CLUE_LABEL[i][1]}</b><span>可能會${CLUES[k][i]}</span></div>`}
+function clueCard(k,i){return `<div class="clue"><i>${CLUE_LABEL[i][0]}</i><b>${CLUE_LABEL[i][1]}</b><span>可能會${(CLUES[k]||JOY_CLUES[k])[i]}</span></div>`}
 function cluesHtml(k){if(!CLUES[k])return '';const young=S.age==='young';const v=VOCAB[k];
   return `<h4>🔍 怎麼認出牠？</h4><p class="hint" style="text-align:left;margin:0 0 8px">每個人不一樣，這些是「可能」的線索</p>`
     +(young?`<div class="clues one">${clueCard(k,1)}</div><details class="cluemore"><summary>再看兩條線索</summary><div class="clues">${clueCard(k,0)}${clueCard(k,2)}</div></details>`
-      :`<div class="clues">${[0,1,2].map(i=>clueCard(k,i)).join('')}</div>`+(v?`<p class="vocab">也可以這樣說：${v.map(t=>`<b>${t}</b>`).join('、')}</p>`:''))}
+      :`<div class="clues">${[0,1,2].map(i=>clueCard(k,i)).join('')}</div>`+(v?`<p class="vocab">也可以這樣說：${v.map(t=>`<b>${t}</b>`).join('、')}</p>`:'')+(WORDS[k]?`<p class="vocab">從小到大：${WORDS[k].map(t=>`<b>${t}</b>`).join(' → ')}</p>`:''))}
 
 /* 每個大小「可能像這樣」：讓孩子用看得見的樣子來選，不是只選數字 */
 const SIZE_DESC={
@@ -106,3 +106,48 @@ function renderGuess(){
 function gsSay(){const G=S.gs;if(!G||G.right||G.n>=GS_ROUNDS)return;
   if(G.mode==='who'){const i=G.order[G.shown-1];speak(`牠的${CLUE_LABEL[i][1]}，可能會${CLUES[G.k][i]}。牠是誰？`)}
   else speak(`朋友的心裡來了${EMO[G.k].name}。你可以怎麼陪他？`)}
+
+/* ================= v40 ================= */
+/* 同一種情緒，從小到大的說法（6 歲以上）：選大小時顯示，幫孩子找到剛好的詞 */
+const WORDS={angry:['煩煩的','生氣','氣炸了'],sad:['悶悶的','難過','好傷心'],defiant:['不太服氣','不甘心','氣不過'],stuck:['卡卡的','挫折','好想放棄'],
+  scared:['有點不安','擔心','好害怕'],wronged:['有點悶','委屈','好冤枉'],reluctant:['有點捨不得','捨不得','好不想分開'],jealous:['羨慕','嫉妒','好不甘心'],
+  shy:['有點不自在','害羞','好想躲起來'],hyper:['好開心','興奮','停不下來'],embarrassed:['不好意思','尷尬','好丟臉'],guilty:['過意不去','內疚','好自責'],
+  lonely:['有點無聊','孤單','好寂寞'],stress:['有點累','壓力大','喘不過氣']};
+function sizeWord(k,lv){if(S.age==='young'||!WORDS[k])return '';return WORDS[k][lv<=2?0:lv===3?1:2]}
+
+/* 正向情緒夥伴的三條線索 */
+const JOY_CLUES={happy:['嘴巴笑開開、眼睛彎彎的','身體輕輕的、心裡亮亮的','想跳起來、想跟人分享'],
+  proud:['下巴抬高、眼睛亮亮的、微微笑','胸口暖暖的、滿滿的，站得直直的','想給人看、想說「我做到了」'],
+  safe:['眉毛鬆鬆的、嘴角輕輕往上','肩膀鬆鬆的、呼吸慢慢的','想靠著人、想待久一點'],
+  curious:['眼睛睜大大、眉毛抬高高','身體往前靠、心裡癢癢的','想摸摸看、想問「為什麼」'],
+  grateful:['眼神軟軟的、微微笑','心裡暖暖的、胸口鬆鬆的','想說謝謝、想抱抱對方']};
+function joyClues(k){if(!JOY_CLUES[k])return '';
+  return S.age==='young'?`<div class="clues one">${clueCard(k,1)}</div>`:`<div class="clues mini">${[0,1,2].map(i=>clueCard(k,i)).join('')}</div>`}
+
+/* 給大人：一起回顧時可以問的五句話（感覺、身體、別人、選擇、修復） */
+function adultFive(){return `<details class="adultbox"><summary>👀 給大人：聊的時候可以問的五句話</summary>
+  <p>1. 那時候，你感覺到什麼？</p><p>2. 身體有什麼訊號？</p><p>3. 別人那時候可能在想什麼？</p><p>4. 有哪些安全的辦法？</p><p>5. 我們可以怎麼把關係修好？</p>
+  <p class="note">不用五句都問。孩子答不出來時，大人先說自己的版本。</p></details>`}
+
+/* 「下次可以」拆成三小步（6 歲以上；3–5 歲不會走到這一步）：
+   想想別人 → 想兩個辦法 → 選一個先試。一個畫面只做一件事。 */
+const OTHERS=['只有我自己','他也想要一樣的東西','他不知道我的感覺','他也不開心','他想幫我','他在忙別的事','我不知道'];
+(()=>{const rf=resetFlow;resetFlow=function(){rf();S.planPh=0;S.other=null;S.ideas=[]}})();
+function renderPlans(){
+  const list=famOf(S.emo).plans[S.age||'mid'],P=$('#plans');S.ideas=S.ideas||[];const ph=S.planPh||0;
+  const back=`<div class="row" style="grid-column:1/-1"><button class="chip" id="planBack">← 上一小步</button></div>`;
+  if(ph===0){$('#planQ').textContent='那時候，別人可能在想什麼？';$('#planHint').textContent='1 / 3　想想旁邊的人。沒有別人，就選「只有我自己」';
+    P.className='chips';P.innerHTML=OTHERS.map(t=>`<button class="chip ${S.other===t?'sel':''}" data-oth="${t}">${t}</button>`).join('');
+    $$('[data-oth]').forEach(b=>b.onclick=()=>{S.other=b.dataset.oth;S.planPh=1;tone(560,.1);renderPlans()})}
+  else if(ph===1){$('#planQ').textContent='下次怪獸再來，想兩個辦法';$('#planHint').textContent='2 / 3　點兩個你想得到的辦法';
+    P.className='grid g2';P.innerHTML=list.map(([t,s])=>`<button class="pick ${S.ideas.includes(t)?'sel':''}" data-idea="${t}"><b>${t}</b><span>${s}</span></button>`).join('')
+      +`<div class="row" style="grid-column:1/-1"><button class="chip" id="planBack">← 上一小步</button><button class="btn small" id="ideasOk" ${S.ideas.length===2?'':'disabled'}>想好兩個了</button></div>`;
+    $$('[data-idea]').forEach(b=>b.onclick=()=>{const t=b.dataset.idea,i=S.ideas.indexOf(t);if(i>=0)S.ideas.splice(i,1);else{if(S.ideas.length>=2)S.ideas.shift();S.ideas.push(t)}
+      S.plan=null;tone(600,.1);speak(t);renderPlans()});
+    $('#ideasOk').onclick=()=>{S.planPh=2;renderPlans()}}
+  else{$('#planQ').textContent='選一個先試試';$('#planHint').textContent='3 / 3　哪一個安全，別人也可以接受？';
+    P.className='grid g2';P.innerHTML=list.filter(([t])=>S.ideas.includes(t)).map(([t,s])=>`<button class="pick ${S.plan===t?'sel':''}" data-plan="${t}"><b>${t}</b><span>${s}</span></button>`).join('')+back;
+    $$('[data-plan]').forEach(b=>b.onclick=()=>{S.plan=b.dataset.plan;tone(620,.12);speak('下次我可以，'+S.plan);renderPlans()})}
+  const bk=$('#planBack');if(bk)bk.onclick=()=>{S.planPh=ph-1;S.plan=null;renderPlans()};
+  $('#finish').style.display=ph===2?'':'none';$('#finish').disabled=!S.plan;
+}

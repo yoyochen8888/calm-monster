@@ -473,3 +473,7 @@ body.focus .wrap{padding-bottom:30px}
 @media (prefers-reduced-motion:reduce){.gswrong{animation:none}}
 .gsopts{grid-template-columns:repeat(3,1fr)!important;gap:8px}
 .gsopts .pick{padding:10px 4px}.gsopts .pick b{font-size:1rem}
+/* v40：品味流程裡的線索卡小一點，身體感覺的選項才不會被擠到下面 */
+.clues.mini{grid-template-columns:repeat(3,1fr);gap:6px}
+.clues.mini .clue{padding:8px 6px 10px;border-width:2px;box-shadow:0 2px 0 var(--line)}
+.clues.mini .clue i{font-size:1.25rem}.clues.mini .clue b{font-size:.92rem;margin:0 0 2px}.clues.mini .clue span{font-size:.84rem;line-height:1.5}
