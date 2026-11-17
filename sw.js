@@ -1,6 +1,6 @@
 /* 離線快取（v21）：第一次開啟時把整個工具存進裝置，之後沒有網路也能開，而且一點就開。
    ★ 每次更新程式或圖片，都要把下面的 VERSION 改掉（例如 v21 → v22），裝置才會抓新版。 */
-const VERSION='v41';
+const VERSION='v42';
 const CACHE='calm-monster-'+VERSION;
 const FILES=[
   './',
@@ -29,6 +29,7 @@ const FILES=[
   'js/joy.js',
   'js/clues.js',
   'js/games2.js',
+  'js/icons2.js',
   'js/yard.js',
   'img/yard_house.webp',
   'img/yard_tree_apple.webp',

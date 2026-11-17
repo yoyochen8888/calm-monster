@@ -98,3 +98,17 @@
   .mcard2,.mcard2.pop .mflip,.mcard2.pop::after,.trcmd,.cbtag,#trRun.hop,#trRun.step,.pond::before,.pond::after,.bpop i,.bpop b,#gsBody .clue,#gsBody .gsopts .pick{animation:none!important}
   .mflip{transition-duration:.01s}
 }
+
+/* ---------- v42：第二批黏土圖示 ---------- */
+.gico{display:inline-block;vertical-align:middle;margin:-6px 4px -4px 0;line-height:0}
+.gico svg{display:block}
+.pick.hasgico b{display:flex;align-items:center;justify-content:center;gap:2px}
+.gcard.hasgico b{justify-content:flex-start}
+.moods button.cmood{display:flex;flex-direction:column;align-items:center;line-height:1}
+.moods button.cmood svg{display:block}
+.moods button.cmood span{margin-top:2px}
+.wsico{display:flex!important;justify-content:center;margin:0 0 2px!important}
+.tico{display:inline-block;vertical-align:middle;margin:-6px 6px -4px 0;line-height:0}
+.shopicon.shopimg{display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;box-sizing:border-box}
+.shopicon.shopimg img{max-width:84px;max-height:78px;object-fit:contain;filter:drop-shadow(0 3px 2px #6B4A3524)}
+@media (max-width:420px){.moods button.cmood svg{width:34px;height:34px}}
