@@ -3,7 +3,7 @@
 /* ---------- 離線：註冊 service worker（預覽環境不支援時安靜略過） ---------- */
 let swState='none';
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
-  try{navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{swState='ready';renderApp()}).catch(()=>{swState='fail'})}catch(e){swState='fail'}
+  try{navigator.serviceWorker.register('sw.js').then(r=>{try{r.update()}catch(e){}return navigator.serviceWorker.ready}).then(()=>{swState='ready';renderApp()}).catch(()=>{swState='fail'})}catch(e){swState='fail'}
   /* 自動換新版（v48）：新版下載好、接手之後重新整理一次。孩子正在冷靜流程或池塘裡時不打斷，等回到家園再換 */
   const hadCtrl=!!navigator.serviceWorker.controller;let needReload=false;
   const tryReload=()=>{if(!needReload)return;if(S.step===10&&!document.getElementById('pondOverlay')){needReload=false;try{sessionStorage.setItem('cmUpdated','1')}catch(e){}location.reload()}};
@@ -12,7 +12,7 @@ if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
   /* 從背景切回來時，順便問一下有沒有新版 */
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})});
   setTimeout(()=>{try{if(sessionStorage.getItem('cmUpdated')){sessionStorage.removeItem('cmUpdated');toast('✨ 已經更新到最新版本（'+APP_VER+'）')}}catch(e){}},1500)}
-const APP_VER='v49';
+const APP_VER='v50';
 function isStandalone(){try{return navigator.standalone===true||matchMedia('(display-mode: standalone)').matches}catch(e){return false}}
 function renderApp(){const box=$('#appBox');if(!box)return;
   const ver=`<br><small style="color:#9b8a7a">目前版本：${APP_VER}</small>`;

@@ -1,6 +1,6 @@
 /* 離線快取（v21）：第一次開啟時把整個工具存進裝置，之後沒有網路也能開，而且一點就開。
    ★ 每次更新程式或圖片，都要把下面的 VERSION 改掉（例如 v21 → v22），裝置才會抓新版。 */
-const VERSION='v49';
+const VERSION='v50';
 const CACHE='calm-monster-'+VERSION;
 const FILES=[
   './',
@@ -279,11 +279,23 @@ const FILES=[
   'pond/assets/pebbles_small.webp',
   'pond/assets/pond_water_bg.webp'
 ];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all(FILES.map(f=>fetch(f,{cache:'reload'}).then(r=>{if(!r.ok)throw new Error(f);return c.put(f,r)})))).then(()=>self.skipWaiting()))});
+/* v50：更新更快、更穩
+   - 安裝時一個檔案抓不到也不會整個失敗（以前會卡在舊版）
+   - 程式和畫面（html、js、css）先上網抓最新的，3.5 秒沒回應或沒有網路才用裝置裡存好的
+   - 圖片照舊：先用裝置裡存好的，沒有才上網抓 */
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.allSettled(FILES.map(f=>fetch(f,{cache:'reload'}).then(r=>{if(r.ok)return c.put(f,r)})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('calm-monster-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+function fresh(q){/* 先上網，失敗或太慢就用存好的 */
+  return caches.open(CACHE).then(c=>new Promise(res=>{let done=false;
+    const fromCache=()=>c.match(q,{ignoreSearch:true}).then(r=>r||caches.match(q,{ignoreSearch:true}));
+    const t=setTimeout(()=>fromCache().then(r=>{if(r&&!done){done=true;res(r)}}),3500);
+    fetch(q,{cache:'no-cache'}).then(r=>{if(r&&r.ok){const u=new URL(q.url);c.put(u.pathname.endsWith('/')?u.pathname:q,r.clone()).catch(()=>{})}
+      if(!done){done=true;clearTimeout(t);res(r)}})
+    .catch(()=>fromCache().then(r=>{if(!done){done=true;clearTimeout(t);res(r||Response.error())}}))}))}
 self.addEventListener('fetch',e=>{const q=e.request;if(q.method!=='GET')return;const u=new URL(q.url);
-  if(u.origin===location.origin){/* 自己的檔案：先用裝置裡存好的，沒有才上網抓 */
-    e.respondWith(caches.match(q,{ignoreSearch:true}).then(r=>r||fetch(q)));return}
+  if(u.origin===location.origin){
+    if(q.mode==='navigate'||/\.(html|js|css|webmanifest)$/.test(u.pathname)||u.pathname.endsWith('/')){e.respondWith(fresh(q));return}
+    e.respondWith(caches.match(q,{ignoreSearch:true}).then(r=>r||fetch(q).then(x=>{if(x.ok){const y=x.clone();caches.open(CACHE).then(c=>c.put(q,y))}return x})));return}
   if(/fonts\.(googleapis|gstatic)\.com$/.test(u.hostname)){/* 字型：有存就用，同時在背景更新；離線沒有字型就用系統字 */
     e.respondWith(caches.open('calm-monster-fonts').then(c=>c.match(q).then(r=>{const n=fetch(q).then(x=>{c.put(q,x.clone());return x}).catch(()=>r);return r||n})))}
 });
