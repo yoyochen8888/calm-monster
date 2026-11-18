@@ -3,14 +3,25 @@
 /* ---------- 離線：註冊 service worker（預覽環境不支援時安靜略過） ---------- */
 let swState='none';
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
-  try{navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{swState='ready';renderApp()}).catch(()=>{swState='fail'})}catch(e){swState='fail'}}
+  try{navigator.serviceWorker.register('sw.js').then(()=>navigator.serviceWorker.ready).then(()=>{swState='ready';renderApp()}).catch(()=>{swState='fail'})}catch(e){swState='fail'}
+  /* 自動換新版（v48）：新版下載好、接手之後重新整理一次。孩子正在冷靜流程或池塘裡時不打斷，等回到家園再換 */
+  const hadCtrl=!!navigator.serviceWorker.controller;let needReload=false;
+  const tryReload=()=>{if(!needReload)return;if(S.step===10&&!document.getElementById('pondOverlay')){needReload=false;try{sessionStorage.setItem('cmUpdated','1')}catch(e){}location.reload()}};
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadCtrl)return;needReload=true;tryReload()});
+  setInterval(tryReload,2000);
+  /* 從背景切回來時，順便問一下有沒有新版 */
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})});
+  setTimeout(()=>{try{if(sessionStorage.getItem('cmUpdated')){sessionStorage.removeItem('cmUpdated');toast('✨ 已經更新到最新版本（'+APP_VER+'）')}}catch(e){}},1500)}
+const APP_VER='v48';
 function isStandalone(){try{return navigator.standalone===true||matchMedia('(display-mode: standalone)').matches}catch(e){return false}}
 function renderApp(){const box=$('#appBox');if(!box)return;
+  const ver=`<br><small style="color:#9b8a7a">目前版本：${APP_VER}</small>`;
   const off=swState==='ready'?'✅ 這台裝置已經存好，沒有網路也能開。':swState==='fail'?'這個瀏覽器目前不能離線使用（需要網路才能開）。':'離線功能準備中，或這個環境不支援。';
   box.innerHTML=isStandalone()
-    ?`<p style="font-size:.9rem">✅ 已經從主畫面開啟。${off}</p>`
+    ?`<p style="font-size:.9rem">✅ 已經從主畫面開啟。${off}${ver}</p>`
     :`<p style="font-size:.9rem">把情緒怪獸家園放到主畫面，孩子情緒來的時候一點就開，不用找網址。${off}</p>
       <ol style="font-size:.9rem;margin:4px 0 6px;padding-left:1.3em;line-height:1.8"><li>iPad／iPhone：用 <b>Safari</b> 開這個網頁，按上方的「分享」<b>⬆️</b></li><li>選「<b>加入主畫面</b>」</li><li>Android：瀏覽器選單 →「加到主畫面」或「安裝應用程式」</li></ol>
+      <p style="font-size:.85rem;color:#9b8a7a;margin:0 0 6px">目前版本：${APP_VER}</p>
       <p class="note" style="margin:0 0 6px">⚠️ 在 iPad／iPhone，主畫面版本的紀錄和 Safari 是<b>分開</b>的。想把現在的星星和紀錄帶過去：先在這裡按「備份」，到主畫面版本再按「還原」。</p>`}
 
 /* ---------- 備份與還原 ---------- */
