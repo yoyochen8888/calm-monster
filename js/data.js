@@ -31,7 +31,7 @@ const HASART=new Set(['angry','sad','defiant','stuck','scared','wronged','reluct
 const LV=[
   {n:1,t:'小小的',h:'#6CCB70'},{n:2,t:'有一點',h:'#A8D86B'},{n:3,t:'中中的',h:'#F7D046'},{n:4,t:'很大',h:'#F5A524'},{n:5,t:'超級大',h:'#F26B5B'}
 ];
-const ACT_NAME={light:'紅綠燈',breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱',fish:'看魚呼吸'};
+const ACT_NAME={light:'紅綠燈',breathe:'呼吸',bubbles:'戳泡泡',squeeze:'擠檸檬',senses:'找找看',butterfly:'蝴蝶抱',fish:'跟青蛙呼吸'};
 const CAUSES=['我做不到 / 太難了','我輸了','跟我想的不一樣','我覺得不公平','我被說 / 被罵','不能再玩了','東西壞掉了','被別人誤會','我也不知道'];
 const WANTS=['抱抱','自己靜一下','再試一次','有人幫我','休息一下','說給別人聽'];
 const PLANS={

@@ -1,4 +1,4 @@
-/* 療癒小角落（v17）：池塘、菜園，以及冷靜站的「看魚呼吸」
+/* 療癒小角落（v17）：池塘、菜園，以及冷靜站的「跟青蛙呼吸」（v47 起池塘換成 pond/ 軟陶魚池）
    原則：慢慢的、沒有倒數、沒有進度數字；照顧每天第一次 +1 星；畫面會自己慢慢收尾 */
 
 /* ---------- 聲音：雨聲（白噪音＋低通）、水滴 ---------- */
@@ -14,81 +14,21 @@ function rainStop(){if(!rainNode)return;const a=ac(),r=rainNode;rainNode=null;
   try{r.g.gain.cancelScheduledValues(a.currentTime);r.g.gain.setValueAtTime(r.g.gain.value,a.currentTime);r.g.gain.linearRampToValueAtTime(0,a.currentTime+.5);setTimeout(()=>{try{r.src.stop()}catch(e){}},600)}catch(e){}}
 const PENTA=[392,440,523,587,659,784];
 function drip(){tone(PENTA[Math.floor(Math.random()*PENTA.length)],.5,'sine',.06)}
-function stopCorners(){rainStop()}
+function stopCorners(){rainStop();closePondOverlay()}
 
-/* ---------- 池塘畫布（家園的池塘和看魚呼吸共用） ---------- */
-const FISH_C=['#FFB25B','#FF8A80','#FFD86B','#FFA8CF','#B9A0F0'];
-function pondCanvas(A,nFish){
-  A.innerHTML=`<canvas class="pondcv"></canvas>`;const cv=A.querySelector('canvas');
-  const W=Math.min(A.clientWidth||340,560),H=Math.round(W*.72),dpr=window.devicePixelRatio||1;
-  cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';
-  const x=cv.getContext('2d');x.scale(dpr,dpr);
-  const P={W,H,cv,food:[],rip:[],ring:null,rest:false,onEat:null,speed:1,t0:performance.now()};
-  const pads=[[W*.16,H*.22,W*.07],[W*.83,H*.8,W*.085],[W*.76,H*.18,W*.05]];
-  P.pads=pads;
-  P.fish=[...Array(nFish)].map((_,i)=>({x:W*(.25+.5*Math.random()),y:H*(.3+.4*Math.random()),a:Math.random()*6.28,
-    s:.35+Math.random()*.2,c:FISH_C[i%5],len:W*(.055+Math.random()*.02),tx:0,ty:0,w:Math.random()*6,pick:0}));
-  P.fish.forEach(f=>{f.tx=f.x;f.ty=f.y});
-  P.ripple=(px,py,big)=>P.rip.push({x:px,y:py,r:2,a:big?.7:.5,m:big?W*.22:W*.14});
-  cv.addEventListener('pointerdown',e=>{const b=cv.getBoundingClientRect();const px=(e.clientX-b.left)*W/b.width,py=(e.clientY-b.top)*H/b.height;
-    ac();P.ripple(px,py);drip();
-    if(!P.rest)P.fish.forEach(f=>{if(Math.hypot(f.x-px,f.y-py)<W*.35){f.tx=px+(Math.random()-.5)*30;f.ty=py+(Math.random()-.5)*30;f.pick=performance.now()+2500}})});
-  function newTarget(f){if(P.rest){const p=pads[1];f.tx=p[0]+(Math.random()-.5)*p[2]*1.4;f.ty=p[1]+(Math.random()-.5)*p[2]*.8;return}
-    f.tx=W*(.1+.8*Math.random());f.ty=H*(.15+.7*Math.random())}
-  function drawFish(f){x.save();x.translate(f.x,f.y);x.rotate(f.a);const L=f.len,sw=Math.sin(f.w)*.35;
-    x.fillStyle='rgba(20,60,90,.15)';x.beginPath();x.ellipse(3,5,L*.55,L*.24,0,0,6.28);x.fill();
-    const bg=x.createRadialGradient(-L*.15,-L*.12,L*.02,0,0,L*.6);bg.addColorStop(0,tint(f.c,.5));bg.addColorStop(.6,f.c);bg.addColorStop(1,tint(f.c,-.15));
-    x.fillStyle=bg;x.beginPath();x.ellipse(0,0,L*.55,L*.25,0,0,6.28);x.fill();x.fillStyle=f.c;
-    x.beginPath();x.moveTo(-L*.45,0);x.lineTo(-L*.85,-L*.25+sw*L*.2);x.lineTo(-L*.85,L*.25+sw*L*.2);x.closePath();x.fill();
-    x.fillStyle='#fff';x.beginPath();x.arc(L*.3,-L*.07,L*.07,0,6.28);x.fill();
-    x.fillStyle='#333';x.beginPath();x.arc(L*.32,-L*.07,L*.035,0,6.28);x.fill();x.restore()}
-  function frame(now){if(!cv.isConnected)return;
-    const t=(now-P.t0)/1000;
-    const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#B5E6F5');g.addColorStop(1,'#6FB9DE');x.fillStyle=g;x.fillRect(0,0,W,H);
-    x.fillStyle='rgba(255,255,255,.10)';for(let i=0;i<6;i++){const cx=(W*(i/6)+t*8*(i%2?1:-1)+W)%W,cy=H*(.2+.12*i)+Math.sin(t*.5+i)*6;x.beginPath();x.ellipse(cx,cy,W*.12,H*.025,0,0,6.28);x.fill()}
-    if(P.ring){const R=P.ring;x.strokeStyle='rgba(255,255,255,.75)';x.lineWidth=4;x.beginPath();x.arc(W/2,H/2,R.r,0,6.28);x.stroke();
-      x.fillStyle='rgba(255,255,255,.12)';x.beginPath();x.arc(W/2,H/2,R.r,0,6.28);x.fill()}
-    P.food=P.food.filter(p=>now-p.t<25000);
-    P.food.forEach(p=>{p.y+=.04;p.x+=Math.sin(now/900+p.x)*.05;x.fillStyle='#B9874B';x.beginPath();x.arc(p.x,p.y,3,0,6.28);x.fill()});
-    P.fish.forEach(f=>{let tx=f.tx,ty=f.ty;
-      if(P.food.length&&!P.rest){let best=null,bd=1e9;P.food.forEach(p=>{const d=Math.hypot(p.x-f.x,p.y-f.y);if(d<bd){bd=d;best=p}});tx=best.x;ty=best.y;
-        if(bd<f.len*.5){P.food.splice(P.food.indexOf(best),1);tone(300+Math.random()*60,.12,'sine',.05);f.w+=3;if(!P.food.length&&P.onEat)P.onEat()}}
-      else if(Math.hypot(tx-f.x,ty-f.y)<12&&now>f.pick)newTarget(f);
-      const want=Math.atan2(ty-f.y,tx-f.x);let da=want-f.a;while(da>Math.PI)da-=6.28;while(da<-Math.PI)da+=6.28;
-      f.a+=Math.max(-.03,Math.min(.03,da));
-      const sp=f.s*P.speed*(P.food.length&&!P.rest?1.8:1)*(P.rest?.9:1);
-      f.x+=Math.cos(f.a)*sp;f.y+=Math.sin(f.a)*sp;f.w+=.08*P.speed;
-      f.x=Math.max(10,Math.min(W-10,f.x));f.y=Math.max(10,Math.min(H-10,f.y));drawFish(f)});
-    pads.forEach(([px,py,r],i)=>{x.fillStyle='rgba(40,90,120,.12)';x.beginPath();x.ellipse(px+3,py+5,r,r*.9,0,0,6.28);x.fill();
-      const pg=x.createRadialGradient(px-r*.35,py-r*.35,r*.1,px,py,r);pg.addColorStop(0,'#A6DC94');pg.addColorStop(1,i===1&&P.rest?'#5FB06A':'#6FBF6E');x.fillStyle=pg;x.beginPath();x.moveTo(px,py);const rot=i*2.1+Math.sin(t*.3+i)*.05;x.arc(px,py,r,rot+.12,rot+6.16);x.closePath();x.fill();
-      x.fillStyle='rgba(255,255,255,.15)';x.beginPath();x.arc(px-r*.3,py-r*.3,r*.25,0,6.28);x.fill()});
-    if(!pads[2].flower){x.fillStyle='#FFB3D1';const [px,py]=pads[2];for(let k=0;k<5;k++){x.beginPath();x.ellipse(px+Math.cos(k*1.26)*6,py+Math.sin(k*1.26)*6,5,3,k*1.26,0,6.28);x.fill()}x.fillStyle='#F7D046';x.beginPath();x.arc(px,py,3,0,6.28);x.fill()}
-    P.rip=P.rip.filter(r=>r.a>0.02);P.rip.forEach(r=>{r.r+=.9;r.a*=.975;x.strokeStyle=`rgba(255,255,255,${r.a})`;x.lineWidth=2;x.beginPath();x.arc(r.x,r.y,r.r,0,6.28);x.stroke();
-      if(r.r>r.m)r.a*=.9});
-    raf=requestAnimationFrame(frame)}
-  raf=requestAnimationFrame(frame);
-  P.feed=()=>{for(let i=0;i<5;i++)P.food.push({x:W*(.25+.5*Math.random()),y:H*(.25+.45*Math.random()),t:performance.now()});P.ripple(W/2,H/2,true);drip()};
-  return P}
-
-/* ---------- 家園的池塘（step 24） ---------- */
+/* ---------- 池塘（v47）：軟陶魚池 pond/index.html ----------
+   家園的池塘（step 24）用全螢幕開啟；冷靜站的「跟青蛙呼吸」放在活動區裡。
+   池塘頁面透過 window.pondHost 讀寫家園的存檔（store.pond、store.fish、fishDay、fed）和星星（gain）。 */
+window.pondHost={get store(){return store},save,gain,closePond(){closePondOverlay();go(10)}};
+function closePondOverlay(){const o=document.getElementById('pondOverlay');if(o)o.remove();document.body.classList.remove('pondopen')}
 function renderPond(){
-  stopAct();const t=today();let fedThisVisit=0;
-  const P=pondCanvas($('#pondArea'),Math.max(1,store.fish||1));
-  $('#pondHint').textContent='用手指輕輕碰水面，魚會好奇地游過來。想看多久都可以。';
-  const btns=$('#pondBtns'),msg=$('#pondMsg');msg.textContent='';
-  const draw=()=>{btns.innerHTML=(fedThisVisit<2?`<button class="btn" id="pFeed">🍞 撒一點飼料</button>`:'')+`<button class="btn ghost" id="pHome">回家園</button>`;
-    const f=$('#pFeed');if(f)f.onclick=feed;$('#pHome').onclick=()=>go(10)};
-  function ending(){/* 自然收尾：魚游到荷葉下休息，不強迫離開 */
-    if(P.rest||!$('#pondArea').isConnected)return;P.rest=true;P.fish.forEach(f=>f.pick=0);
-    msg.innerHTML='魚兒吃飽了，慢慢游到荷葉下面休息了。<br>跟牠們說再見吧 👋';}
-  function feed(){ac();P.feed();fedThisVisit++;draw();
-    if(store.fishDay!==t){store.fishDay=t;store.fed=(store.fed||0)+1;let nf=false;
-      if(store.fed>=3&&(store.fish||1)<5){store.fed=0;store.fish=(store.fish||1)+1;nf=true}
-      save();gain('照顧池塘',1);
-      if(nf)later(()=>{msg.textContent='咦？池塘裡來了一條新的小魚 🐟';P.fish.push({x:10,y:P.H*.5,a:0,s:.4,c:FISH_C[(store.fish-1)%5],len:P.W*.05,tx:P.W*.4,ty:P.H*.5,w:0,pick:0})},4000)}
-    P.onEat=()=>{if(fedThisVisit>=2)later(ending,2500);else if(!msg.textContent)msg.textContent='魚兒吃得好開心。'};}
-  draw();
-  later(ending,120000);/* 兩分鐘後魚兒自己去休息 */
+  stopAct();
+  $('#pondHint').textContent='';$('#pondMsg').textContent='';
+  $('#pondBtns').innerHTML=`<button class="btn" id="pOpen">打開池塘</button><button class="btn ghost" id="pHome">回家園</button>`;
+  $('#pOpen').onclick=renderPond;$('#pHome').onclick=()=>go(10);
+  const o=document.createElement('div');o.id='pondOverlay';o.className='pondov';
+  o.innerHTML='<iframe src="pond/index.html?mode=home" title="池塘"></iframe>';
+  document.body.appendChild(o);document.body.classList.add('pondopen');
 }
 
 /* ---------- 菜園（step 25） ---------- */
@@ -161,20 +101,10 @@ function renderGarden(){
 }
 function bindLeaves(){$$('#gdArea [data-leaf]').forEach(l=>l.onclick=()=>{ac();l.classList.remove('sway','touch');void l.getBoundingClientRect();l.classList.add('touch');tone(700+Math.random()*200,.08,'triangle',.03)})}
 
-/* ---------- 冷靜站：看魚呼吸 ---------- */
+/* ---------- 冷靜站：跟青蛙呼吸（v47，取代舊的看魚呼吸） ---------- */
 function actFish(){
-  const young=S.age==='young',inT=young?3000:4000,outT=young?5000:6000,total=5;
-  actSpeech='我們來看魚呼吸。吸氣的時候，白色的圈圈慢慢變大，魚兒游過來。吐氣的時候，圈圈慢慢變小，魚兒慢慢游走。';
-  $('#actHint').textContent=`看著池塘：圈圈變大時吸氣（${inT/1000} 秒），變小時慢慢吐氣（${outT/1000} 秒），做 ${total} 次`;
-  const A=$('#actArea');A.innerHTML=`<div id="fishPond"></div><div class="breath-word" id="bw">準備好了嗎？也可以先摸摸水面</div><div class="count" id="bc"></div><div class="row"><button class="btn" id="bStart">開始</button></div>`;
-  const P=pondCanvas($('#fishPond'),Math.max(3,store.fish||1));const r0=P.W*.08,r1=P.W*.26;P.ring={r:r0};
-  $('#bStart').onclick=()=>{$('#bStart').style.display='none';ac();run(0)};
-  function anim(from,to,ms){const s=performance.now();const f=now=>{if(!P.cv.isConnected||!P.ring)return;const k=Math.min(1,(now-s)/ms),e=.5-Math.cos(k*Math.PI)/2;P.ring.r=from+(to-from)*e;if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
-  function run(i){const bw=$('#bw'),bc=$('#bc');if(!bw)return;
-    if(i>=total){bw.textContent='你陪魚兒呼吸了 5 次。身體有沒有慢下來？';bc.textContent='';chime();P.speed=.8;return}
-    bc.textContent=`第 ${i+1} / ${total} 次`;
-    bw.textContent='吸～ 圈圈變大，魚兒游過來';P.speed=1.3;P.fish.forEach(f=>{f.tx=P.W/2+(Math.random()-.5)*P.W*.2;f.ty=P.H/2+(Math.random()-.5)*P.H*.2;f.pick=performance.now()+inT});
-    anim(r0,r1,inT);tone(392,.3,'sine',.05);
-    later(()=>{const bw2=$('#bw');if(!bw2)return;bw2.textContent='呼～～ 圈圈變小，魚兒慢慢游';P.speed=.6;P.fish.forEach(f=>f.pick=0);anim(r1,r0,outT);tone(294,.3,'sine',.05);
-      later(()=>run(i+1),outT)},inT)}
+  const young=S.age==='young',inT=young?3:4,outT=young?5:6,total=5;
+  actSpeech='我們跟青蛙一起呼吸。吸氣的時候，青蛙的肚子慢慢鼓起來，魚兒游過來。吐氣的時候，肚子慢慢消下去。';
+  $('#actHint').textContent=`跟著青蛙：肚子鼓起來時吸氣（${inT} 秒），消下去時慢慢吐氣（${outT} 秒），做 ${total} 次`;
+  $('#actArea').innerHTML=`<iframe class="pondframe" src="pond/index.html?mode=breath&in=${inT}&out=${outT}&n=${total}" title="跟青蛙呼吸"></iframe>`;
 }

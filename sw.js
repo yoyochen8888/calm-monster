@@ -1,6 +1,6 @@
 /* 離線快取（v21）：第一次開啟時把整個工具存進裝置，之後沒有網路也能開，而且一點就開。
    ★ 每次更新程式或圖片，都要把下面的 VERSION 改掉（例如 v21 → v22），裝置才會抓新版。 */
-const VERSION='v46';
+const VERSION='v47';
 const CACHE='calm-monster-'+VERSION;
 const FILES=[
   './',
@@ -241,7 +241,43 @@ const FILES=[
   'img/joy_gratefulg1.webp',
   'img/joy_gratefulg2.webp',
   'img/joy_gratefulg3.webp',
-  'img/joy_gratefulg4.webp'
+  'img/joy_gratefulg4.webp',
+  'pond/index.html',
+  'pond/assets/dragonfly.webp',
+  'pond/assets/frog.webp',
+  'pond/assets/frog_back.webp',
+  'pond/assets/frog_exhale.webp',
+  'pond/assets/frog_front.webp',
+  'pond/assets/frog_jump.webp',
+  'pond/assets/frog_puff.webp',
+  'pond/assets/frog_side_right.webp',
+  'pond/assets/frog_sleep.webp',
+  'pond/assets/frog_swim.webp',
+  'pond/assets/frog_swim_2.webp',
+  'pond/assets/frog_swim_3.webp',
+  'pond/assets/frog_swim_5.webp',
+  'pond/assets/frog_swim_kick.webp',
+  'pond/assets/frog_umbrella.webp',
+  'pond/assets/goldfish_black_adult.webp',
+  'pond/assets/goldfish_black_baby.webp',
+  'pond/assets/goldfish_red_adult.webp',
+  'pond/assets/goldfish_red_baby.webp',
+  'pond/assets/koi_blue_adult.webp',
+  'pond/assets/koi_blue_baby.webp',
+  'pond/assets/koi_gold_adult.webp',
+  'pond/assets/koi_gold_baby.webp',
+  'pond/assets/koi_orange.webp',
+  'pond/assets/koi_orange_baby.webp',
+  'pond/assets/koi_red_white.webp',
+  'pond/assets/koi_red_white_baby.webp',
+  'pond/assets/koi_tricolor_adult.webp',
+  'pond/assets/koi_tricolor_baby.webp',
+  'pond/assets/lily_pad_large.webp',
+  'pond/assets/lily_pad_small.webp',
+  'pond/assets/lotus_pink.webp',
+  'pond/assets/pebble_succulent_cluster.webp',
+  'pond/assets/pebbles_small.webp',
+  'pond/assets/pond_water_bg.webp'
 ];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all(FILES.map(f=>fetch(f,{cache:'reload'}).then(r=>{if(!r.ok)throw new Error(f);return c.put(f,r)})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('calm-monster-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
