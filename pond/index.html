@@ -985,7 +985,7 @@ $('breathe').addEventListener('click',()=>{audio();hideHint();closeSheet();breat
 function closeSheet(){$('sheet').classList.remove('show');}
 $('mood').addEventListener('click',()=>{audio();hideHint();closeShop();$('sheet').classList.toggle('show');});
 $('cancel').addEventListener('click',closeSheet);
-$('home').addEventListener('click',()=>{try{if(HOST&&typeof HOST.closePond==='function'){HOST.closePond();return;}}catch(e){}history.length>1?history.back():location.href='../index.html';});
+$('home').addEventListener('click',()=>{try{if(HOST&&typeof HOST.closePond==='function'){HOST.closePond();return;}}catch(e){}location.href='../index.html';});   // 單獨打開時直接回到家園首頁
 $('scene').addEventListener('click',()=>{audio();hideHint();cycleScene();});
 $('rain').addEventListener('click',()=>{audio();hideHint();toggleRain();});
 document.querySelectorAll('.stone').forEach(b=>b.addEventListener('click',()=>{closeSheet();throwStone(b.dataset.k);}));
