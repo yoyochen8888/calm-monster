@@ -26,9 +26,8 @@ function renderPond(){
   $('#pondHint').textContent='';$('#pondMsg').textContent='';
   $('#pondBtns').innerHTML=`<button class="btn" id="pOpen">打開池塘</button><button class="btn ghost" id="pHome">回家園</button>`;
   $('#pOpen').onclick=renderPond;$('#pHome').onclick=()=>go(10);
-  const o=document.createElement('div');o.id='pondOverlay';o.className='pondov';
-  o.innerHTML='<iframe src="pond/index.html?mode=home" title="池塘"></iframe>';
-  document.body.appendChild(o);document.body.classList.add('pondopen');
+  /* v51：整頁打開池塘（iPhone 的 iframe 會被撐大、畫面被切掉）；池塘直接讀寫同一份存檔，按回家園再回來 */
+  save();location.href='pond/index.html?mode=home';
 }
 
 /* ---------- 菜園（step 25） ---------- */
@@ -106,5 +105,5 @@ function actFish(){
   const young=S.age==='young',inT=young?3:4,outT=young?5:6,total=5;
   actSpeech='我們跟青蛙一起呼吸。吸氣的時候，青蛙的肚子慢慢鼓起來，魚兒游過來。吐氣的時候，肚子慢慢消下去。';
   $('#actHint').textContent=`跟著青蛙：肚子鼓起來時吸氣（${inT} 秒），消下去時慢慢吐氣（${outT} 秒），做 ${total} 次`;
-  $('#actArea').innerHTML=`<iframe class="pondframe" src="pond/index.html?mode=breath&in=${inT}&out=${outT}&n=${total}" title="跟青蛙呼吸"></iframe>`;
+  $('#actArea').innerHTML=`<iframe class="pondframe" scrolling="no" src="pond/index.html?mode=breath&in=${inT}&out=${outT}&n=${total}" title="跟青蛙呼吸"></iframe>`;
 }

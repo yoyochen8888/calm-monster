@@ -6,7 +6,7 @@
 <title>情緒怪獸家園・池塘</title>
 <style>
   button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;height:100%;background:#cfe9e6;overflow:hidden;-webkit-touch-callout:none;
+  html,body{margin:0;width:100%;height:100%;position:fixed;inset:0;background:#cfe9e6;overflow:hidden;-webkit-touch-callout:none;
     font-family:"PingFang TC","Noto Sans TC",system-ui,sans-serif;-webkit-user-select:none;user-select:none}
   canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none;display:block}
   .bar{position:fixed;left:0;right:0;bottom:calc(16px + env(safe-area-inset-bottom));
@@ -280,18 +280,21 @@ const OLD_SP=['orange','redwhite','gold','tricolor','blue'];   // 舊池塘的�
 function defaultFish(n){const old=Date.now()-10*864e5,jit=[1.09,.96,.91,1.02,.86];
   return Array.from({length:Math.max(1,Math.min(5,n||1))},(_,i)=>({id:'f'+(i+1),sp:OLD_SP[i%5],born:old,jit:jit[i],grown:true}));}
 // 家園的 store：fish（魚的數量，給家園畫面用）、fishDay、fed 沿用舊池塘的欄位；新魚池的細節放在 store.pond
-const HS=HOST?HOST.store:(()=>{try{return JSON.parse(localStorage.getItem(SKEY))||{};}catch(e){return {};}})();
+// 從家園整頁打開時（沒有 HOST），直接讀寫家園的存檔 calmMonster（同一個網站、同一份紀錄）
+const APPKEY='calmMonster';
+const APP=(()=>{if(HOST)return null;try{const a=JSON.parse(localStorage.getItem(APPKEY));return a&&a.age?a:null;}catch(e){return null;}})();
+const HS=HOST?HOST.store:APP?APP:(()=>{try{return JSON.parse(localStorage.getItem(SKEY))||{};}catch(e){return {};}})();
 if(!HS.pond||!Array.isArray(HS.pond.fish))HS.pond={v:1,fish:defaultFish(HS.fish)};
 if(!HOST&&HS.stars===undefined)HS.stars=0;
 let state=HS.pond;
 function save(){HS.fish=state.fish.length;
-  if(HOST){try{HOST.save();}catch(e){}}else{try{localStorage.setItem(SKEY,JSON.stringify(HS));}catch(e){}}}
+  if(HOST){try{HOST.save();}catch(e){}}else{try{localStorage.setItem(APP?APPKEY:SKEY,JSON.stringify(HS));}catch(e){}}}
 function stars(){return HS.stars||0;}
 function updateShellUI(bump){$('shellN').textContent=stars();$('shopN').textContent=stars();
   if(bump){const b=$('shells');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');}
   if($('shop').classList.contains('show'))renderShop();}
 function earn(n,why,x,y){
-  if(HOST){try{HOST.gain(why,n,{quiet:1});}catch(e){HS.stars=(HS.stars||0)+n;HOST.save();}}else{HS.stars=(HS.stars||0)+n;save();}
+  if(HOST){try{HOST.gain(why,n,{quiet:1});}catch(e){HS.stars=(HS.stars||0)+n;HOST.save();}}else{HS.stars=(HS.stars||0)+n;if(APP)HS.pxp=(HS.pxp||0)+n;save();}
   updateShellUI(true);toast(`+${n} ⭐ ${why}`,x??W-U*.25,y??U*.2,2.4);}
 function spend(n){HS.stars=Math.max(0,(HS.stars||0)-n);save();updateShellUI();}
 function growth(rec){return clamp((Date.now()-rec.born)/GROW_MS,0,1);}
@@ -985,14 +988,14 @@ $('breathe').addEventListener('click',()=>{audio();hideHint();closeSheet();breat
 function closeSheet(){$('sheet').classList.remove('show');}
 $('mood').addEventListener('click',()=>{audio();hideHint();closeShop();$('sheet').classList.toggle('show');});
 $('cancel').addEventListener('click',closeSheet);
-$('home').addEventListener('click',()=>{try{if(HOST&&typeof HOST.closePond==='function'){HOST.closePond();return;}}catch(e){}location.href='../index.html';});   // 單獨打開時直接回到家園首頁
+$('home').addEventListener('click',()=>{try{if(HOST&&typeof HOST.closePond==='function'){HOST.closePond();return;}}catch(e){}location.href='../index.html';});   // 整頁打開時回到家園首頁
 $('scene').addEventListener('click',()=>{audio();hideHint();cycleScene();});
 $('rain').addEventListener('click',()=>{audio();hideHint();toggleRain();});
 document.querySelectorAll('.stone').forEach(b=>b.addEventListener('click',()=>{closeSheet();throwStone(b.dataset.k);}));
 
 // ================= setup & loop =================
 function resize(){
-  W=innerWidth;H=innerHeight;
+  W=document.documentElement.clientWidth||innerWidth;H=document.documentElement.clientHeight||innerHeight;
   DPR=Math.min(window.devicePixelRatio||1,2,Math.sqrt(MAX_PX/(W*H)))*qScale;DPR=Math.max(1,DPR);
   cv.width=W*DPR|0;cv.height=H*DPR|0;U=clamp(Math.min(W,H),300,820);SK=clamp(U/520,.65,1.3);
   layout();setupNight();
