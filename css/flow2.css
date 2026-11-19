@@ -1,0 +1,33 @@
+/* v53 冷靜流程：新方法的畫面、說不出來、想一想。冷靜流程不彈、不閃：動態都慢慢的 */
+.actpic{display:flex;justify-content:center;align-items:flex-end;height:200px;margin:4px auto 6px}
+.actpic .cico{overflow:visible}
+.pushpic .hands{transition:transform .9s var(--soften,ease)}
+.pushpic.on .hands{transform:translateX(3px)}
+.pushpic.on .cico{filter:saturate(1.08)}
+.firepic .flame{transform-box:fill-box;transform-origin:50% 100%;transform:scale(var(--f));transition:transform 4.5s var(--soften,ease)}
+.firepic.blow .flame{transform:scale(calc(var(--f) * .92),calc(var(--f) * .8))}
+.firepic.out .flame{transform:scale(.18);opacity:.55;transition:transform 2s,opacity 2s}
+
+.snailpath{position:relative;height:130px;margin:6px 6px 4px;border-radius:24px;background:linear-gradient(#EAF5FC 0 55%,#DDF0D3 55%)}
+.snailgo{position:absolute;left:0;bottom:22px;transition:left 2.4s linear}
+.snailsteps{position:absolute;left:14px;right:14px;bottom:10px;display:flex;justify-content:space-between}
+.snailsteps i{width:12px;height:8px;border-radius:50%;background:#C8DDB8}
+.snailsteps i.on{background:#9E7FCB}
+#bStep:disabled{opacity:.55}
+
+.unsurerow{margin-top:6px}
+#monsters.unsure{display:block}
+.unsurepick{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 12px}
+.unsurepick .pick{padding:18px 10px}
+.unsurepick .uico{font-style:normal;font-size:2.4rem;display:block;margin-bottom:6px}
+.unsurepick span{display:block;color:var(--soft);font-size:.9rem;margin-top:4px}
+.unsureadult{text-align:left;margin:6px 0 14px}
+.unsureadult .say{margin:8px 0}
+
+.thinkq{display:flex;flex-direction:column;gap:6px;background:var(--lilac-l);border-radius:20px;padding:12px 16px;margin-top:14px;text-align:left}
+.thinkq small{color:var(--soft)}
+.thinkq b{font-size:1.08rem;line-height:1.6}
+.thinkbtns{display:flex;gap:8px;flex-wrap:wrap}
+.mdgame{text-align:left;margin:10px 0}
+@media (prefers-reduced-motion:reduce){.pushpic .hands,.firepic .flame,.snailgo{transition:none}}
+@media (max-width:520px){.unsurepick{grid-template-columns:1fr}.actpic{height:170px}.actpic .cico{width:150px;height:150px}}
