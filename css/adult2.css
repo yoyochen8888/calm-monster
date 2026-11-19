@@ -1,0 +1,30 @@
+/* v52 大人層：依大小的一句話、安全優先、大人的一分鐘、說法換一換（給大人的東西維持 👀＋淡藍） */
+.lvbox summary{line-height:1.6}
+.lvbox .lvsay{font-weight:500;color:var(--ink)}
+.lvbox .lvtip{color:var(--soft);font-size:.88rem;margin:8px 0 4px}
+.lvbox .lvask{background:var(--paper);border-radius:12px;padding:6px 10px;font-size:.88rem}
+.safefirst{background:var(--coral-l);border-left:4px solid var(--coral-d);border-radius:14px;padding:10px 14px;margin-top:14px;font-size:.92rem;line-height:1.6;color:var(--ink);font-weight:500}
+
+.adultcue .cuebtns{display:flex;gap:6px;flex:none}
+.adultcue.amin{align-items:center;gap:12px}
+.aminball{flex:none;width:44px;height:44px;border-radius:50%;background:#C9D8F2;transform:scale(.6);transition:transform 4s ease-in-out,background 4s}
+.aminball.in{transform:scale(1);background:#B3C8EC}
+.amintx{flex:1;display:flex;flex-direction:column;gap:2px;line-height:1.5}
+.amintx small{color:var(--soft);font-size:.82rem}
+@media (prefers-reduced-motion:reduce){.aminball{transition:none}}
+
+.lines .lvfirst{background:var(--butter-l);font-weight:600}
+.lines .lvfirst small{display:block;font-weight:400;color:var(--soft);font-size:.8rem}
+
+.lvrows{display:flex;flex-direction:column;gap:6px}
+.lvrow{display:flex;gap:10px;align-items:flex-start;border-radius:14px;padding:9px 12px;line-height:1.6}
+.lvrow>b{flex:none;width:52px;font-size:.88rem;padding-top:1px}
+.lvrow small{display:block;color:var(--soft);font-size:.82rem}
+.lvrow.lv0{background:var(--mint-l)}.lvrow.lv1{background:var(--butter-l)}.lvrow.lv2{background:var(--coral-l)}
+.lvnote{font-size:.88rem;color:var(--soft);margin:6px 0 0}
+#pBody>.adultbox{margin-top:12px}
+.swaps{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.swap{background:var(--paper);border-radius:12px;padding:8px 12px;line-height:1.6;display:flex;flex-direction:column}
+.swap small{color:var(--soft);font-size:.8rem}
+.swap s{color:var(--soft);text-decoration-color:rgba(117,99,83,.5)}
+@media (max-width:520px){.adultcue{flex-wrap:wrap}.adultcue .cuebtns{width:100%;justify-content:flex-end}.adultcue.amin{flex-wrap:nowrap}}
