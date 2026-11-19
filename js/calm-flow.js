@@ -110,14 +110,14 @@ function renderAct(){
   const e=EMO[S.emo];
   /* 4–5 級（v26）：只給身體的方法，選項少、不用想 */
   const big=!S.sos&&!S.practice&&S.lv>=4;
-  const list=S.sos?['breathe','butterfly','squeeze']:S.practice?['breathe','light','bubbles','squeeze','senses','butterfly','fish','rain','kind']:big?famOf(S.emo).body.slice():e.acts.slice();
+  const list=S.sos?['breathe','butterfly','squeeze']:S.practice?['breathe','dragon','push','snail','light','bubbles','squeeze','senses','butterfly','fish','rain','kind']:big?((typeof BODY_EMO!=='undefined'&&BODY_EMO[S.emo])||famOf(S.emo).body).slice():e.acts.slice();
   if(!S.act||!list.includes(S.act))S.act=list[0];
   const tb=(!S.sos&&!S.practice&&typeof toolbox==='function')?toolbox(S.emo).filter(a=>list.includes(a)):[];
   $('#actTabs').innerHTML=list.map(a=>`<button class="chip ${S.act===a?'sel':''}" data-act="${a}">${tb.includes(a)?'🧰 ':''}${ACT_NAME[a]}</button>`).join('')+(tb.length?`<small class="tbnote">🧰 在你的工具箱裡：上次有讓怪獸變小</small>`:'');
   $$('[data-act]').forEach(b=>b.onclick=()=>{S.act=b.dataset.act;stopAct();renderAct();ambSync()});
   $('#actTitle').textContent=S.sos?'🆘 先一起呼吸，不用想是哪隻怪獸':S.practice?'平時練習：心情好的時候先練起來':big?(EMO_FAM[S.emo]==='comfort'?'先讓人陪著你':'先照顧身體'):'冷靜時間';
   $('#actAdult').innerHTML=S.sos||S.practice?'':adultBox(S.emo);
-  ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly,fish:actFish,comfort:actComfort,rain:actRain,kind:actKind})[S.act]();
+  ({light:actLight,breathe:actBreathe,bubbles:actBubbles,squeeze:actSqueeze,senses:actSenses,butterfly:actButterfly,fish:actFish,comfort:actComfort,rain:actRain,kind:actKind,push:actPush,dragon:actDragon,snail:actSnail})[S.act]();
 }
 $('#speakAct').onclick=()=>speak(actSpeech);
 $('#actDone').onclick=()=>{
@@ -162,7 +162,7 @@ function ballRun(i,young){
 }
 function boxRun(i){
   const dot=$('#dot'),bw=$('#bw'),bc=$('#bc');if(!dot)return;
-  const rounds=4;if(i>=rounds*4){bw.textContent='完成 4 圈，做得很好';chime();return}
+  const rounds=4;if(i>=rounds*4){bw.textContent='完成 4 圈了。身體有沒有慢下來？';chime();return}
   const side=i%4;const pos=[[-15,-15],[185,-15],[185,185],[-15,185]];
   const to=pos[(side+1)%4];const words=['吸氣 ↑','停住','吐氣 ↓','停住'];
   bc.textContent=`第 ${Math.floor(i/4)+1} / ${rounds} 圈`;
@@ -248,7 +248,7 @@ function actButterfly(){
     <div class="breath-word" id="bw" style="font-size:1.2rem">一邊拍，一邊慢慢呼吸</div><div class="count" id="bc"></div>
     <div class="row"><button class="btn" id="bStart">開始拍拍</button></div>`;
   $('#bStart').onclick=()=>{$('#bStart').style.display='none';let k=0;const total=24;
-    const beat=()=>{if(!$('#wl'))return;if(k>=total){$('#wl').classList.remove('on');$('#wr').classList.remove('on');$('#bw').textContent='抱抱自己，你做得很好';chime();return}
+    const beat=()=>{if(!$('#wl'))return;if(k>=total){$('#wl').classList.remove('on');$('#wr').classList.remove('on');$('#bw').textContent='拍完了。你陪自己慢慢拍了 24 下';chime();return}
       const L=k%2===0;$('#wl').classList.toggle('on',L);$('#wr').classList.toggle('on',!L);tone(L?440:494,.12,'sine',.07);
       $('#bc').textContent=`${k+1} / ${total}`;k++;later(beat,1100)};beat()};
 }
