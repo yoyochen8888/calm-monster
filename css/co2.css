@@ -1,0 +1,20 @@
+/* v54 陪伴模式分流（大人區維持薄荷色的大人框；孩子的選擇卡用暖色、不彈） */
+.cogate{display:flex;flex-direction:column;gap:6px}
+.cocan{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--paper);border:2px solid #D6ECE8;border-radius:14px;padding:9px 12px;font:inherit;color:var(--ink);line-height:1.5;cursor:pointer}
+.cocan i{flex:none;width:22px;height:22px;border-radius:7px;border:2px solid #9CCFC6;font-style:normal;color:transparent;display:flex;align-items:center;justify-content:center;font-size:.85rem;margin-top:1px}
+.cocan.on{border-color:var(--mint-d);background:var(--mint-l)}
+.cocan.on i{background:var(--accent);border-color:var(--accent);color:#fff}
+.costate{border-radius:14px;padding:10px 12px;margin-top:8px;line-height:1.65;font-size:.93rem}
+.costate b{display:block;margin-bottom:2px}
+.costate.wait{background:var(--butter-l)}
+.costate.go{background:var(--mint-l)}
+.cobody{justify-content:flex-start}
+.cobodytips{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.cobodytips div{background:var(--paper);border-radius:12px;padding:8px 12px;line-height:1.6;font-size:.92rem}
+.cokidq{margin:14px 0 8px;font-weight:600;font-size:1.1rem}
+.cokid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cokid .pick{padding:12px 6px}
+.cokid .pick i{display:block;font-style:normal}
+.cokid .pick b{font-size:.95rem}
+.cokidtip{margin:10px 0 0;font-size:.9rem;color:var(--soft);background:#EEF3FB;border-radius:12px;padding:8px 12px;text-align:left}
+@media (max-width:520px){.cokid{grid-template-columns:1fr 1fr}}
