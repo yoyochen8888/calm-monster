@@ -1,6 +1,6 @@
 /* 離線快取（v21）：第一次開啟時把整個工具存進裝置，之後沒有網路也能開，而且一點就開。
    ★ 每次更新程式或圖片，都要把下面的 VERSION 改掉（例如 v21 → v22），裝置才會抓新版。 */
-const VERSION='v55';
+const VERSION='v56';
 const CACHE='calm-monster-'+VERSION;
 const FILES=[
   './',
@@ -14,6 +14,7 @@ const FILES=[
   'css/flow2.css',
   'css/co2.css',
   'css/learn2.css',
+  'css/season.css',
   'css/phone.css',
   'js/data.js',
   'js/family.js',
@@ -40,7 +41,23 @@ const FILES=[
   'js/icons2.js',
   'js/learn2.js',
   'js/yard.js',
+  'js/season.js',
   'img/yard_house.webp',
+  'img/yard_bg_summer.webp',
+  'img/yard_bg_autumn.webp',
+  'img/yard_bg_winter.webp',
+  'img/y_swing_frame.webp',
+  'img/y_swing_seat.webp',
+  'img/y_tent_body.webp',
+  'img/y_tent_flag.webp',
+  'img/yard_tree_apple_spring.webp',
+  'img/yard_tree_apple_summer.webp',
+  'img/yard_tree_apple_autumn.webp',
+  'img/yard_tree_apple_winter.webp',
+  'img/yard_tree_blossom_spring.webp',
+  'img/yard_tree_blossom_summer.webp',
+  'img/yard_tree_blossom_autumn.webp',
+  'img/yard_tree_blossom_winter.webp',
   'img/yard_tree_apple.webp',
   'img/yard_tree_blossom.webp',
   'img/hero_bear1.webp',
