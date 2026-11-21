@@ -1,0 +1,10 @@
+/* v56 四季院子＋會動的家具 */
+svg.yard .yswing{animation:yswing 4.8s ease-in-out infinite}
+@keyframes yswing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+svg.yard .yflag{animation:yflag 2.6s ease-in-out infinite}
+@keyframes yflag{0%,100%{transform:skewY(0deg) scaleX(1)}50%{transform:skewY(-6deg) scaleX(.9)}}
+svg.yard .yfall{animation:yfall 18s linear infinite}
+svg.yard .yfall.winter{animation-name:ysnow}
+@keyframes yfall{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(14px,80px) rotate(90deg)}50%{transform:translate(-6px,160px) rotate(200deg)}75%{transform:translate(12px,240px) rotate(290deg)}100%{transform:translate(0,320px) rotate(360deg)}}
+@keyframes ysnow{0%{transform:translate(0,0)}50%{transform:translate(8px,160px)}100%{transform:translate(0,320px)}}
+@media (prefers-reduced-motion:reduce){svg.yard .yfall{display:none}}
