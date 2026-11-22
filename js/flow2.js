@@ -103,7 +103,7 @@ renderMonsters=function(){
   _renderMonsters();const M=$('#monsters');if(!M||(M.className==='weather'&&!S.sos))return;
   const row=document.createElement('div');row.className='row unsurerow';row.style.gridColumn='1/-1';
   if(S.sos){row.innerHTML=`<button class="chip" id="unsureOk">還是說不出來，也沒關係</button>`;M.appendChild(row);
-    $('#unsureOk').onclick=()=>{if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1,quiet:1})}
+    $('#unsureOk').onclick=()=>{
       S.sos=false;S.sosDone=0;speak('說不出來也沒關係。你已經讓身體慢下來了。');toast('說不出來也沒關係，你已經讓身體慢下來了');go(10)};return}
   row.innerHTML=`<button class="chip" id="unsureBtn">都不像／說不出來</button>`;M.appendChild(row);
   $('#unsureBtn').onclick=()=>{S.unsure='menu';tone(480,.1);renderMonsters()}};

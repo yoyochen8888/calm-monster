@@ -61,7 +61,7 @@ function renderMonsters(){
     +(two?`<div class="row" style="grid-column:1/-1"><button class="chip" id="wxBack">← 換一個天氣</button></div>`:'');
   const wb=$('#wxBack');if(wb)wb.onclick=()=>{S.fam=null;S.pickAll=false;renderMonsters()};
   $$('[data-emo]').forEach(b=>b.onclick=()=>{S.emo=b.dataset.emo;tone(500,.12);speak('我是'+EMO[S.emo].name);
-    if(S.sos){S.sos=false;S.lv0=4;S.lv=4;S.lv2=0;if(S.sosDone&&S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1,quiet:1})}S.sosDone=0;go(4)}else go(2)});
+    if(S.sos){S.sos=false;S.lv0=4;S.lv=4;S.lv2=0;S.sosDone=0;go(4)}else go(2)});
 }
 /* thermometer */
 function thermo(el,stage,key,onPick){
@@ -122,11 +122,10 @@ function renderAct(){
 $('#speakAct').onclick=()=>speak(actSpeech);
 $('#actDone').onclick=()=>{
   if(S.practice){
-    if(store.pracDay!==today()){store.pracDay=today();store.pracLog.push(today());store.pracLog=store.pracLog.slice(-60);gain('平時練習',5)}else toast('今天已經練習過了，想練可以再練');
+    if(store.pracDay!==today()){store.pracDay=today();store.pracLog.push(today());store.pracLog=store.pracLog.slice(-60);gain('平時練習',10,{mon:S.pracMon})}else toast('今天已經練習過了，想練可以再練');
     S.practice=false;const bk=S.hist.pop();go(bk!==undefined?bk:17,true);return}
   S.actsDone=S.actsDone||[];if(!S.actsDone.includes(S.act))S.actsDone.push(S.act);
   if(S.sos){S.sosDone=1;go(1);return}
-  if(S.actRewards<2){S.actRewards++;gain('完成冷靜活動',5,{flow:1,quiet:1})}
   S.lv2=0;go(4)};
 
 function actBreathe(){
@@ -192,7 +191,7 @@ function actBubbles(){
       const r=b.getBoundingClientRect(),pr=pond.getBoundingClientRect();
       p.style.left=(r.left-pr.left+sz/3)+'px';p.style.top=(r.top-pr.top+sz/3)+'px';pond.appendChild(p);later(()=>p.remove(),600);
       b.remove();$('#bc').textContent=`${Math.min(n,goal)} / ${goal}`;
-      if(n===goal){chime();$('#bc').textContent=`全部戳破了！怪獸變小了`;}
+      if(n===goal){chime();$('#bc').textContent=`全部戳破了！你的怪獸現在怎麼樣？`;}
     });
     b.addEventListener('animationend',()=>b.remove());
     pond.appendChild(b);
@@ -314,14 +313,15 @@ function today(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+
 function toast(html,big){const t=document.createElement('div');t.className='toast'+(big?' big':'');t.innerHTML=html;$('#toasts').appendChild(t);setTimeout(()=>t.remove(),3100)}
 function gain(label,n,opt={}){
   if(opt.flow&&S.capped){if(!S.capToasted){S.capToasted=true;toast('今天的星星拿滿了，明天再來拿。練習一樣算數喔！')}return 0}
-  const mon=opt.flow?S.emo:null;
+  /* v57：opt.mon＝平時練習時，經驗值算進那隻怪獸（以前只有情緒來的時候才長） */
+  const mon=opt.flow?S.emo:(opt.mon||null);
   const p0=lvIn(PLV,store.pxp||0);let m0=0,m1=0;
   store.stars=(store.stars||0)+n;store.pxp=(store.pxp||0)+n;
   if(mon){m0=lvOf(store.xp[mon]||0);store.xp[mon]=(store.xp[mon]||0)+n;m1=lvOf(store.xp[mon])}
   save();
   if(opt.flow)S.earned.push([label,n]);
   let up='';
-  if(mon&&m1>m0){up=`${EMO[mon].name}升到 Lv.${m1}「${TITLES[m1-1]}」`;S.monUp={from:m0,to:m1}}
+  if(mon&&m1>m0){up=`${EMO[mon].name}升到 Lv.${m1}「${TITLES[m1-1]}」`;if(opt.flow)S.monUp={from:m0,to:m1}}
   const p1=lvIn(PLV,store.pxp);if(p1>p0)up+=(up?'<br>':'')+`主角升到 Lv.${p1}「${PTITLES[p1-1]}」`;
   /* 冷靜流程中（v26）：不跳星星和升級通知，結束頁再一起看 */
   if(opt.flow){if(p1>p0)S.heroUp=p1;return n}
@@ -342,13 +342,13 @@ function holdBtn(label,ms,cb){const b=document.createElement('button');b.classNa
 $('#finish').onclick=()=>{
   const e=EMO[S.emo];
   const lv0=S.lv0||S.lv||3, lv2=S.lv2||lv0, shrink=lv0-lv2;
+  /* v57：星星不跟「變小幾級」掛鉤（不把平靜當獎品，沒變小也不吃虧）；星星的大頭改到平時練習和一起回顧 */
   gain('勇敢面對怪獸',10,{flow:1,quiet:1});
-  if(shrink>0)gain(EMO_FAM[S.emo]==='comfort'?`心裡好了 ${shrink} 級`:`怪獸變小了 ${shrink} 級`,shrink*5,{flow:1,quiet:1});
   if(S.plan)gain('想好下次的方法',5,{flow:1,quiet:1});
   let tough='';
   if(shrink<=0){store.tough=(store.tough||0)+1;
     tough='今天的怪獸特別大，沒有變小也沒關係。你願意來面對它，就是很大的勇氣。';
-    if(store.tough>=3){gain('堅持不放棄',15,{flow:1,quiet:1});store.tough=0;store.toughAt=Date.now();
+    if(store.tough>=3){store.tough=0;store.toughAt=Date.now();
       tough='最近怪獸常常很大，你還是一次又一次來面對，真的很不簡單！可以跟大人說說最近發生了什麼事，讓大人一起幫你。';}
   } else store.tough=0;
   if(S.repair){store.repairs.push({id:Date.now(),text:S.repair,emo:S.emo});}
