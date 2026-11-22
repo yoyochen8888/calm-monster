@@ -75,3 +75,18 @@
 .pr-adultbox h3{font-size:13pt;margin-bottom:1mm}
 .pr-adultbox p{font-size:11pt;margin-top:1.8mm}
 .pr-adultbox .pr-l{height:8mm}
+
+/* v58：情境卡（一張 A4 兩個情境） */
+.pr-cases{gap:4mm}
+.pr-case{flex:1;background:#FFFDF8;border:2.5px solid #E3D3B8;border-radius:8mm;padding:4mm 6mm;display:flex;flex-direction:column;gap:2.5mm}
+.pr-case-t{display:flex;align-items:center;gap:3mm}
+.pr-case-t img,.pr-case-t svg{width:17mm;height:17mm;object-fit:contain}
+.pr-case-t h2{font-size:19pt}
+.pr-case-say{background:#EAF5FC;border:2px solid #8DBFDD;border-radius:6mm;padding:3mm 5mm}
+.pr-case-say>b{font-size:12.5pt;display:block;margin-bottom:1mm}
+.pr-case-say p{display:flex;align-items:center;gap:3mm;font-size:14.5pt;margin:1.3mm 0}
+.pr-case-say p i{flex:none;width:8mm;height:8mm;border-radius:50%;background:#8DBFDD;color:#fff;font-style:normal;font-size:11pt;display:flex;align-items:center;justify-content:center}
+.pr-case-cols{display:grid;grid-template-columns:1fr 1fr;gap:5mm;font-size:11pt;line-height:1.5}
+.pr-case-cols b{font-size:12pt}
+.pr-case-cols ul{margin:1mm 0 0;padding-left:5mm}
+.pr-case-no{font-size:10.5pt;background:#FFEDE8;border-radius:4mm;padding:2mm 4mm;line-height:1.5;margin-top:auto}

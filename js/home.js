@@ -289,7 +289,7 @@ function renderMD(){const k=S.mdK||'angry',e=EMO[k],xp=store.xp[k]||0,l=lvOf(xp)
     <h4>💬 牠想告訴你什麼？</h4><p>${why}</p>
     <h4>🛠️ 怎麼跟牠相處？</h4><p>${how}</p>
     ${lvOf(store.xp[k]||0)>=CORNER_LV?`<div class="skillbox"><b>⭐ 牠的拿手方法：${CORNERS[k].ico} ${CORNERS[k].name}</b><span>一起練習「${ACT_NAME[CORNERS[k].act]}」</span><button class="btn small" data-mdact="${CORNERS[k].act}">一起練習</button></div>`:''}
-    <div class="chips" style="justify-content:flex-start">${e.acts.map(a=>`<button class="chip" data-mdact="${a}">練習${ACT_NAME[a]}</button>`).join('')}</div>
+    <div class="chips" style="justify-content:flex-start">${e.acts.concat((typeof PRAC_EXTRA!=='undefined'&&PRAC_EXTRA[k])||[]).filter(a=>a!=='turtle'||age!=='old').map(a=>`<button class="chip" data-mdact="${a}">練習${ACT_NAME[a]}</button>`).join('')}</div>
     <h4>📊 你和${e.name}</h4><p>${L.length?`一起冷靜過 <b>${L.length}</b> 次。`+(topC?`最常因為「${topC[0]}」出現。`:''):'還沒有一起冷靜的紀錄。下次牠來的時候，去冷靜站找牠吧！'}</p>
     <h4>🧰 我的工具箱</h4>${toolboxHtml(k)}<p class="hint" style="text-align:left;margin:10px 0 6px">我自己的秘訣：寫下（或請大人幫你寫）${e.name}來的時候，對你最有用的方法</p>
     <textarea id="mdTip" style="width:100%;min-height:70px;border:2px solid var(--line);border-radius:12px;padding:8px 10px;font:inherit" placeholder="例如：抱著小熊數到 10">${store.tips[k]||''}</textarea>
