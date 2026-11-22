@@ -19,7 +19,7 @@ const LIB=[
 function ageTime(){return S.age==='young'?'建議時間：3 歲約 3–5 分鐘、4 歲約 5–8 分鐘、5–6 歲約 8–15 分鐘。一次只玩一種，收起其他玩具。':'建議時間：每次 10–15 分鐘。一次只玩一種，收起其他玩具。'}
 function renderGames(){
   $('#gRoutineSub').textContent=store.gameDay.routine===today()?'今天完成了！再玩一次也可以':'熱身 → 專注 → 情緒 → 收尾，一步一步帶你玩';
-  $('#gCalmSub').textContent=store.pracDay===today()?'今天練過了，再練也可以':'心情好時先練 +5 ⭐';
+  $('#gCalmSub').textContent=store.pracDay===today()?'今天練過了，再練也可以':'心情好時先練 +10 ⭐';
   $('#gTime').textContent=ageTime();
   $('#gWatchSub').textContent=`安靜下來，小動物就會出現，拍照收進圖鑑（${critFound()} / ${Object.keys(CRIT).length}）`;
   S.libOpen=S.libOpen||null;
@@ -33,7 +33,7 @@ function renderGames(){
 }
 $('#gRoutine').onclick=()=>{S.rStage=0;go(18)};
 $('#gMem').onclick=()=>go(19);$('#gTR').onclick=()=>go(20);$('#gColor').onclick=()=>go(21);
-$('#gCalm').onclick=()=>startPractice('scared','breathe');
+$('#gCalm').onclick=()=>startPractice(null,'breathe');
 $('#gGuess').onclick=()=>{S.gs=null;go(30)};
 $('#gWatch').onclick=()=>{S.wMode='menu';go(23)};
 $('#toCritDex').onclick=()=>{S.wMode='album';go(23)};

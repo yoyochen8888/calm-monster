@@ -71,7 +71,7 @@ function renderReview(){const R=S.rv,l=R&&store.log.find(x=>x.t===R.t);if(!l){go
       store.pnotes=(store.pnotes?store.pnotes+'\n':'')+`${fmtT(Date.now()).split(' ')[0]} ${e.name}：`+[ag.size?`做得好：${[...ag].join('、')}`:'',nx?`下次試試：${nx}`:''].filter(Boolean).join('；');
       save();toast('存好了，在「給大人」的心得筆記裡');$('#agSave').disabled=true;$('#agSave').textContent='✓ 存好了'};
     nav.innerHTML=`<button class="btn" id="rvHome">回家園</button>`;$('#rvHome').onclick=()=>go(10);
-    if(first){gain('一起回顧，願意回頭看',5);chime()}
+    if(first){gain('一起回顧，願意回頭看',10);chime()}
     S.rv=null;return;
   }
   const n=$('#rvNext');if(n)n.onclick=()=>{R.i++;renderReview();window.scrollTo({top:0,behavior:'smooth'})};

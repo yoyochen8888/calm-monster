@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="css/co2.css">
 <link rel="stylesheet" href="css/learn2.css">
 <link rel="stylesheet" href="css/season.css">
+<link rel="stylesheet" href="css/print.css">
 <link rel="stylesheet" href="css/phone.css">
 </head>
 <body>
@@ -425,6 +426,7 @@
     <h2>給大人：怎麼陪</h2>
     <button class="btn ghost small" id="closeParent">關閉</button>
   </div>
+  <p class="pacifier-note">🧸 這個工具是<b>陪練習用的，不是安撫奶嘴</b>。情緒很大時先陪孩子，不用急著開 App；平常一起練、事後一起回顧，才是它最有用的時候。</p>
   <p style="color:var(--soft)">先連結，再引導。情緒大的時候，大腦聽不進道理；先讓身體安靜，再談事情。</p>
   <div class="tabs" id="pTabs"></div>
   <div id="pBody"></div>
@@ -440,13 +442,17 @@
     <button class="chip" data-min="5">5 分鐘</button>
     <button class="chip" id="tStop">停止</button>
   </div>
+  <h3>🖨️ 列印：冷靜角海報、事後回顧單</h3>
+  <p>印出來貼在冷靜角。情緒來的時候，大人看牆上的海報就好，不用開 App；冷靜下來以後，用回顧單一起聊。</p>
+  <div id="printPick"></div>
   <h3>星星和等級怎麼算</h3>
   <ul>
-    <li>星星獎勵的是<b>「面對和嘗試」</b>，不是「沒有情緒」。怪獸沒變小、請大人幫忙，也都拿得到星星，孩子不會因為「失敗」被扣分。</li>
-    <li>每次：勇敢面對 +10、怪獸每變小 1 級 +5、請大人陪伴 +10、說出感覺 +5、想好下次的方法 +5。</li>
-    <li>連續 3 次怪獸都沒變小、但孩子還是來面對：額外 +15「堅持不放棄」。</li>
+    <li>星星獎勵的是<b>「面對和嘗試」</b>，不是「冷靜下來」或「沒有情緒」。怪獸有沒有變小，拿到的星星都一樣，孩子不會因為「沒變小」吃虧，也不用把一開始的大小選高。</li>
+    <li><b>星星最多的是平常</b>：心情好時的平時練習 +10（從怪獸頁練，還會算進那隻怪獸的經驗值）、冷靜後一起回顧 +10。平常練熟了，情緒來的時候才用得出來。</li>
+    <li>情緒來的那一次：勇敢面對 +10、請大人陪伴 +10、說出感覺 +5、想好下次的方法 +5。</li>
+    <li>連續 3 次怪獸都沒變小，結束頁會溫和提醒孩子找大人說說，給大人的提醒也會出現在下面。</li>
     <li>每天前 5 次可以拿星星，避免為了星星一直重複玩。</li>
-    <li>平時：每天心情打卡 +3、平時練習 +5、照顧家園 +2；孩子平時情緒處理得好，大人可在家園按「大人給星星」，每次 +10（每天最多 3 次，需大人按住確認）。</li>
+    <li>其他平時：每天心情打卡 +3、照顧家園 +2；孩子平時情緒處理得好，大人可在家園按「大人給星星」，每次 +10（每天最多 3 次，需大人按住確認）。</li>
     <li>星星只能換主角、怪獸和家園的裝扮。如果想搭配真實獎勵，建議換「陪伴時間」（一起看書、玩遊戲），不要換零食或 3C 時間。</li>
     <li>星星和等級只存在這台裝置的瀏覽器裡，清除瀏覽資料會歸零。</li>
   </ul>
@@ -560,6 +566,7 @@
 <script src="js/learn2.js"></script>
 <script src="js/yard.js"></script>
 <script src="js/season.js"></script>
+<script src="js/print.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/main.js"></script>
 </body>
