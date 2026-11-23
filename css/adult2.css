@@ -28,3 +28,6 @@
 .swap small{color:var(--soft);font-size:.8rem}
 .swap s{color:var(--soft);text-decoration-color:rgba(117,99,83,.5)}
 @media (max-width:520px){.adultcue{flex-wrap:wrap}.adultcue .cuebtns{width:100%;justify-content:flex-end}.adultcue.amin{flex-wrap:nowrap}}
+/* v60：容易搞混、什麼時候找專業 */
+.tellbox{background:var(--paper,#FFFDF8);border:2px dashed var(--line-2,#E3D3B8);border-radius:14px;padding:10px 14px;line-height:1.7}
+.probox{background:var(--sky-l,#EAF5FC);border-left:4px solid var(--sky-d,#8DBFDD);border-radius:12px;padding:10px 14px;line-height:1.7}
