@@ -19,9 +19,19 @@
 #tIdeas .chips{justify-content:center;margin-top:8px}
 @media (prefers-reduced-motion:reduce){.turtlepic .thead,.turtlepic .tlegs,.tstop{transition:none}.turtlepic.in .cico{animation:none}}
 
-.sosadult{background:var(--sky-l,#EAF5FC);border-left:4px solid var(--sky-d,#8DBFDD);border-radius:14px;padding:10px 14px;margin:0 0 12px;text-align:left;line-height:1.6;font-size:.92rem}
-.sosadult ol{margin:4px 0 4px;padding-left:1.3em}
-.sosadult small{color:var(--soft)}
+.sosadult{background:var(--sky-l,#EAF5FC);border-left:4px solid var(--sky-d,#8DBFDD);border-radius:12px;padding:7px 12px;margin:0 0 10px;text-align:left;line-height:1.5;font-size:.86rem;display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
+.sosadult span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.sosadult i{font-style:normal;width:17px;height:17px;border-radius:50%;background:var(--sky-d,#8DBFDD);color:#fff;font-size:.7rem;display:inline-flex;align-items:center;justify-content:center}
+.sosadult small{flex-basis:100%;color:var(--soft);font-size:.76rem}
 .trystep{background:var(--butter-l,#FFF6DA);border-radius:14px;padding:10px 14px;margin:10px 0;line-height:1.6;text-align:left}
 .trystep small{color:var(--soft)}
 .lvpause{display:inline-block;font-style:normal;font-size:.72rem;color:var(--soft);background:var(--paper,#FFFDF8);border:1.5px dashed var(--line-2,#E3D3B8);border-radius:999px;padding:0 8px;margin:0 4px;vertical-align:1px}
+
+/* v59：小手機（iPhone SE 等）烏龜縮小、步驟一行放得下 */
+@media (max-width:420px){
+  .turtlepic .cico{width:148px;height:148px}
+  .tsteps{gap:4px}.tsteps i{font-size:.76rem;padding:2px 8px 2px 3px}.tsteps i b{width:17px;height:17px;font-size:.68rem}
+  .tstop{right:calc(50% - 100px);font-size:1.05rem;padding:4px 12px}
+}
+/* v59：矮螢幕（iPhone SE）呼吸球區塊矮一點，SOS 時「開始」比較容易看到 */
+@media (max-height:700px){.breath-box{height:236px}}

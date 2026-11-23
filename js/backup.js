@@ -12,7 +12,7 @@ if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
   /* 從背景切回來時，順便問一下有沒有新版 */
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)navigator.serviceWorker.getRegistration().then(r=>r&&r.update()).catch(()=>{})});
   setTimeout(()=>{try{if(sessionStorage.getItem('cmUpdated')){sessionStorage.removeItem('cmUpdated');toast('✨ 已經更新到最新版本（'+APP_VER+'）')}}catch(e){}},1500)}
-const APP_VER='v58';
+const APP_VER='v59';
 function isStandalone(){try{return navigator.standalone===true||matchMedia('(display-mode: standalone)').matches}catch(e){return false}}
 function renderApp(){const box=$('#appBox');if(!box)return;
   const ver=`<br><small style="color:#9b8a7a">目前版本：${APP_VER}</small>`;
