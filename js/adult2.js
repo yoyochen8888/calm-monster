@@ -85,8 +85,10 @@ function renderParent(){
     ${EMO_FAM[pEmo]==='hot'?'<p class="lvnote">打人、丟東西時，安全界線不用等孩子平靜：先擋住、移開危險物，句子要短。</p>':''}
     <details class="adultbox"><summary>依年齡的說法</summary>${order.map(a=>`<div class="say"><b>${ageName[a]}</b>　${p.say[a]}</div>`).join('')}</details>
     <h3>盡量避免</h3><div class="avoid">${p.avoid}</div>
+    ${p.tell?`<h3>容易搞混</h3><p class="tellbox">${p.tell}</p>`:''}
     <details class="adultbox swapbox" ${pSwapOpen?'open':''}><summary>常見說法，換成這樣說</summary>
       <div class="swaps">${SAY_SWAP.map(([t,a,b])=>`<div class="swap"><small>${t}</small><s>${a}</s><b>→ ${b}</b></div>`).join('')}</div></details>
-    <h3>冷靜之後</h3><p>${p.after}</p>`;
+    <h3>冷靜之後</h3><p>${p.after}</p>
+    ${p.pro?`<h3>什麼時候找專業</h3><p class="probox">${p.pro}</p>`:''}`;
   const sb=$('#pBody .swapbox');if(sb)sb.ontoggle=()=>{pSwapOpen=sb.open};
 }
