@@ -55,7 +55,7 @@ function printPicked(){const p=(store.printActs||[]).filter(a=>PRINT_ACTS.includ
 
 function renderPrintPick(){const box=$('#printPick');if(!box)return;const sel=printPicked();
   box.innerHTML=`<p class="pr-tip">先跟孩子一起挑 <b>3 個</b>放在海報上的冷靜方法（已經先勾好對孩子有用的）：</p>
-    <div class="chips" style="justify-content:flex-start">${PRINT_ACTS.map(a=>`<button class="chip ${sel.includes(a)?'sel':''}" data-pa="${a}">${PRINT_EMOJI[a]} ${prName(a)}</button>`).join('')}</div>
+    <div class="chips" style="justify-content:flex-start">${PRINT_ACTS.filter(a=>a!=='turtle'||S.age!=='old').map(a=>`<button class="chip ${sel.includes(a)?'sel':''}" data-pa="${a}">${PRINT_EMOJI[a]} ${prName(a)}</button>`).join('')}</div>
     <div class="row" style="justify-content:flex-start;margin-top:10px">
       <button class="btn small" id="prPoster">🖨️ 列印冷靜角海報</button>
       <button class="btn small" id="prSheet">🖨️ 列印事後回顧單</button></div>

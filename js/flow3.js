@@ -35,7 +35,7 @@ function actTurtle(){
   actSpeech='烏龜法。先說出你的感覺，心裡想：停！然後像烏龜一樣縮進殼裡，抱住自己，深呼吸三次。冷靜了，再慢慢探出頭，想一個辦法。';
   $('#actHint').textContent='說出感覺 → 想「停！」→ 縮進殼裡深呼吸 3 次 → 探出頭想辦法';
   $('#actArea').innerHTML=`<div class="actpic turtlepic" id="pic">${clayIcon('tuck',180)}<b class="tstop" id="tStop">停！</b></div>
-    <div class="tsteps">${['說出感覺','想「停！」','縮進殼裡','探出頭'].map((t,i)=>`<i data-ts="${i}"><b>${i+1}</b>${t}</i>`).join('')}</div>
+    <div class="tsteps">${['說感覺','想停','縮進殼','探出頭'].map((t,i)=>`<i data-ts="${i}"><b>${i+1}</b>${t}</i>`).join('')}</div>
     <div class="breath-word" id="bw">① 先說出來：「${feel}」</div><div class="count" id="bc"></div>
     <div class="row"><button class="btn" id="tNext">說好了</button></div><div id="tIdeas"></div>`;
   const B=$('#tNext'),pic=$('#pic');
@@ -58,12 +58,12 @@ function actTurtle(){
 }
 
 /* ---------- 🆘 馬上冷靜：上方先給大人三句話 ---------- */
-const SOS_ADULT=['先吸一口氣，蹲低、放慢聲音','「你好＿＿，我在這裡。」','一起慢慢吸、慢慢吐，等平靜了再說'];
+const SOS_ADULT=['吸一口氣，蹲低','「你好＿＿，我在這裡。」','一起慢慢呼吸'];
 const _renderActV58=renderAct;
 renderAct=function(){_renderActV58.apply(this,arguments);
   let box=$('#sosAdult');
   if(!box){box=document.createElement('div');box.id='sosAdult';const t=$('#actTabs');if(t)t.before(box)}
-  box.innerHTML=S.sos?`<div class="sosadult"><b>👀 給大人：先做這三件事</b><ol>${SOS_ADULT.map(x=>`<li>${x}</li>`).join('')}</ol><small>有人可能受傷時，先把大家分開、確保安全。</small></div>`:''};
+  box.innerHTML=S.sos?`<div class="sosadult"><b>👀 大人：</b>${SOS_ADULT.map((x,i)=>`<span><i>${i+1}</i>${x}</span>`).join('')}<small>有人可能受傷時，先把大家分開。</small></div>`:''};
 
 /* ---------- 做不到怪獸：冷靜完，回去試一小步 ---------- */
 const _finishV58=$('#finish').onclick;
