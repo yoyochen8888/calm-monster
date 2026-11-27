@@ -8,30 +8,30 @@
 .turtlepic.in .tlegs{transform:translateY(-6%) scale(.7);opacity:0}
 .turtlepic.in .cico{animation:tbreath 8s ease-in-out infinite}
 @keyframes tbreath{0%,100%{transform:scale(1)}45%{transform:scale(1.04)}}
-.tstop{position:absolute;top:4px;right:calc(50% - 120px);background:var(--coral,#F8B9AE);color:#fff;border-radius:999px;padding:6px 14px;font-size:1.2rem;
-  box-shadow:0 3px 0 var(--coral-d,#E29486);opacity:0;transform:scale(.6);transition:opacity .3s,transform .3s var(--boing,ease)}
+.tstop{position:absolute;top:4px;right:calc(50% - 120px);background:var(--coral,var(--t-coral));color:var(--t-paper);border-radius:var(--t-r-pill);padding:6px 14px;font-size:var(--t-fs-l);
+  box-shadow:0 3px 0 var(--coral-d,var(--t-coral-d));opacity:0;transform:scale(.6);transition:opacity .3s,transform .3s var(--boing,ease)}
 .turtlepic.stop .tstop{opacity:1;transform:scale(1)}
 .tsteps{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:6px 0 2px}
-.tsteps i{font-style:normal;font-size:.82rem;color:var(--soft);background:var(--paper,#FFFDF8);border:2px solid var(--line);border-radius:999px;padding:3px 10px 3px 4px;display:flex;align-items:center;gap:5px}
-.tsteps i b{width:20px;height:20px;border-radius:50%;background:var(--line);color:#fff;font-size:.75rem;display:flex;align-items:center;justify-content:center}
-.tsteps i.on{border-color:var(--mint-d,#7DBFA3);color:var(--ink)}.tsteps i.on b{background:var(--mint-d,#7DBFA3)}
-.tsteps i.done{opacity:.6}.tsteps i.done b{background:var(--mint,#A8DCC5)}
+.tsteps i{font-style:normal;font-size:var(--t-fs-xs);color:var(--soft);background:var(--paper,var(--t-paper));border:2px solid var(--line);border-radius:var(--t-r-pill);padding:3px 10px 3px 4px;display:flex;align-items:center;gap:5px}
+.tsteps i b{width:20px;height:20px;border-radius:var(--t-r-round);background:var(--line);color:var(--t-paper);font-size:var(--t-fs-xs);display:flex;align-items:center;justify-content:center}
+.tsteps i.on{border-color:var(--mint-d,var(--t-mint-d));color:var(--ink)}.tsteps i.on b{background:var(--mint-d,var(--t-mint-d))}
+.tsteps i.done{opacity:.6}.tsteps i.done b{background:var(--mint,var(--t-mint))}
 #tIdeas .chips{justify-content:center;margin-top:8px}
 @media (prefers-reduced-motion:reduce){.turtlepic .thead,.turtlepic .tlegs,.tstop{transition:none}.turtlepic.in .cico{animation:none}}
 
-.sosadult{background:var(--sky-l,#EAF5FC);border-left:4px solid var(--sky-d,#8DBFDD);border-radius:12px;padding:7px 12px;margin:0 0 10px;text-align:left;line-height:1.5;font-size:.86rem;display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
+.sosadult{background:var(--sky-l,var(--t-sky-l));border-left:4px solid var(--sky-d,var(--t-sky-d));border-radius:var(--t-r-s);padding:7px 12px;margin:0 0 10px;text-align:left;line-height:1.5;font-size:var(--t-fs-s);display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px}
 .sosadult span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.sosadult i{font-style:normal;width:17px;height:17px;border-radius:50%;background:var(--sky-d,#8DBFDD);color:#fff;font-size:.7rem;display:inline-flex;align-items:center;justify-content:center}
-.sosadult small{flex-basis:100%;color:var(--soft);font-size:.76rem}
-.trystep{background:var(--butter-l,#FFF6DA);border-radius:14px;padding:10px 14px;margin:10px 0;line-height:1.6;text-align:left}
+.sosadult i{font-style:normal;width:17px;height:17px;border-radius:var(--t-r-round);background:var(--sky-d,var(--t-sky-d));color:var(--t-paper);font-size:.7rem;display:inline-flex;align-items:center;justify-content:center}
+.sosadult small{flex-basis:100%;color:var(--soft);font-size:var(--t-fs-xs)}
+.trystep{background:var(--butter-l,var(--t-butter-l));border-radius:var(--t-r-s);padding:10px 14px;margin:10px 0;line-height:1.6;text-align:left}
 .trystep small{color:var(--soft)}
-.lvpause{display:inline-block;font-style:normal;font-size:.72rem;color:var(--soft);background:var(--paper,#FFFDF8);border:1.5px dashed var(--line-2,#E3D3B8);border-radius:999px;padding:0 8px;margin:0 4px;vertical-align:1px}
+.lvpause{display:inline-block;font-style:normal;font-size:.72rem;color:var(--soft);background:var(--paper,var(--t-paper));border:1.5px dashed var(--line-2,var(--t-line-2));border-radius:var(--t-r-pill);padding:0 8px;margin:0 4px;vertical-align:1px}
 
 /* v59：小手機（iPhone SE 等）烏龜縮小、步驟一行放得下 */
 @media (max-width:420px){
   .turtlepic .cico{width:148px;height:148px}
-  .tsteps{gap:4px}.tsteps i{font-size:.76rem;padding:2px 8px 2px 3px}.tsteps i b{width:17px;height:17px;font-size:.68rem}
-  .tstop{right:calc(50% - 100px);font-size:1.05rem;padding:4px 12px}
+  .tsteps{gap:4px}.tsteps i{font-size:var(--t-fs-xs);padding:2px 8px 2px 3px}.tsteps i b{width:17px;height:17px;font-size:.68rem}
+  .tstop{right:calc(50% - 100px);font-size:var(--t-fs-m);padding:4px 12px}
 }
 /* v59：矮螢幕（iPhone SE）呼吸球區塊矮一點，SOS 時「開始」比較容易看到 */
 @media (max-height:700px){.breath-box{height:236px}}
