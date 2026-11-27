@@ -146,8 +146,8 @@ button:focus:not(:focus-visible){outline:none}
 .pick .cname{display:inline-block;width:auto;margin-top:6px}
 .lvtag{color:var(--soft)}
 /* 經驗值條：一條凹槽，裡面裝著鵝黃色的黏土 */
-.xpbar{height:14px;border-radius:999px;background:#F2E8D6;box-shadow:inset 0 2px 0 rgba(150,115,75,.14);margin:8px 10px 2px}
-.xpbar i{background:var(--butter-d);border-radius:999px;box-shadow:inset 0 3px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.07)}
+.xpbar{height:14px;border-radius:var(--t-r-pill);background:#F2E8D6;box-shadow:inset 0 2px 0 rgba(150,115,75,.14);margin:8px 10px 2px}
+.xpbar i{background:var(--butter-d);border-radius:var(--t-r-pill);box-shadow:inset 0 3px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.07)}
 
 /* ---------- 家園三個入口、心裡的天氣 ---------- */
 .hm,.wx{border:0;border-radius:var(--t-r-l)}
@@ -218,7 +218,7 @@ button:focus:not(:focus-visible){outline:none}
    ========================================================= */
 .monmsg{
   position:relative;
-  background:var(--paper);border:0;border-radius:26px;
+  background:var(--paper);border:0;border-radius:var(--t-r-l);
   padding:24px 20px 16px;margin:20px auto 18px;max-width:440px;
   box-shadow:inset 0 2px 0 var(--rim),0 5px 0 var(--line-2),0 16px 20px -10px var(--drop);
 }
@@ -226,15 +226,15 @@ button:focus:not(:focus-visible){outline:none}
   position:absolute;top:-14px;left:18px;
   display:inline-flex;align-items:center;gap:6px;
   background:#FFF3DC;
-  background:color-mix(in srgb,var(--mc,#E3C266) 26%,#FFFDF8);
-  color:var(--ink);font-size:.82rem;font-weight:700;
-  padding:5px 14px 5px 10px;border-radius:999px;
+  background:color-mix(in srgb,var(--mc,var(--t-butter-d)) 26%,var(--t-paper));
+  color:var(--ink);font-size:var(--t-fs-xs);font-weight:700;
+  padding:5px 14px 5px 10px;border-radius:var(--t-r-pill);
   transform:rotate(-2.5deg);
-  box-shadow:inset 0 2px 0 var(--rim),0 3px 0 color-mix(in srgb,var(--mc,#E3C266) 55%,#E3D3B8);
+  box-shadow:inset 0 2px 0 var(--rim),0 3px 0 color-mix(in srgb,var(--mc,var(--t-butter-d)) 55%,var(--t-line-2));
 }
-.monmsg small::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--mc,#E3C266);box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)}
+.monmsg small::before{content:'';width:10px;height:10px;border-radius:var(--t-r-round);background:var(--mc,var(--t-butter-d));box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)}
 .monmsg b{font-size:1.3rem;line-height:1.45;margin:2px 0 4px;color:var(--ink)}
-.monmsg span{color:var(--soft);font-size:.92rem}
+.monmsg span{color:var(--soft);font-size:var(--t-fs-s)}
 .monmsg::after{
   content:'';position:absolute;left:50%;bottom:-9px;width:22px;height:22px;
   background:var(--paper);border-radius:0 0 7px 0;
@@ -281,10 +281,10 @@ button:focus:not(:focus-visible){outline:none}
   transition:transform .42s var(--soften);
 }
 .drawer.on{box-shadow:inset 0 2px 0 var(--rim),0 -12px 40px rgba(92,74,61,.20)}
-.drawer::before{content:'';display:block;width:48px;height:6px;border-radius:999px;background:var(--line-2);margin:0 auto 12px}
+.drawer::before{content:'';display:block;width:48px;height:6px;border-radius:var(--t-r-pill);background:var(--line-2);margin:0 auto 12px}
 .drawer h2{font-size:1.35rem}
 .drawer h3,.adult h4,.intro h4{color:var(--accent)}
-.drawer h3{font-size:1.02rem;margin:22px 0 6px}
+.drawer h3{font-size:var(--t-fs-m);margin:22px 0 6px}
 .drawer p,.drawer li{max-width:40em}
 .say{background:var(--mint-l);border-radius:18px;padding:12px 14px}
 .avoid{background:var(--coral-l);border-radius:var(--t-r-m);padding:12px 14px}
@@ -313,7 +313,7 @@ button:focus:not(:focus-visible){outline:none}
 /* ---------- 其他用到純白的地方，全部換成暖白 ---------- */
 .jbitem,.logitem,.review,.lines div,.mcard.up,.realchk,.namein,.cpn input,.logitem textarea,.moodcard{background-color:var(--paper)}
 .moodcard{background-color:var(--butter-l);border-radius:24px;padding:14px}
-.jbitem,.logitem,.review{border:0;box-shadow:inset 0 2px 0 var(--rim),0 4px 0 var(--line-2);border-radius:22px}
+.jbitem,.logitem,.review{border:0;box-shadow:inset 0 2px 0 var(--rim),0 4px 0 var(--line-2);border-radius:var(--t-r-m)}
 .jbitem{border-left:8px solid var(--jc);min-height:56px}
 .namein,.cpn input,.logitem textarea,#pNotes,#logText{border:3px solid var(--line)!important;border-radius:var(--t-r-m) !important;color:var(--ink);background:var(--paper)}
 .namein:focus,.cpn input:focus,.logitem textarea:focus,#pNotes:focus{outline:none;border-color:var(--mint-d)!important}
@@ -370,7 +370,7 @@ body.focus #dots{margin-top:4px}
   .weather{gap:10px}
   .wx{padding:18px 8px}
   .monmsg{padding:22px 14px 14px}
-  .monmsg b{font-size:1.18rem}
+  .monmsg b{font-size:var(--t-fs-l)}
   .tabbar{left:8px;right:8px}
   .sos{right:12px}
 }
