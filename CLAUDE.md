@@ -48,8 +48,10 @@
 - `css/tokens.css` 是全站設計基準（顏色、怪獸色、圓角 4 階、字級 6 階、間距、黏土光影、動態曲線），最先載入
 - **新的樣式一律用 `var(--t-…)`／`var(--m-…)`，不要新增寫死的色碼、圓角、字級**；改舊樣式時順手換成變數
 - 預覽：`docs/style-sample.html`（線上 /docs/style-sample.html）
-- 角色圖：照 `docs/角色規格.md`；新圖用 `tools/tone.py` 調到同一個色調
-- 一版一區把舊樣式換成 tokens（冷靜流程 → 大人區 → 小遊戲 → 家園），畫面要一樣或更整齊，功能不變
+- 角色圖：照 `docs/角色規格.md`；新圖用 `tools/cutout.py` 去背裁切、`tools/tone.py` 調到同一個色調
+- 四區專屬樣式已換成 tokens（v69 冷靜流程、v70 大人區、v71 小遊戲、v72 家園），用 `python3 tools/tokenize.py 區域`（保守：顏色完全相同才換、圓角差 4px／字級差 0.06rem 內才收斂、孩子看的大字不縮）
+- 還沒換：全站共用元件（`.btn`、`.chip`、`.pick`、`.card`、導覽列），改它會牽動整站，要單獨一版並做全站截圖比對
+- 換完要用 Playwright 前後截圖逐像素比對（記得 `S.forceNight=false`、先設好 `store.hero`）
 - 用 `/style-check` 檢查
 
 ## 測試
