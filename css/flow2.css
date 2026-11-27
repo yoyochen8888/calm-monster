@@ -8,10 +8,10 @@
 .firepic.blow .flame{transform:scale(calc(var(--f) * .92),calc(var(--f) * .8))}
 .firepic.out .flame{transform:scale(.18);opacity:.55;transition:transform 2s,opacity 2s}
 
-.snailpath{position:relative;height:130px;margin:6px 6px 4px;border-radius:24px;background:linear-gradient(#EAF5FC 0 55%,#DDF0D3 55%)}
+.snailpath{position:relative;height:130px;margin:6px 6px 4px;border-radius:var(--t-r-l);background:linear-gradient(var(--t-sky-l) 0 55%,#DDF0D3 55%)}
 .snailgo{position:absolute;left:0;bottom:22px;transition:left 2.4s linear}
 .snailsteps{position:absolute;left:14px;right:14px;bottom:10px;display:flex;justify-content:space-between}
-.snailsteps i{width:12px;height:8px;border-radius:50%;background:#C8DDB8}
+.snailsteps i{width:12px;height:8px;border-radius:var(--t-r-round);background:#C8DDB8}
 .snailsteps i.on{background:#9E7FCB}
 #bStep:disabled{opacity:.55}
 
@@ -20,11 +20,11 @@
 .unsurepick{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 12px}
 .unsurepick .pick{padding:18px 10px}
 .unsurepick .uico{font-style:normal;font-size:2.4rem;display:block;margin-bottom:6px}
-.unsurepick span{display:block;color:var(--soft);font-size:.9rem;margin-top:4px}
+.unsurepick span{display:block;color:var(--soft);font-size:var(--t-fs-s);margin-top:4px}
 .unsureadult{text-align:left;margin:6px 0 14px}
 .unsureadult .say{margin:8px 0}
 
-.thinkq{display:flex;flex-direction:column;gap:6px;background:var(--lilac-l);border-radius:20px;padding:12px 16px;margin-top:14px;text-align:left}
+.thinkq{display:flex;flex-direction:column;gap:6px;background:var(--lilac-l);border-radius:var(--t-r-m);padding:12px 16px;margin-top:14px;text-align:left}
 .thinkq small{color:var(--soft)}
 .thinkq b{font-size:1.08rem;line-height:1.6}
 .thinkbtns{display:flex;gap:8px;flex-wrap:wrap}

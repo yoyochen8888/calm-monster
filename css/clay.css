@@ -150,7 +150,7 @@ button:focus:not(:focus-visible){outline:none}
 .xpbar i{background:var(--butter-d);border-radius:999px;box-shadow:inset 0 3px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.07)}
 
 /* ---------- 家園三個入口、心裡的天氣 ---------- */
-.hm,.wx{border:0;border-radius:30px}
+.hm,.wx{border:0;border-radius:var(--t-r-l)}
 .hm-calm{--face:var(--coral-l);--edge:var(--coral)}
 .hm-joy{--face:var(--butter-l);--edge:var(--butter)}
 .hm-today{--face:var(--mint-l);--edge:var(--mint)}
@@ -245,7 +245,7 @@ button:focus:not(:focus-visible){outline:none}
 .monmsg.up{margin-top:26px}
 .monmsg.up::after{bottom:auto;top:-9px;border-radius:7px 0 0 0;box-shadow:none}
 .monmsg.up small{left:auto;right:18px;transform:rotate(2.5deg)}
-.bubble{background:var(--paper);border:0;border-radius:22px;box-shadow:inset 0 2px 0 var(--rim),0 4px 0 var(--line-2)}
+.bubble{background:var(--paper);border:0;border-radius:var(--t-r-m);box-shadow:inset 0 2px 0 var(--rim),0 4px 0 var(--line-2)}
 
 /* =========================================================
    底部導覽列：浮在畫面上的一塊圓角底板，現在所在的那格是按下去的
@@ -464,7 +464,7 @@ body.focus .wrap{padding-bottom:30px}
 .clue span{display:block;font-size:.98rem}
 .cluemore{margin:0 0 10px}.cluemore summary{cursor:pointer;color:var(--soft);font-size:.92rem;padding:6px 2px}
 .vocab{margin:0 0 6px;font-size:.95rem}
-.tbnote{display:block;flex-basis:100%;text-align:center;color:var(--soft);font-size:.82rem;margin-top:2px}
+.tbnote{display:block;flex-basis:100%;text-align:center;color:var(--soft);font-size:var(--t-fs-xs);margin-top:2px}
 .chip.tool{background:#EAF6F0;border-color:#A8DCC5}
 .gsask{text-align:center;font-size:1.15rem;margin:10px 0 8px}
 .gsopts{margin-top:12px}
