@@ -14,18 +14,18 @@
    - 使用者已同意由 Claude 直接合併，合併後把成果給使用者看。
 6. 一版只做一件事（使用者偏好一版一版做）。
 
-## 載入順序（v60）
-程式：data → family → art → icons → core → calm-flow → home → records → games → corners → corners2 → parent → ambient → intro → wish → review → joy → clues → adult2 → emo4 → flow2 → co2 → flow3 → games2 → icons2 → learn2 → yard → season → print → backup → main
+## 載入順序（v61）
+程式：data → family → art → icons → core → calm-flow → home → records → games → corners → corners2 → parent → ambient → intro → wish → review → joy → clues → adult2 → emo4 → emo8 → flow2 → co2 → flow3 → games2 → icons2 → learn2 → yard → season → print → backup → main
 樣式：style → clay → corners2 → games2 → adult2 → flow2 → co2 → flow3 → learn2 → season → print → phone（phone 永遠最後）
 
 - 後面的檔案用「覆蓋或包住前面的函式」的方式加功能（例如 `const _old=renderX; renderX=function(){...}`）。新功能優先開新檔，不大改舊檔，方便單獨拿掉。
 - learn2 用到 icons2 的 `GAME_ICO`，要放在 icons2 後面。
-- emo4 要在 adult2 後面。
+- emo4 要在 adult2 後面，emo8 在 emo4 後面。
 
 ## 檔案地圖（重點）
 - `js/data.js` 資料與存檔（localStorage `calmMonster`）；`js/family.js` 怪獸家族、方法、給大人卡片
 - `js/calm-flow.js` 冷靜流程；`js/flow2.js`、`js/flow3.js` 新方法（推牆、噴火龍、蝸牛、烏龜法）
-- `js/adult2.js` 大人話術 `LVSAY`、`renderParent()`；`js/emo4.js` 捨不得／委屈／嫉妒／擔心的特有應對（`tell`、`pro`）
+- `js/adult2.js` 大人話術 `LVSAY`、`renderParent()`；`js/emo4.js` 捨不得／委屈／嫉妒／擔心、`js/emo8.js` 害羞／孤單／做不到／壓力的特有應對（`tell`、`pro`）
 - `js/clues.js` 三條線索、詞彙、工具箱、猜猜是誰、三小步
 - `js/co2.js` 陪伴模式；`js/learn2.js` 學習區、求助；`js/print.js` 列印測試包
 - `js/yard.js` 2.5D 院子與主角；`js/season.js` 四季；`js/corners.js`、`js/corners2.js` 小角落；`pond/` 全螢幕軟陶魚池
