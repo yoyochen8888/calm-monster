@@ -38,7 +38,7 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .dots{display:flex;gap:6px;justify-content:center;margin:0 0 14px}
 .dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
 .dots i.on{background:var(--accent);width:24px;border-radius:6px}
-.speak{background:none;border:2px solid var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--soft)}
+.speak{background:none;border:2px solid var(--line);border-radius:var(--t-r-pill);padding:6px 12px;font:inherit;font-size:var(--t-fs-s);cursor:pointer;color:var(--soft)}
 /* thermometer */
 .thermo{display:flex;gap:8px;justify-content:center;align-items:flex-end;margin:10px 0;flex-wrap:wrap}
 .lv{flex:1;max-width:110px;border:3px solid var(--line);background:#fff;border-radius:18px;padding:10px 4px;cursor:pointer;text-align:center;font:inherit;color:inherit}
@@ -119,7 +119,7 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .drawer p,.drawer li{line-height:1.7;margin:4px 0}
 .drawer ul{padding-left:20px;margin:4px 0}
 .say{background:var(--accent-2);border-radius:12px;padding:10px 12px;margin:6px 0}
-.avoid{background:#FDEDEB;border-radius:12px;padding:10px 12px}
+.avoid{background:#FDEDEB;border-radius:var(--t-r-s);padding:10px 12px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
 .timer{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#FFF8EE;border-radius:16px;padding:12px;margin-top:8px}
 .timer .t{font-size:1.8rem;font-family:"Huninn";min-width:90px}
@@ -255,7 +255,7 @@ h1 small{display:block;font-size:.8rem;color:var(--soft);letter-spacing:0;font-f
 .moods button{font-size:1.9rem;background:#fff;border:3px solid var(--line);border-radius:18px;padding:6px 10px;cursor:pointer;font-family:inherit}
 .moods button span{display:block;font-size:.75rem;color:var(--soft)}
 .moods button.sel{border-color:var(--accent);background:var(--accent-2)}
-.namein{display:block;margin:0 auto;font:inherit;font-size:1.15rem;padding:10px 16px;border-radius:14px;border:2px solid var(--line);text-align:center;width:220px}
+.namein{display:block;margin:0 auto;font:inherit;font-size:var(--t-fs-l);padding:10px 16px;border-radius:var(--t-r-s);border:2px solid var(--line);text-align:center;width:220px}
 .hold{position:relative;overflow:hidden;background:#3B2F2A;color:#fff;border:0;border-radius:999px;padding:12px 18px;font:inherit;font-size:1rem;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}
 .hold i{position:absolute;left:0;top:0;bottom:0;width:0;background:#F5A524;opacity:.55}
 .hold span{position:relative}
@@ -384,8 +384,8 @@ body.quietmode header,body.quietmode .tabbar,body.quietmode #navrow,body.quietmo
 /* 怪獸分家族（v26） */
 .monmsg{background:#fff;border:3px solid var(--mc);border-radius:18px;padding:10px 14px;margin:6px auto 8px;max-width:420px;text-align:center}
 .monmsg small{display:block;font-size:.8rem;color:var(--soft)}.monmsg b{display:block;font-size:1.25rem;margin:2px 0}.monmsg span{font-size:.9rem;color:var(--soft)}
-.adultcue{display:flex;align-items:center;gap:10px;justify-content:space-between;background:#EEF4FF;border-radius:14px;padding:8px 12px;margin:0 0 12px;font-size:.9rem;text-align:left}
-.adultbox{background:#F7F3EC;border-radius:14px;padding:8px 12px;margin-top:14px;font-size:.9rem;line-height:1.6}
+.adultcue{display:flex;align-items:center;gap:10px;justify-content:space-between;background:#EEF4FF;border-radius:var(--t-r-s);padding:8px 12px;margin:0 0 12px;font-size:var(--t-fs-s);text-align:left}
+.adultbox{background:#F7F3EC;border-radius:var(--t-r-s);padding:8px 12px;margin-top:14px;font-size:var(--t-fs-s);line-height:1.6}
 .adultbox summary{cursor:pointer;font-weight:600}.adultbox p{margin:6px 0}
 .needs{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:6px 0 10px}
 .need{background:#fff;border:3px solid var(--line);border-radius:18px;padding:12px 6px;font:inherit;color:inherit;cursor:pointer}
@@ -430,7 +430,7 @@ body.focus .wrap{padding-bottom:30px}
 .homelinks .chip{font-size:.92rem;padding:7px 13px}
 
 /* 視覺語言統一（v29）：給大人的東西都長一樣（👀＋淡藍），孩子的東西用暖色 */
-.gdetail,.adultbox,.adultcue{background:#EEF3FB;border-left:4px solid #9DB4E3;border-radius:14px}
+.gdetail,.adultbox,.adultcue{background:#EEF3FB;border-left:4px solid #9DB4E3;border-radius:var(--t-r-s)}
 .gdetail>b:first-child::before{content:'👀 '}
 .cdot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;font-style:normal}
 
