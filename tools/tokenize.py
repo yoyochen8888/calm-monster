@@ -5,7 +5,7 @@ import re,glob,sys
 sys.path.insert(0,'/home/claude/tools')
 AREAS={'flow':['breath','weather','wx','unsure','tlight','turtle','tstop','tsteps','trystep','snail','push','sense','plan','think','tbnote','tlegs','actpic','levelup','sosadult','wing','lvpause','ghost','calmrow','flowstep','focus','size','sizekey','step-dots','kidq','flowbar','calmbtn','mdots','dragon','squeeze','bubble','lemon','tryStep','coGate'],
  'adult':['adultbox','adultcue','adultfive','iceq','icebox','icenote','icesvg','namein','avoid','tellbox','swaps','swapbox','swap','speak','safefirst','probox','lvtip','lvsay','lvrows','lvnote','lvfirst','lvbox','lvask','hthumb','hfing','helpsig','helpbox','handtx','parent','pbody','ptab'],
- 'games':['game','gico','mem','mcard','mflip','mface','tr','trk','trlegend','trtap','cb','bpop','guess','gs','quiz','clue','pick.hasgico','sticker','board'],
+ 'games':['mcard','mflip','mface','mback','mfront','memtable','memhero','memGrid','memMode','memMsg','memScore','trk2','trcmd','trFlag','trLegend','trRun','trTap','cbcmd','cbtag','cbCmd','cbPond','bpop','gsask','gsopts','clue','cluemore','gcard','gdetail','gico','wscene','wtop','wmeter','wbreath','lvtag','sentence','vocab'],
  'home':['yard','hero','scene','shop','own','drawer','today','greet','corner','pond','garden','soil','crop','season','sky','ticket','wish','jar','dex','evo','mdcard','monster-card']}
 FLOW=AREAS[sys.argv[1] if len(sys.argv)>1 else 'flow']
 COL={'#EAF5FC':'--t-sky-l','#FFFDF8':'--t-paper','#7DBFA3':'--t-mint-d','#8DBFDD':'--t-sky-d','#F8B9AE':'--t-coral','#E29486':'--t-coral-d',

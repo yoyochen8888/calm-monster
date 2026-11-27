@@ -30,7 +30,7 @@
   .bigtap{width:150px;height:150px}
   .track.trk2{height:92px}
   /* 記憶翻牌、泡泡：遊戲區大一點 */
-  .memgrid.memtable{padding:10px;gap:8px;border-radius:22px;box-sizing:border-box;max-width:100%}
+  .memgrid.memtable{padding:10px;gap:8px;border-radius:var(--t-r-m);box-sizing:border-box;max-width:100%}
   .pond{height:340px}
   /* 商店、圖鑑的格子 */
   .shopitem{padding:12px 6px}
