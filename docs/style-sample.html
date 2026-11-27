@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>情緒怪獸家園｜樣式樣本</title>
+<link rel="stylesheet" href="../css/tokens.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--t-bg);color:var(--t-ink);font-family:"Huninn","Noto Sans TC",system-ui,sans-serif;
+    padding:var(--t-sp-5) var(--t-sp-4) 80px;line-height:1.6}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:var(--t-fs-2xl);margin:0 0 var(--t-sp-1)}
+  .lead{color:var(--t-ink-soft);font-size:var(--t-fs-s);margin:0 0 var(--t-sp-5)}
+  h2{font-size:var(--t-fs-xl);margin:var(--t-sp-6) 0 var(--t-sp-3)}
+  .note{color:var(--t-ink-soft);font-size:var(--t-fs-xs);margin:var(--t-sp-1) 0 var(--t-sp-3)}
+  .card{background:var(--t-card);border-radius:var(--t-r-l);padding:var(--t-sp-5) var(--t-sp-4);
+    border:2px solid var(--t-line);box-shadow:var(--t-shadow-card);margin-bottom:var(--t-sp-4)}
+  .row{display:flex;flex-wrap:wrap;gap:var(--t-sp-3);align-items:flex-end}
+  .sw{width:92px;font-size:var(--t-fs-xs);color:var(--t-ink-soft);text-align:center}
+  .sw i{display:block;height:56px;border-radius:var(--t-r-m);margin-bottom:var(--t-sp-1);
+    box-shadow:inset 0 2px 0 var(--t-rim),0 3px 0 rgba(0,0,0,.06)}
+  .trio{display:flex;flex-direction:column;gap:3px;width:92px}
+  .trio i{height:26px;border-radius:var(--t-r-s)}
+  .trio small{font-size:var(--t-fs-xs);color:var(--t-ink-soft);text-align:center}
+  /* 黏土按鈕 */
+  .btn{--face:var(--t-paper);--edge:var(--t-line-2);--sink:0px;
+    border:0;font:inherit;font-size:var(--t-fs-l);color:var(--t-ink);cursor:pointer;
+    padding:12px 22px;border-radius:var(--t-r-pill);background:var(--face);
+    box-shadow:inset 0 2px 0 var(--t-rim),0 calc(var(--t-thick) - var(--sink)) 0 var(--edge),
+      0 calc(var(--t-thick) - var(--sink) + 8px) 14px -6px var(--t-drop);
+    transform:translateY(var(--sink));transition:transform .16s var(--t-boing),box-shadow .16s var(--t-boing)}
+  .btn:active{--sink:var(--t-thick)}
+  .btn.mint{--face:var(--t-mint);--edge:var(--t-mint-d)}
+  .btn.butter{--face:var(--t-butter);--edge:var(--t-butter-d)}
+  .btn.coral{--face:var(--t-coral);--edge:var(--t-coral-d)}
+  .btn.small{font-size:var(--t-fs-s);padding:8px 14px}
+  .btn.sq{border-radius:var(--t-r-m)}
+  /* 選項卡 */
+  .pick{--face:var(--t-paper);--edge:var(--t-line-2);flex:1 1 150px;border:0;font:inherit;color:var(--t-ink);
+    border-radius:var(--t-r-m);padding:var(--t-sp-3);background:var(--face);text-align:center;
+    box-shadow:inset 0 2px 0 var(--t-rim),0 var(--t-thick) 0 var(--edge),0 14px 14px -6px var(--t-drop)}
+  .pick img{height:84px;display:block;margin:0 auto var(--t-sp-1)}
+  .pick b{display:block;font-size:var(--t-fs-m)}
+  .pick small{color:var(--t-ink-soft);font-size:var(--t-fs-xs)}
+  .pick.on{--face:var(--t-mint-l);--edge:var(--t-mint-d)}
+  /* 大人層 */
+  .adult{background:var(--t-sky-l);border-radius:var(--t-r-m);padding:var(--t-sp-3) var(--t-sp-4);font-size:var(--t-fs-s)}
+  .adult h3{font-size:var(--t-fs-m);margin:0 0 var(--t-sp-1);color:var(--t-accent)}
+  .avoid{background:var(--t-coral-l);border-radius:var(--t-r-m);padding:var(--t-sp-3) var(--t-sp-4);font-size:var(--t-fs-s);margin-top:var(--t-sp-3)}
+  .tell{border:2px dashed var(--t-butter-d);border-radius:var(--t-r-m);padding:var(--t-sp-3) var(--t-sp-4);font-size:var(--t-fs-s);margin-top:var(--t-sp-3);background:var(--t-butter-l)}
+  .tag{display:inline-block;font-size:var(--t-fs-xs);padding:2px 10px;border-radius:var(--t-r-pill);background:var(--t-lilac-l);color:var(--t-ink)}
+  .type p{margin:var(--t-sp-1) 0}
+  .rad{width:72px;height:56px;background:var(--t-butter);border:2px solid var(--t-butter-d)}
+  .mon{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:var(--t-sp-3)}
+  .mon div{text-align:center;font-size:var(--t-fs-xs);color:var(--t-ink-soft)}
+  .mon img{height:72px;display:block;margin:0 auto 2px}
+  .mon i{display:block;height:8px;border-radius:var(--t-r-pill);margin:2px 12px 0}
+  .sos{--face:var(--t-coral);--edge:var(--t-coral-d)}
+</style>
+</head>
+<body><div class="wrap">
+<h1>樣式樣本</h1>
+<p class="lead">情緒怪獸家園的設計基準（tokens.css，v67）。這頁只是預覽，網站還沒套用。之後一版一區換成這套數值。</p>
+
+<h2>顏色</h2>
+<div class="card">
+  <div class="row">
+    <div class="sw"><i style="background:var(--t-bg);border:2px solid var(--t-line)"></i>奶油底</div>
+    <div class="sw"><i style="background:var(--t-card);border:2px solid var(--t-line)"></i>卡片</div>
+    <div class="sw"><i style="background:var(--t-ink)"></i>文字</div>
+    <div class="sw"><i style="background:var(--t-ink-soft)"></i>提示字</div>
+    <div class="sw"><i style="background:var(--t-accent)"></i>重點</div>
+    <div class="sw"><i style="background:var(--t-warn)"></i>提醒</div>
+  </div>
+  <p class="note">五個主色，各三階（淺底／面色／厚度）</p>
+  <div class="row">
+    <div class="trio"><i style="background:var(--t-mint-l)"></i><i style="background:var(--t-mint)"></i><i style="background:var(--t-mint-d)"></i><small>薄荷</small></div>
+    <div class="trio"><i style="background:var(--t-butter-l)"></i><i style="background:var(--t-butter)"></i><i style="background:var(--t-butter-d)"></i><small>鵝黃</small></div>
+    <div class="trio"><i style="background:var(--t-coral-l)"></i><i style="background:var(--t-coral)"></i><i style="background:var(--t-coral-d)"></i><small>珊瑚</small></div>
+    <div class="trio"><i style="background:var(--t-sky-l)"></i><i style="background:var(--t-sky)"></i><i style="background:var(--t-sky-d)"></i><small>天空</small></div>
+    <div class="trio"><i style="background:var(--t-lilac-l)"></i><i style="background:var(--t-lilac)"></i><i style="background:var(--t-lilac-d)"></i><small>紫丁香</small></div>
+  </div>
+</div>
+
+<h2>14 隻怪獸代表色</h2>
+<div class="card"><div class="mon" id="mon"></div>
+<p class="note">怪獸色只用在怪獸本身和牠的小標記；按鈕、卡片一律用上面的五個主色，畫面才不會太花。</p></div>
+
+<h2>按鈕（黏土塊，按下去會沉）</h2>
+<div class="card">
+  <div class="row">
+    <button class="btn mint">開始</button>
+    <button class="btn butter">⭐ 商店</button>
+    <button class="btn">上一步</button>
+    <button class="btn small">👀 給大人</button>
+    <button class="btn sos">🆘 馬上冷靜</button>
+  </div>
+  <p class="note">圓角：膠囊按鈕 999px；方形選項 18px</p>
+  <div class="row" style="margin-top:var(--t-sp-3)">
+    <button class="pick on"><img src="../img/angry2.webp" alt="生氣怪獸"><b>生氣怪獸</b><small>已選</small></button>
+    <button class="pick"><img src="../img/sad2.webp" alt="難過怪獸"><b>難過怪獸</b><small>點一下</small></button>
+    <button class="pick"><img src="../img/scared2.webp" alt="擔心怪獸"><b>擔心怪獸</b><small>點一下</small></button>
+  </div>
+</div>
+
+<h2>大人層</h2>
+<div class="card">
+  <span class="tag">👀 給大人</span>
+  <div class="adult" style="margin-top:var(--t-sp-3)"><h3>先做</h3>先確保安全，放低音量，蹲到孩子眼睛的高度。讓身體降溫：慢慢吐氣、擠緊再放鬆。</div>
+  <div class="avoid"><b>盡量避免</b>「不准生氣！」「去打枕頭出氣」</div>
+  <div class="tell"><b>容易搞混</b>和不服氣不一樣：不服氣在意的是輸贏和公不公平。</div>
+</div>
+
+<h2>字級（6 階）</h2>
+<div class="card type">
+  <p style="font-size:var(--t-fs-2xl)">頁面大標 1.8rem</p>
+  <p style="font-size:var(--t-fs-xl)">問句、標題 1.45rem</p>
+  <p style="font-size:var(--t-fs-l)">按鈕、小標題 1.15rem</p>
+  <p style="font-size:var(--t-fs-m)">內文 1rem</p>
+  <p style="font-size:var(--t-fs-s);color:var(--t-ink-soft)">提示、大人層內文 0.9rem</p>
+  <p style="font-size:var(--t-fs-xs);color:var(--t-ink-soft)">註腳、標籤 0.78rem</p>
+</div>
+
+<h2>圓角（4 階＋圓形）</h2>
+<div class="card"><div class="row">
+  <div class="sw"><div class="rad" style="border-radius:var(--t-r-s)"></div>小 12</div>
+  <div class="sw"><div class="rad" style="border-radius:var(--t-r-m)"></div>中 18</div>
+  <div class="sw"><div class="rad" style="border-radius:var(--t-r-l)"></div>大 26</div>
+  <div class="sw"><div class="rad" style="border-radius:var(--t-r-pill)"></div>膠囊</div>
+  <div class="sw"><div class="rad" style="border-radius:var(--t-r-round);width:56px;margin:0 auto"></div>圓形</div>
+</div></div>
+</div>
+<script>
+const M=[['angry','生氣'],['sad','難過'],['defiant','不服氣'],['stuck','做不到'],['scared','擔心'],['wronged','委屈'],['reluctant','捨不得'],
+['jealous','嫉妒'],['shy','害羞'],['hyper','興奮過頭'],['embarrassed','尷尬'],['guilty','內疚'],['lonely','孤單'],['stress','壓力']];
+document.getElementById('mon').innerHTML=M.map(([k,n])=>`<div><img src="../img/${k}0.webp" alt="${n}怪獸">${n}<i style="background:var(--m-${k})"></i></div>`).join('');
+</script>
+</body></html>
