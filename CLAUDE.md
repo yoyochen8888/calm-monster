@@ -14,9 +14,9 @@
    - 使用者已同意由 Claude 直接合併，合併後把成果給使用者看。
 6. 一版只做一件事（使用者偏好一版一版做）。
 
-## 載入順序（v64）
+## 載入順序（v67）
 程式：data → family → art → icons → core → calm-flow → home → records → games → corners → corners2 → parent → ambient → intro → wish → review → joy → clues → adult2 → emo4 → emo8 → emo12 → emo14 → flow2 → co2 → flow3 → games2 → icons2 → learn2 → yard → season → print → backup → main
-樣式：style → clay → corners2 → games2 → adult2 → flow2 → co2 → flow3 → learn2 → season → print → phone（phone 永遠最後）
+樣式：tokens → style → clay → corners2 → games2 → adult2 → flow2 → co2 → flow3 → learn2 → season → print → phone（phone 永遠最後）
 
 - 後面的檔案用「覆蓋或包住前面的函式」的方式加功能（例如 `const _old=renderX; renderX=function(){...}`）。新功能優先開新檔，不大改舊檔，方便單獨拿掉。
 - learn2 用到 icons2 的 `GAME_ICO`，要放在 icons2 後面。
@@ -43,6 +43,14 @@
 - 兩種動態：平常畫面和小遊戲可以 Q 彈；**冷靜流程不彈、不閃**。
 - 不黏著：沒有連續天數、不會枯萎、晚上休息、每日星星上限；小生命只是偶遇、不能收集；家園不放直接跳進練習的按鈕。
 - 外觀：動森式療癒、圓潤、有厚度的黏土感。色彩：奶油底 #FDFBF7、卡片 #FFFCF4、字 #5C4A3D、提示字 #756353；薄荷 #A8DCC5、鵝黃 #FBE3A0、珊瑚 #F8B9AE；不用純黑純白。不用品牌、不模仿現有角色。
+
+## 樣式基準（v67 起）
+- `css/tokens.css` 是全站設計基準（顏色、怪獸色、圓角 4 階、字級 6 階、間距、黏土光影、動態曲線），最先載入
+- **新的樣式一律用 `var(--t-…)`／`var(--m-…)`，不要新增寫死的色碼、圓角、字級**；改舊樣式時順手換成變數
+- 預覽：`docs/style-sample.html`（線上 /docs/style-sample.html）
+- 角色圖：照 `docs/角色規格.md`；新圖用 `tools/tone.py` 調到同一個色調
+- 一版一區把舊樣式換成 tokens（冷靜流程 → 大人區 → 小遊戲 → 家園），畫面要一樣或更整齊，功能不變
+- 用 `/style-check` 檢查
 
 ## 測試
 - `python3 -m http.server` ＋ Playwright（Chromium）。尺寸：iPad 820×1180、iPhone 390×844、iPhone SE 375×667；版面改動加測 360×740。

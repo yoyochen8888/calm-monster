@@ -1,0 +1,62 @@
+/* =========================================================
+   tokens.css：全站設計基準（v67，2026-11-28）
+   以 clay.css 的黏土調色盤為底，補上圓角、字級、間距、陰影、怪獸色的刻度。
+   這一版只「定義」，不改任何畫面；之後一版一區把寫死的數值換成這些變數。
+   新的樣式一律用這裡的變數，不要再新增寫死的色碼、圓角、字級。
+   ========================================================= */
+:root{
+  /* ---- 底色與文字 ---- */
+  --t-bg:#FDFBF7;        /* 奶油底 */
+  --t-card:#FFFCF4;      /* 卡片 */
+  --t-paper:#FFFDF8;     /* 按鈕面 */
+  --t-ink:#5C4A3D;       /* 主要文字（不用純黑） */
+  --t-ink-soft:#756353;  /* 提示文字 */
+  --t-line:#EEE3CF;      /* 細線 */
+  --t-line-2:#E3D3B8;    /* 厚度、邊 */
+
+  /* ---- 五個主色，各三階：l 淺底、（無）面色、d 厚度／深 ---- */
+  --t-mint-l:#E6F5EE;   --t-mint:#A8DCC5;   --t-mint-d:#7DBFA3;
+  --t-butter-l:#FFF6DA; --t-butter:#FBE3A0; --t-butter-d:#E3C266;
+  --t-coral-l:#FFEDE8;  --t-coral:#F8B9AE;  --t-coral-d:#E29486;
+  --t-sky-l:#EAF5FC;    --t-sky:#B9DDF2;    --t-sky-d:#8DBFDD;
+  --t-lilac-l:#F4EEFA;  --t-lilac:#D9CCEF;  --t-lilac-d:#B6A3D9;
+
+  /* ---- 功能色 ---- */
+  --t-accent:#3F7F68;    /* 主要按鈕文字、重點 */
+  --t-warn:#E88A7C;      /* 🆘、提醒（柔和的紅，不用正紅） */
+  --t-star:#FFD166;      /* 星星 */
+
+  /* ---- 14 隻怪獸代表色（跟 js/data.js 的 EMO.color 一致） ---- */
+  --m-angry:#F26B5B; --m-sad:#5B8DEF; --m-defiant:#F5A524; --m-stuck:#9B7BE0;
+  --m-scared:#3FB6A8; --m-wronged:#EC7FB0; --m-reluctant:#E9B53C; --m-jealous:#9CC93B;
+  --m-shy:#F59A72; --m-hyper:#2EB8E0; --m-embarrassed:#C766B8; --m-guilty:#7C93B5;
+  --m-lonely:#4F63B0; --m-stress:#A97B50;
+
+  /* ---- 圓角：4 階＋圓形 ---- */
+  --t-r-s:12px;    /* 小標籤、小卡 */
+  --t-r-m:18px;    /* 按鈕、選項 */
+  --t-r-l:26px;    /* 卡片、面板 */
+  --t-r-pill:999px;/* 膠囊按鈕 */
+  --t-r-round:50%; /* 圓形 */
+
+  /* ---- 字級：6 階 ---- */
+  --t-fs-xs:.78rem;  /* 註腳、標籤 */
+  --t-fs-s:.9rem;    /* 提示、大人層內文 */
+  --t-fs-m:1rem;     /* 內文 */
+  --t-fs-l:1.15rem;  /* 按鈕、小標題 */
+  --t-fs-xl:1.45rem; /* 問句、標題 */
+  --t-fs-2xl:1.8rem; /* 頁面大標 */
+
+  /* ---- 間距：4 的倍數 ---- */
+  --t-sp-1:4px; --t-sp-2:8px; --t-sp-3:12px; --t-sp-4:16px; --t-sp-5:24px; --t-sp-6:32px;
+
+  /* ---- 黏土光影 ---- */
+  --t-rim:rgba(255,255,255,.78);   /* 上緣亮邊 */
+  --t-drop:rgba(140,105,70,.20);   /* 落在桌面的柔影 */
+  --t-thick:6px;                   /* 按鈕厚度 */
+  --t-shadow-card:0 4px 0 var(--t-line-2),0 12px 18px -10px var(--t-drop);
+
+  /* ---- 動態 ---- */
+  --t-boing:cubic-bezier(.34,1.56,.64,1); /* 平常：Q 彈 */
+  --t-soften:cubic-bezier(.25,.8,.3,1);   /* 冷靜流程：慢慢停，不彈 */
+}
