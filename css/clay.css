@@ -287,7 +287,7 @@ button:focus:not(:focus-visible){outline:none}
 .drawer h3{font-size:1.02rem;margin:22px 0 6px}
 .drawer p,.drawer li{max-width:40em}
 .say{background:var(--mint-l);border-radius:18px;padding:12px 14px}
-.avoid{background:var(--coral-l);border-radius:18px;padding:12px 14px}
+.avoid{background:var(--coral-l);border-radius:var(--t-r-m);padding:12px 14px}
 .timer{background:var(--butter-l);border-radius:22px;padding:14px 16px}
 .agetbl td:first-child{color:var(--accent)}
 
@@ -304,7 +304,7 @@ button:focus:not(:focus-visible){outline:none}
 .introcard,.wishask{background:var(--card);border-radius:32px;box-shadow:inset 0 2px 0 var(--rim),0 6px 0 var(--line-2),0 24px 40px -12px rgba(92,74,61,.35);animation:clayPop .45s var(--boing)}
 
 /* ---------- 給大人的區塊：維持 v29 的「👀＋淡藍」，只把形狀統一 ---------- */
-.gdetail,.adultbox,.adultcue{border-radius:18px;color:var(--ink)}
+.gdetail,.adultbox,.adultcue{border-radius:var(--t-r-m);color:var(--ink)}
 .adultcue{padding:10px 12px 10px 14px}
 .adultbox{padding:10px 14px}
 .adultbox summary{min-height:28px}
@@ -315,7 +315,7 @@ button:focus:not(:focus-visible){outline:none}
 .moodcard{background-color:var(--butter-l);border-radius:24px;padding:14px}
 .jbitem,.logitem,.review{border:0;box-shadow:inset 0 2px 0 var(--rim),0 4px 0 var(--line-2);border-radius:22px}
 .jbitem{border-left:8px solid var(--jc);min-height:56px}
-.namein,.cpn input,.logitem textarea,#pNotes,#logText{border:3px solid var(--line)!important;border-radius:18px!important;color:var(--ink);background:var(--paper)}
+.namein,.cpn input,.logitem textarea,#pNotes,#logText{border:3px solid var(--line)!important;border-radius:var(--t-r-m) !important;color:var(--ink);background:var(--paper)}
 .namein:focus,.cpn input:focus,.logitem textarea:focus,#pNotes:focus{outline:none;border-color:var(--mint-d)!important}
 .sentence{background:var(--butter-l);border-radius:22px}
 .sentence u{border-bottom-color:var(--butter-d)}

@@ -1,7 +1,13 @@
-"""把冷靜流程專屬規則裡寫死的值，保守地換成 tokens.css 變數。"""
+"""把某一區專屬規則裡寫死的值，保守地換成 tokens.css 變數。
+用法：python3 tools/tokenize.py 區域名稱   （flow｜adult｜games｜home）
+規則：顏色只換跟基準完全一樣的；圓角差 4px 內、字級差 0.06rem 內才收斂；其他保留原值。"""
 import re,glob,sys
 sys.path.insert(0,'/home/claude/tools')
-FLOW=['breath','weather','wx','unsure','tlight','turtle','tstop','tsteps','trystep','snail','push','sense','plan','think','tbnote','tlegs','actpic','levelup','sosadult','wing','lvpause','ghost','calmrow','flowstep','focus','size','sizekey','step-dots','kidq','flowbar','calmbtn','mdots','dragon','squeeze','bubble','lemon','tryStep','coGate']
+AREAS={'flow':['breath','weather','wx','unsure','tlight','turtle','tstop','tsteps','trystep','snail','push','sense','plan','think','tbnote','tlegs','actpic','levelup','sosadult','wing','lvpause','ghost','calmrow','flowstep','focus','size','sizekey','step-dots','kidq','flowbar','calmbtn','mdots','dragon','squeeze','bubble','lemon','tryStep','coGate'],
+ 'adult':['adultbox','adultcue','adultfive','iceq','icebox','icenote','icesvg','namein','avoid','tellbox','swaps','swapbox','swap','speak','safefirst','probox','lvtip','lvsay','lvrows','lvnote','lvfirst','lvbox','lvask','hthumb','hfing','helpsig','helpbox','handtx','parent','pbody','ptab'],
+ 'games':['game','gico','mem','mcard','mflip','mface','tr','trk','trlegend','trtap','cb','bpop','guess','gs','quiz','clue','pick.hasgico','sticker','board'],
+ 'home':['yard','hero','scene','shop','own','drawer','today','greet','corner','pond','garden','soil','crop','season','sky','ticket','wish','jar','dex','evo','mdcard','monster-card']}
+FLOW=AREAS[sys.argv[1] if len(sys.argv)>1 else 'flow']
 COL={'#EAF5FC':'--t-sky-l','#FFFDF8':'--t-paper','#7DBFA3':'--t-mint-d','#8DBFDD':'--t-sky-d','#F8B9AE':'--t-coral','#E29486':'--t-coral-d',
      '#A8DCC5':'--t-mint','#FFF6DA':'--t-butter-l','#E3D3B8':'--t-line-2','#FFFFFF':'--t-paper','#FFF':'--t-paper','#5C4A3D':'--t-ink','#756353':'--t-ink-soft',
      '#FDFBF7':'--t-bg','#FFFCF4':'--t-card','#EEE3CF':'--t-line','#FBE3A0':'--t-butter','#E3C266':'--t-butter-d','#E6F5EE':'--t-mint-l','#FFEDE8':'--t-coral-l',
